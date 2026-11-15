@@ -358,6 +358,126 @@ const BOHR_SPACE = {
   classNo: 100
 };
 
+/* =====================================================
+   LEVEL 7 · DANSKE BANK GENERIC AGGRESSIVE
+===================================================== */
+
+const DB_LONG_BONDS = {
+  instrumentId: "DK0016105380",
+  instrumentName: "Danske Lange Obligationer",
+  gameLabel: "DB LONG",
+  mediumLabel: "Long Bonds",
+  classNo: 1
+};
+
+const DB_IG_BONDS = {
+  instrumentId: "DK0060448751",
+  instrumentName: "DB Euro Investment Grade-Obligationer",
+  gameLabel: "DB IG",
+  mediumLabel: "Investment Grade",
+  classNo: 3
+};
+
+const DB_HY_BONDS = {
+  instrumentId: "DK0060497378",
+  instrumentName: "DB Euro High Yield-Obligationer",
+  gameLabel: "DB HY",
+  mediumLabel: "High Yield",
+  classNo: 3
+};
+
+const DB_DENMARK = {
+  instrumentId: "DK0060244325",
+  instrumentName: "DB Danmark Fokus",
+  gameLabel: "DB DK",
+  mediumLabel: "Denmark Equity",
+  classNo: 5
+};
+
+const DB_USA = {
+  instrumentId: "DK0061270105",
+  instrumentName: "Danske Invest USA Restricted",
+  gameLabel: "DB USA",
+  mediumLabel: "USA Equity",
+  classNo: 8
+};
+
+const DB_EUROPE = {
+  instrumentId: "DK0010252956",
+  instrumentName: "Danske Invest Europa",
+  gameLabel: "DB EU",
+  mediumLabel: "Europe Equity",
+  classNo: 17
+};
+
+const DB_EM = {
+  instrumentId: "DK0060042026",
+  instrumentName: "Danske Invest Nye Markeder",
+  gameLabel: "DB EM",
+  mediumLabel: "Emerging Markets",
+  classNo: 14
+};
+
+/* =====================================================
+   LEVEL 9 · DEUTSCHE BANK AGGRESSIVE
+===================================================== */
+
+const DE_GOV_BONDS = {
+  instrumentId: "LU1287023185",
+  instrumentName: "Amundi Euro Government Bond 7-10Y",
+  gameLabel: "DE GOV",
+  mediumLabel: "Euro Gov Bonds",
+  classNo: 1
+};
+
+const DE_IG_BONDS = {
+  instrumentId: "LU2001241897",
+  instrumentName: "DWS Invest ESG Euro Corporate Bonds",
+  gameLabel: "DE IG",
+  mediumLabel: "Corporate Bonds",
+  classNo: 3
+};
+
+const DE_HY_BONDS = {
+  instrumentId: "LU2111935651",
+  instrumentName: "DWS Invest ESG Euro High Yield",
+  gameLabel: "DE HY",
+  mediumLabel: "High Yield",
+  classNo: 3
+};
+
+const DE_GERMANY = {
+  instrumentId: "DE000DWS2D82",
+  instrumentName: "DWS Aktien Strategie Deutschland",
+  gameLabel: "DE GER",
+  mediumLabel: "Germany Equity",
+  classNo: 17
+};
+
+const DE_USA = {
+  instrumentId: "LU1769939361",
+  instrumentName: "DWS Invest CROCI US USD",
+  gameLabel: "DE USA",
+  mediumLabel: "USA Equity",
+  classNo: 8
+};
+
+const DE_EUROPE = {
+  instrumentId: "LU0145635479",
+  instrumentName: "DWS Invest Focus Europe",
+  gameLabel: "DE EU",
+  mediumLabel: "Europe Equity",
+  classNo: 17
+};
+
+const DE_EM = {
+  instrumentId: "LU1984219524",
+  instrumentName: "DWS Invest ESG Global Em Mkts Eqs FC",
+  gameLabel: "DE EM",
+  mediumLabel: "Emerging Markets",
+  classNo: 14
+};
+
 function hold(instrument, percent) {
   return { ...instrument, weight: percent / 100 };
 }
@@ -371,25 +491,24 @@ export function strategyLine(level) {
 }
 
 
-
 {
   level: 6,
   metaFlat: {
-    title: "Capital Preservation",
-    titleDa: "Kapitalbevarelse",
+    title: "Neptoon Bohr",
+    titleDa: "Neptoon Bohr",
     description: "Build the defensive Neptoon Bohr strategy.",
     descriptionDa: "Sammensæt den defensive Neptoon Bohr-strategi.",
     isWealthPlan: true,
-    modelNo: 3, // TEMPORARY: replace with actual Bohr modelNo
+    modelNo: 3,
     sendToMyWealth: true,
     rules: [
       "Construct the Neptoon Bohr portfolio.",
-      "Allocate 45% to short-term government bonds.",
+      "Allocate 45% to short-term bonds.",
       "Exclude the zero-weight investment.",
     ],
     rulesDa: [
       "Sammensæt Neptoon Bohr-porteføljen.",
-      "Fordel 45 % til korte statsobligationer.",
+      "Fordel 45 % til korte obligationer.",
       "Udelad investeringen med 0 % vægt.",
     ],
   },
@@ -404,46 +523,48 @@ export function strategyLine(level) {
   ],
   decoys: [BOHR_SPACE],
 },
+
 {
   level: 7,
   metaFlat: {
-    title: "Global Stock Portfolio",
-    titleDa: "Global aktieportefølje",
-    description: "Six stocks. Precise allocations.",
-    descriptionDa: "Seks aktier. Præcise fordelinger.",
-    isWealthPlan: false,
-    modelNo: null,
+    title: "Danske Bank Aggressive",
+    titleDa: "Danske Bank Aggressiv",
+    description: "Build an aggressive portfolio of actively managed funds.",
+    descriptionDa: "Sammensæt en aggressiv portefølje med aktivt forvaltede fonde.",
+    isWealthPlan: true,
+    modelNo: null, // Insert actual Danske Bank modelNo
     sendToMyWealth: true,
     rules: [
-      "Construct a six-stock portfolio.",
-      "Limit the largest position to 26%.",
-      "Maintain two equally weighted positions at 12%.",
+      "Construct the Danske Bank Generic Aggressive portfolio.",
+      "Combine seven actively managed funds.",
+      "Allocate 20% to bonds and 80% to equities.",
     ],
     rulesDa: [
-      "Sammensæt en portefølje med seks aktier.",
-      "Begræns den største position til 26 %.",
-      "Lad to positioner have samme vægt på 12 %.",
+      "Sammensæt Danske Bank Generic Aggressive-porteføljen.",
+      "Kombinér syv aktivt forvaltede fonde.",
+      "Fordel 20 % til obligationer og 80 % til aktier.",
     ],
   },
   holdings: [
-    hold(ASML, 26),
-    hold(AMZN, 20),
-    hold(GOOGL, 16),
-    hold(META, 14),
-    hold(LLY, 12),
-    hold(LVMH, 12)
+    hold(DB_LONG_BONDS, 10),
+    hold(DB_IG_BONDS, 5),
+    hold(DB_HY_BONDS, 5),
+    hold(DB_DENMARK, 15),
+    hold(DB_USA, 35),
+    hold(DB_EUROPE, 20),
+    hold(DB_EM, 10)
   ],
-  decoys: [SAP],
 },
+
 {
   level: 8,
   metaFlat: {
-    title: "Defensive Allocation",
-    titleDa: "Defensiv allokering",
-    description: "Build the Sparindex Defensive strategy.",
-    descriptionDa: "Sammensæt Sparindex Defensive-strategien.",
+    title: "Sparindex Balanced",
+    titleDa: "Sparindex Balanceret",
+    description: "Build the Sparindex Balanced investment strategy.",
+    descriptionDa: "Sammensæt Sparindex Balanced-investeringsstrategien.",
     isWealthPlan: true,
-    modelNo: 21, // TEMPORARY: replace with actual modelNo
+    modelNo: 21,
     sendToMyWealth: true,
     rules: [
       "Construct the seven-investment portfolio.",
@@ -466,46 +587,48 @@ export function strategyLine(level) {
     hold(SP_EM, 10)
   ],
 },
+
 {
   level: 9,
   metaFlat: {
-    title: "Expert Stock Portfolio",
-    titleDa: "Ekspertaktieportefølje",
-    description: "Seven positions. Every weight is different.",
-    descriptionDa: "Syv positioner. Alle vægte er forskellige.",
-    isWealthPlan: false,
-    modelNo: null,
+    title: "Deutsche Bank Aggressive",
+    titleDa: "Deutsche Bank Aggressiv",
+    description: "Build an aggressive strategy with European and global funds.",
+    descriptionDa: "Sammensæt en aggressiv strategi med europæiske og globale fonde.",
+    isWealthPlan: true,
+    modelNo: null, // Insert actual Deutsche Bank modelNo
     sendToMyWealth: true,
     rules: [
-      "Construct a seven-investment portfolio.",
-      "Combine individual stocks and equity funds.",
-      "Keep every position at a different weight.",
+      "Construct the Deutsche Bank Aggressive portfolio.",
+      "Combine seven funds across bonds and equities.",
+      "Allocate 35% to US equities.",
     ],
     rulesDa: [
-      "Sammensæt en portefølje med syv investeringer.",
-      "Kombinér enkeltaktier og aktiefonde.",
-      "Giv hver position sin egen vægt.",
+      "Sammensæt Deutsche Bank Aggressive-porteføljen.",
+      "Kombinér syv fonde på tværs af obligationer og aktier.",
+      "Fordel 35 % til amerikanske aktier.",
     ],
   },
   holdings: [
-    hold(MSFT, 22),
-    hold(AAPL, 18),
-    hold(ASML, 16),
-    hold(AMZN, 14),
-    hold(QQQ, 12),
-    hold(LVMH, 10),
-    hold(VEU, 8)
+    hold(DE_GOV_BONDS, 10),
+    hold(DE_IG_BONDS, 5),
+    hold(DE_HY_BONDS, 5),
+    hold(DE_GERMANY, 15),
+    hold(DE_USA, 35),
+    hold(DE_EUROPE, 20),
+    hold(DE_EM, 10)
   ],
 },
+
 {
   level: 10,
   metaFlat: {
-    title: "The Oppenheimer Strategy",
-    titleDa: "Oppenheimer-strategien",
+    title: "Neptoon Oppenheimer",
+    titleDa: "Neptoon Oppenheimer",
     description: "The final seven-investment challenge.",
     descriptionDa: "Den sidste udfordring med syv investeringer.",
     isWealthPlan: true,
-    modelNo: 7, // TEMPORARY: replace with actual Oppenheimer modelNo
+    modelNo: 7,
     sendToMyWealth: true,
     rules: [
       "Construct the Neptoon Oppenheimer portfolio.",
@@ -528,7 +651,6 @@ export function strategyLine(level) {
     hold(OPP_AVGO, 5)
   ],
 },
-
 
 export function levelByNumber(level) {
   const found = GAME_LEVELS.find((entry) => entry.level === level);
