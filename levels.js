@@ -1,7 +1,7 @@
 import { percentOf } from "./score.js";  
 
 /** Static demonstration portfolios for the ten-level prototype. */
-// classNo: 100 = stocks, 5–20 = equity funds, 22 = gold.
+// classNo: 100 = stocks, 5–20 = equity funds, 22 = gold
 // ETF classNo values are provisional and should be checked against Neptoon data.
 const NVDA = { instrumentId: "NVDA.US", instrumentName: "NVIDIA", gameLabel: "NVDA", mediumLabel: "NVIDIA", classNo: 100 };
 const AAPL = { instrumentId: "AAPL.US", instrumentName: "Apple", gameLabel: "AAPL", mediumLabel: "Apple", classNo: 100 };
