@@ -88,13 +88,14 @@ export function evaluateStrategy(level, slotPercents, placed){
     complete &&
     totalError === 0;
 
-  return {
+return {
     score: perfect ? 1 : Math.min(0.985, similarity),
     perfect,
+    passed: level.metaFlat.rules?.map(() => perfect) || [],
     allocated,
     count: occupied,
     totalError
-  };
+};
 
 }
 export function isPerfectScore(score) { return score >= 0.999; }
