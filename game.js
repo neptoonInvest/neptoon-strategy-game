@@ -1,0 +1,1219 @@
+import { playSfx, resumeAudio, setSoundEnabled, unlockAudio } from "./audio.js";
+import { layoutWeighted } from "./layout.js";
+import { levelByNumber, piecesOf, strategyLine } from "./levels.js";
+import { viewPortfolio } from "./portfolio.js";
+import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, similarityScore, targetWeights, } from "./score.js";
+import { clearSave, loadSave, writeSave } from "./storage.js";
+const ACCENTS = ["#6EC6ED", "#4E79BD", "#9FD4F4", "#7AA2D6", "#D7F1FC", "#3E6AAB"];
+function accentFor(id) {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++)
+        hash = (hash * 33 + id.charCodeAt(i)) >>> 0;
+    return ACCENTS[hash % ACCENTS.length];
+}
+function shuffle(list, seed) {
+    const copy = list.slice();
+    let state = seed % 2147483647 || 1;
+    for (let i = copy.length - 1; i > 0; i--) {
+        state = (state * 16807) % 2147483647;
+        const j = state % (i + 1);
+        const tmp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = tmp;
+    }
+    return copy;
+}
+function reduceMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+function iconSound(on) {
+    if (on) {
+        return `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 9h4l5-4v14l-5-4H3V9z"/><path fill="none" stroke="currentColor" stroke-width="2" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>`;
+    }
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 9h4l5-4v14l-5-4H3V9z"/><path fill="none" stroke="currentColor" stroke-width="2" d="M16 10l5 5M21 10l-5 5"/></svg>`;
+}
+function iconReset() {
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M4 12a8 8 0 1 0 2.2-5.5M4 4v5h5"/></svg>`;
+}
+function iconCrown() {
+    return `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 17h18v3H3v-3zM2 8l5 4 5-7 5 7 5-4-2 9H4L2 8z"/></svg>`;
+}
+function iconMark() {
+    return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="14" height="18" fill="#6EC6ED"/><rect x="17" y="1" width="14" height="10" fill="#4E79BD"/><rect x="17" y="13" width="14" height="6" fill="#E4F3FC"/><rect x="1" y="21" width="30" height="10" fill="#4E79BD"/></svg>`;
+}
+export function mountGame(root) {
+    let alive = true;
+    let currentLevel = 1;
+    let highestCompleted = 0;
+    let soundEnabled = true;
+    let arrangement = [];
+    let tray = [];
+    let selectedId = null;
+    let solved = false;
+    let score = 0;
+    let busy = false;
+    let drag = null;
+    let layoutToken = 0;
+    const pieceEls = new Map();
+    let slotEls = [];
+    let slotRects = [];
+    root.innerHTML = "";
+    root.classList.add("game-root");
+    const shell = document.createElement("div");
+    shell.className = "shell";
+    root.appendChild(shell);
+    const start = document.createElement("section");
+    start.className = "start";
+    start.innerHTML = `
+    <div class="start-top">
+      <button type="button" class="icon-btn round" data-sound aria-label="Sound on" aria-pressed="true">${iconSound(true)}</button>
+    </div>
+    <div class="start-body">
+      <div class="mark">${iconMark()}</div>
+      <p class="brand">NEPTOON</p>
+      <h1 class="display">KNOW YOUR<br>STRATEGIES</h1>
+      <p class="tag">10 LEVELS. ONE MASTERPIECE.</p>
+      <p class="subtitle">Drag the investments. Crack the strategy.</p>
+      <p class="master-line" hidden>You beat all 10 levels.</p>
+      <button type="button" class="play-btn pulse" data-play>PLAY LEVEL 1</button>
+      <div class="track" data-track></div>
+      <p class="track-caption" data-track-caption hidden>Tap a level to replay it.</p>
+      <p class="sr-only" data-track-text></p>
+      <button type="button" class="text-btn" data-reset hidden>Reset progress</button>
+    </div>
+  `;
+    const play = document.createElement("section");
+    play.className = "play";
+    play.hidden = true;
+    play.innerHTML = `
+    <header class="topbar">
+      <div class="topbar-id">
+        <button type="button" class="home-btn" data-home aria-label="Back to levels">
+          <span class="mini-mark">${iconMark()}</span>
+          <div>
+            <p class="brand brand-sm">NEPTOON</p>
+            <h1 class="level-line"><span data-level-kicker>LEVEL 1</span> <span data-level-title>First Move</span></h1>
+          </div>
+        </button>
+      </div>
+      <div class="top-actions">
+        <button type="button" class="icon-btn round" data-sound aria-label="Sound on" aria-pressed="true">${iconSound(true)}</button>
+        <button type="button" class="icon-btn" data-reset aria-label="Reset progress">${iconReset()}</button>
+      </div>
+    </header>
+    <div class="ticks" data-ticks aria-hidden="true"></div>
+    <div class="signal" data-state="searching" aria-live="polite">
+      <div class="orb" aria-hidden="true">
+        <svg viewBox="0 0 36 36">
+          <circle class="orb-track" cx="18" cy="18" r="14" pathLength="100"></circle>
+          <circle class="orb-value" data-ring cx="18" cy="18" r="14" pathLength="100"></circle>
+        </svg>
+      </div>
+      <div class="signal-copy">
+        <p class="signal-kicker">Strategy signal</p>
+        <p class="signal-word" data-word>Searching</p>
+      </div>
+    </div>
+    <p class="clue" data-clue></p>
+    <p class="sr-only" data-signal-live></p>
+    <div class="stage">
+      <div class="board" data-board>
+        <p class="coach" data-coach hidden>Drag the card onto the board.</p>
+        <p class="banner" data-banner hidden>THE MASTERPIECE</p>
+      </div>
+    </div>
+    <div class="tray" data-tray>
+      <p class="tray-label" data-tray-label>Investments</p>
+      <div class="tray-grid" data-tray-grid></div>
+    </div>
+    <div class="victory" data-victory hidden>
+      <div class="crown" data-crown hidden>${iconCrown()}</div>
+      <p class="victory-kicker" data-victory-kicker></p>
+      <h2 class="victory-title" data-victory-title></h2>
+      <p class="mix" data-mix></p>
+      <button type="button" class="play-btn" data-next>NEXT LEVEL</button>
+      <button type="button" class="play-btn" data-replay hidden>REPLAY FROM LEVEL 1</button>
+      <button type="button" class="ghost-btn" data-portfolio hidden>VIEW PORTFOLIO</button>
+      <button type="button" class="text-btn" data-title hidden>Back to title</button>
+    </div>
+  `;
+    const scrim = document.createElement("div");
+    scrim.className = "scrim";
+    scrim.hidden = true;
+    scrim.innerHTML = `
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="reset-title">
+      <h2 id="reset-title">Start over?</h2>
+      <p>Your level progress will be cleared.</p>
+      <div class="modal-actions">
+        <button type="button" class="ghost-btn" data-cancel>CANCEL</button>
+        <button type="button" class="play-btn" data-confirm>RESET</button>
+      </div>
+    </div>
+  `;
+    const toast = document.createElement("p");
+    toast.className = "toast";
+    toast.hidden = true;
+    toast.setAttribute("role", "status");
+    shell.append(start, play, scrim, toast);
+    const boardEl = play.querySelector("[data-board]");
+    const trayEl = play.querySelector("[data-tray]");
+    const trayGrid = play.querySelector("[data-tray-grid]");
+    const trayLabel = play.querySelector("[data-tray-label]");
+    const wordEl = play.querySelector("[data-word]");
+    const ringEl = play.querySelector("[data-ring]");
+    const signalEl = play.querySelector(".signal");
+    const signalLive = play.querySelector("[data-signal-live]");
+    const coachEl = play.querySelector("[data-coach]");
+    const bannerEl = play.querySelector("[data-banner]");
+    const victoryEl = play.querySelector("[data-victory]");
+    const playButtons = () => shell.querySelectorAll("[data-play]");
+    const saved = loadSave();
+    if (saved) {
+        currentLevel = clampLevel(saved.currentLevel);
+        highestCompleted = clampCompleted(saved.highestCompleted);
+        if (currentLevel > highestCompleted + 1)
+            currentLevel = highestCompleted + 1;
+        soundEnabled = saved.soundEnabled;
+        if (saved.currentLevel === currentLevel && placementFits(currentLevel, saved)) {
+            arrangement = saved.arrangement.slice();
+            tray = saved.tray.slice();
+        }
+    }
+    setSoundEnabled(soundEnabled);
+    if (arrangement.length === 0)
+        freshArrangement(currentLevel);
+    score = computeScore();
+    solved = isPerfectScore(score);
+    function level() {
+        return levelByNumber(currentLevel);
+    }
+    function catalog() {
+        const map = new Map();
+        for (const piece of piecesOf(level()))
+            map.set(piece.instrumentId, piece);
+        return map;
+    }
+    function slotPercents() {
+        return level().holdings.map((holding) => percentOf(holding.weight));
+    }
+    function computeScore() {
+        return similarityScore(slotPercents(), arrangement, targetWeights(level().holdings));
+    }
+    function freshArrangement(levelNumber) {
+        const data = levelByNumber(levelNumber);
+        arrangement = data.holdings.map(() => null);
+        tray = shuffle(piecesOf(data).map((piece) => piece.instrumentId), levelNumber * 97 + 13);
+    }
+    function placementFits(levelNumber, data) {
+        const spec = levelByNumber(levelNumber);
+        const ids = new Set(piecesOf(spec).map((piece) => piece.instrumentId));
+        if (data.arrangement.length !== spec.holdings.length)
+            return false;
+        const used = new Set();
+        for (const id of data.arrangement) {
+            if (id == null)
+                continue;
+            if (!ids.has(id) || used.has(id))
+                return false;
+            used.add(id);
+        }
+        for (const id of data.tray) {
+            if (!ids.has(id) || used.has(id))
+                return false;
+            used.add(id);
+        }
+        return used.size === ids.size;
+    }
+    function isReturning() {
+        return highestCompleted > 0 || currentLevel > 1 || solved || arrangement.some((id) => id != null);
+    }
+    function isMaster() {
+        return highestCompleted >= 10;
+    }
+    function persist() {
+        writeSave({
+            version: 1,
+            currentLevel,
+            highestCompleted,
+            soundEnabled,
+            arrangement,
+            tray,
+        });
+    }
+    function locOf(id) {
+        const index = arrangement.indexOf(id);
+        if (index >= 0)
+            return { type: "slot", index };
+        return { type: "tray" };
+    }
+    function canStart() {
+        return alive && !play.hidden && !solved && !busy && !drag;
+    }
+    function syncChrome() {
+        root.dataset.screen = play.hidden ? "start" : solved && currentLevel === 10 ? "finale" : solved ? "victory" : "play";
+        root.dataset.level = String(currentLevel);
+        root.dataset.signal = signalName(score);
+        root.dataset.solved = solved ? "true" : "false";
+        for (const button of shell.querySelectorAll("[data-sound]")) {
+            button.setAttribute("aria-pressed", soundEnabled ? "true" : "false");
+            button.setAttribute("aria-label", soundEnabled ? "Sound on" : "Sound off");
+            button.innerHTML = iconSound(soundEnabled);
+        }
+    }
+    function maxOpenLevel() {
+        return isMaster() ? 10 : Math.min(10, highestCompleted + 1);
+    }
+    function renderTrack(into, interactive) {
+        into.replaceChildren();
+        if (interactive)
+            into.removeAttribute("aria-hidden");
+        else
+            into.setAttribute("aria-hidden", "true");
+        const openUntil = maxOpenLevel();
+        for (let n = 1; n <= 10; n++) {
+            const done = n <= highestCompleted;
+            const open = interactive && n <= openUntil;
+            const item = document.createElement(open ? "button" : "span");
+            item.className = "tick";
+            if (n === 10)
+                item.classList.add("finale");
+            if (done)
+                item.classList.add("done");
+            if (n === currentLevel)
+                item.classList.add("now");
+            else if (!done)
+                item.classList.add("locked");
+            if (open) {
+                const button = item;
+                button.type = "button";
+                button.dataset.jump = String(n);
+                const state = done ? ", complete" : n === currentLevel ? ", in progress" : "";
+                button.setAttribute("aria-label", `Level ${n}${state}`);
+                if (n === currentLevel)
+                    button.setAttribute("aria-current", "step");
+            }
+            if (n === 10)
+                item.innerHTML = iconCrown();
+            else
+                item.textContent = String(n);
+            into.appendChild(item);
+        }
+    }
+    function renderStart() {
+        const button = start.querySelector("[data-play]");
+        const masterLine = start.querySelector(".master-line");
+        const resetBtn = start.querySelector("[data-reset]");
+        const trackText = start.querySelector("[data-track-text]");
+        if (isMaster() && (currentLevel === 10 || solved)) {
+            button.textContent = "RELIVE THE FINALE";
+            masterLine.hidden = false;
+            trackText.textContent = "Strategy master. All ten levels complete. Tap any level to replay it.";
+        }
+        else if (isReturning()) {
+            button.textContent = `CONTINUE LEVEL ${currentLevel}`;
+            masterLine.hidden = true;
+            trackText.textContent = `Continue level ${currentLevel}. Level 10 is the finale.`;
+        }
+        else {
+            button.textContent = "PLAY LEVEL 1";
+            masterLine.hidden = true;
+            trackText.textContent = "Ten levels. Level 10 is locked until you reach it.";
+        }
+        resetBtn.hidden = !isReturning() && !isMaster();
+        const caption = start.querySelector("[data-track-caption]");
+        caption.hidden = highestCompleted < 1 && !isMaster();
+        const track = start.querySelector("[data-track]");
+        renderTrack(track, true);
+        syncChrome();
+    }
+    function renderHud() {
+        const data = level();
+        play.querySelector("[data-level-kicker]").textContent = `LEVEL ${currentLevel}`;
+        play.querySelector("[data-level-title]").textContent = data.metaFlat.title;
+        play.querySelector("[data-clue]").textContent = data.metaFlat.description;
+        const ticks = play.querySelector("[data-ticks]");
+        renderTrack(ticks, false);
+        coachEl.hidden = !(currentLevel === 1 && !solved && arrangement.every((id) => id == null));
+    }
+    function paintSignal(flash) {
+        const name = signalName(score);
+        signalEl.dataset.state = name;
+        wordEl.textContent = SIGNAL_LABEL[name];
+        ringEl.style.strokeDashoffset = String(100 * (1 - Math.max(0, Math.min(1, score))));
+        signalEl.classList.remove("up", "down");
+        if (flash === "up" || flash === "down") {
+            void signalEl.offsetWidth;
+            signalEl.classList.add(flash);
+            signalLive.textContent =
+                flash === "up" ? `${SIGNAL_LABEL[name]}. Closer.` : `${SIGNAL_LABEL[name]}. Keep adjusting.`;
+        }
+        else if (flash === "none") {
+            signalLive.textContent = "";
+        }
+        syncChrome();
+    }
+    function labelMode(width, height) {
+        if (width >= 150 && height >= 84)
+            return "full";
+        if (width >= 98 && height >= 60)
+            return "medium";
+        return "short";
+    }
+    function applyLabel(el, instrument, mode) {
+        el.classList.remove("mode-full", "mode-medium", "mode-short", "mode-tray", "mode-float");
+        el.classList.add(`mode-${mode}`);
+        el.setAttribute("aria-label", `${instrument.instrumentName}, ${instrument.gameLabel}`);
+        el.replaceChildren();
+        const ticker = document.createElement("span");
+        ticker.className = "ticker";
+        const sub = document.createElement("span");
+        sub.className = "sub";
+        if (mode === "short") {
+            ticker.textContent = instrument.gameLabel;
+            el.append(ticker);
+            return;
+        }
+        if (mode === "medium") {
+            ticker.textContent = instrument.mediumLabel;
+            el.append(ticker);
+            return;
+        }
+        if (mode === "tray") {
+            ticker.textContent = instrument.gameLabel;
+            sub.textContent = instrument.mediumLabel;
+            el.append(ticker, sub);
+            return;
+        }
+        if (mode === "float") {
+            ticker.textContent = instrument.gameLabel;
+            sub.textContent = instrument.instrumentName;
+            el.append(ticker, sub);
+            return;
+        }
+        ticker.textContent = instrument.instrumentName;
+        sub.textContent = instrument.gameLabel;
+        el.append(ticker, sub);
+    }
+    function ensurePiece(id) {
+        const existing = pieceEls.get(id);
+        if (existing)
+            return existing;
+        const instrument = catalog().get(id);
+        if (!instrument)
+            throw new Error(`Unknown instrument ${id}`);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "piece";
+        button.dataset.id = id;
+        button.style.setProperty("--accent", accentFor(id));
+        button.addEventListener("pointerdown", onPieceDown);
+        button.addEventListener("pointermove", onPieceMove);
+        button.addEventListener("pointerup", onPieceUp);
+        button.addEventListener("pointercancel", onPieceCancel);
+        button.addEventListener("keydown", onPieceKey);
+        button.addEventListener("contextmenu", (event) => event.preventDefault());
+        pieceEls.set(id, button);
+        applyLabel(button, instrument, "tray");
+        return button;
+    }
+    function clearPieces() {
+        for (const el of pieceEls.values())
+            el.remove();
+        pieceEls.clear();
+    }
+    function buildSlots() {
+        const coach = coachEl;
+        const banner = bannerEl;
+        boardEl.replaceChildren(coach, banner);
+        slotEls = [];
+        const count = level().holdings.length;
+        for (let index = 0; index < count; index++) {
+            const slot = document.createElement("div");
+            slot.className = "slot";
+            slot.dataset.index = String(index);
+            slot.addEventListener("pointerup", onSlotUp);
+            slot.addEventListener("keydown", onSlotKey);
+            boardEl.appendChild(slot);
+            slotEls.push(slot);
+        }
+    }
+    function applyRect(slot, rect) {
+        slot.style.left = `${rect.x}px`;
+        slot.style.top = `${rect.y}px`;
+        slot.style.width = `${rect.w}px`;
+        slot.style.height = `${rect.h}px`;
+    }
+    function layoutBoard(bloom) {
+        const width = boardEl.clientWidth;
+        const height = boardEl.clientHeight;
+        if (width < 40 || height < 40)
+            return;
+        const percents = slotPercents();
+        if (slotEls.length !== percents.length)
+            buildSlots();
+        slotRects = layoutWeighted(percents, width, height);
+        slotRects.forEach((rect, index) => applyRect(slotEls[index], rect));
+        renderPieces(false);
+        if (bloom && !reduceMotion()) {
+            const token = ++layoutToken;
+            boardEl.classList.remove("bloom");
+            void boardEl.offsetWidth;
+            boardEl.classList.add("bloom");
+            busy = true;
+            window.setTimeout(() => {
+                if (alive && token === layoutToken && !drag)
+                    busy = false;
+            }, 220);
+        }
+    }
+    function renderPieces(animate) {
+        const instruments = catalog();
+        const ids = piecesOf(level()).map((piece) => piece.instrumentId);
+        for (const id of [...pieceEls.keys()]) {
+            if (!ids.includes(id)) {
+                pieceEls.get(id)?.remove();
+                pieceEls.delete(id);
+            }
+        }
+        const nodes = ids.map((id) => ensurePiece(id));
+        const first = animate ? new Map(nodes.map((node) => [node, node.getBoundingClientRect()])) : null;
+        trayLabel.textContent =
+            solved && tray.length > 0 ? "Left out" : tray.length === 0 ? "All placed" : "Investments";
+        const columns = tray.length <= 1 ? 1 : tray.length === 2 ? 2 : tray.length === 3 ? 3 : 4;
+        trayGrid.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
+        slotEls.forEach((slot, index) => {
+            const id = arrangement[index];
+            slot.classList.toggle("is-empty", !id);
+            slot.classList.remove("is-target");
+            if (!id) {
+                slot.tabIndex = 0;
+                slot.setAttribute("role", "button");
+                slot.setAttribute("aria-label", `Empty allocation ${index + 1}`);
+            }
+            else {
+                slot.tabIndex = -1;
+                slot.removeAttribute("role");
+                slot.removeAttribute("aria-label");
+            }
+        });
+        trayGrid.replaceChildren();
+        for (let index = 0; index < arrangement.length; index++) {
+            const id = arrangement[index];
+            if (!id)
+                continue;
+            const instrument = instruments.get(id);
+            const el = ensurePiece(id);
+            undock(el);
+            const rect = slotRects[index];
+            const mode = rect ? labelMode(rect.w, rect.h) : "short";
+            if (instrument)
+                applyLabel(el, instrument, mode);
+            if (solved && instrument)
+                stampWeight(el, instrument);
+            el.classList.toggle("is-selected", selectedId === id);
+            slotEls[index]?.appendChild(el);
+        }
+        for (const id of tray) {
+            const instrument = instruments.get(id);
+            const el = ensurePiece(id);
+            undock(el);
+            if (instrument)
+                applyLabel(el, instrument, "tray");
+            el.classList.toggle("is-selected", selectedId === id);
+            trayGrid.appendChild(el);
+        }
+        if (!first || reduceMotion())
+            return;
+        busy = true;
+        for (const el of nodes) {
+            const before = first.get(el);
+            if (!before || before.width < 2)
+                continue;
+            const after = el.getBoundingClientRect();
+            const dx = before.left - after.left;
+            const dy = before.top - after.top;
+            const sx = after.width > 0 ? before.width / after.width : 1;
+            const sy = after.height > 0 ? before.height / after.height : 1;
+            if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 && Math.abs(sx - 1) < 0.02 && Math.abs(sy - 1) < 0.02)
+                continue;
+            el.style.transformOrigin = "top left";
+            el.style.transition = "none";
+            el.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+        }
+        requestAnimationFrame(() => {
+            if (!alive)
+                return;
+            for (const el of nodes) {
+                if (!el.style.transform)
+                    continue;
+                el.style.transition = "transform 230ms cubic-bezier(0.2, 0.8, 0.2, 1)";
+                el.style.transform = "";
+            }
+        });
+        window.setTimeout(() => {
+            if (!alive)
+                return;
+            busy = false;
+            for (const el of nodes) {
+                el.style.transition = "";
+                el.style.transformOrigin = "";
+            }
+        }, 260);
+    }
+    function stampWeight(el, instrument) {
+        const pct = targetWeights(level().holdings).get(instrument.instrumentId);
+        if (pct == null)
+            return;
+        const badge = document.createElement("span");
+        badge.className = "weight";
+        badge.textContent = `${pct}%`;
+        el.append(badge);
+        el.setAttribute("aria-label", `${instrument.instrumentName}, ${pct} percent`);
+    }
+    function undock(el) {
+        el.classList.remove("is-floating");
+        el.style.position = "";
+        el.style.width = "";
+        el.style.height = "";
+        el.style.left = "";
+        el.style.top = "";
+        el.style.zIndex = "";
+        el.style.margin = "";
+    }
+    function moveToSlot(id, index) {
+        const from = locOf(id);
+        if (from.type === "slot" && from.index === index)
+            return false;
+        const occupant = arrangement[index] ?? null;
+        if (from.type === "slot")
+            arrangement[from.index] = occupant;
+        else
+            tray = tray.filter((item) => item !== id);
+        if (occupant && from.type === "tray")
+            tray.unshift(occupant);
+        arrangement[index] = id;
+        return true;
+    }
+    function moveToTray(id) {
+        const from = locOf(id);
+        if (from.type !== "slot")
+            return false;
+        arrangement[from.index] = null;
+        tray.push(id);
+        return true;
+    }
+    function swapIds(a, b) {
+        const la = locOf(a);
+        const lb = locOf(b);
+        if (la.type === "slot" && lb.type === "slot") {
+            arrangement[la.index] = b;
+            arrangement[lb.index] = a;
+            return;
+        }
+        if (la.type === "slot" && lb.type === "tray") {
+            arrangement[la.index] = b;
+            tray = tray.map((item) => (item === b ? a : item));
+            return;
+        }
+        if (la.type === "tray" && lb.type === "slot") {
+            arrangement[lb.index] = a;
+            tray = tray.map((item) => (item === a ? b : item));
+        }
+    }
+    function commit(kind) {
+        const previous = score;
+        score = computeScore();
+        const improved = score > previous + 0.0001;
+        const worsened = score < previous - 0.0001;
+        const perfect = isPerfectScore(score);
+        const justSolved = perfect && !solved;
+        if (perfect)
+            solved = true;
+        if (perfect)
+            playSfx(currentLevel === 10 ? "master" : "win");
+        else if (kind === "swap")
+            playSfx("swap");
+        else
+            playSfx("drop");
+        if (!perfect && improved)
+            playSfx("up");
+        if (!perfect && worsened)
+            playSfx("down");
+        paintSignal(perfect || improved ? "up" : worsened ? "down" : "same");
+        selectedId = null;
+        coachEl.hidden = true;
+        renderPieces(true);
+        renderHud();
+        if (justSolved)
+            beginVictory();
+        else
+            persist();
+    }
+    function beginVictory() {
+        solved = true;
+        highestCompleted = Math.max(highestCompleted, currentLevel);
+        boardEl.classList.add("is-perfect");
+        if (currentLevel === 10)
+            boardEl.classList.add("is-masterpiece");
+        burst(currentLevel === 10);
+        persist();
+        window.setTimeout(() => {
+            if (!alive)
+                return;
+            showVictory();
+        }, reduceMotion() ? 0 : 520);
+    }
+    function showVictory() {
+        const data = level();
+        const finale = currentLevel === 10;
+        victoryEl.hidden = false;
+        play.querySelector("[data-crown]").hidden = !finale;
+        play.querySelector("[data-victory-kicker]").textContent = finale ? "STRATEGY MASTER" : `LEVEL ${currentLevel} COMPLETE!`;
+        play.querySelector("[data-victory-title]").textContent = finale ? "YOU BEAT ALL 10 LEVELS." : "YOU CRACKED THE STRATEGY.";
+        play.querySelector("[data-mix]").textContent = strategyLine(data);
+        const next = play.querySelector("[data-next]");
+        const replay = play.querySelector("[data-replay]");
+        const portfolio = play.querySelector("[data-portfolio]");
+        const back = play.querySelector("[data-title]");
+        next.hidden = finale;
+        replay.hidden = !finale;
+        back.hidden = !finale;
+        const showPortfolio = data.metaFlat.isWealthPlan && data.metaFlat.modelNo != null;
+        portfolio.hidden = !showPortfolio;
+        (finale ? replay : next).focus();
+        syncChrome();
+    }
+    function hideVictory() {
+        victoryEl.hidden = true;
+        boardEl.classList.remove("is-perfect");
+    }
+    function burst(master) {
+        if (reduceMotion())
+            return;
+        const layer = document.createElement("div");
+        layer.className = "burst";
+        const count = master ? 16 : 9;
+        for (let i = 0; i < count; i++) {
+            const spark = document.createElement("i");
+            spark.className = i % 3 === 0 ? "spark round" : "spark";
+            const angle = (Math.PI * 2 * i) / count;
+            const dist = 70 + (i % 4) * 22;
+            spark.style.setProperty("--dx", `${Math.cos(angle) * dist}px`);
+            spark.style.setProperty("--dy", `${Math.sin(angle) * dist}px`);
+            layer.appendChild(spark);
+        }
+        boardEl.appendChild(layer);
+        window.setTimeout(() => layer.remove(), 800);
+    }
+    function showBanner() {
+        if (currentLevel !== 10 || solved) {
+            bannerEl.hidden = true;
+            return;
+        }
+        bannerEl.hidden = false;
+        bannerEl.classList.remove("show");
+        void bannerEl.offsetWidth;
+        bannerEl.classList.add("show");
+        window.setTimeout(() => {
+            if (alive)
+                bannerEl.hidden = true;
+        }, 1400);
+    }
+    function openPlay(bloom) {
+        start.hidden = true;
+        play.hidden = false;
+        hideVictory();
+        boardEl.classList.toggle("is-masterpiece", currentLevel === 10);
+        boardEl.classList.toggle("is-perfect", solved);
+        renderHud();
+        paintSignal("none");
+        layoutBoard(bloom && !solved);
+        if (solved) {
+            if (slotEls.length !== level().holdings.length)
+                layoutBoard(false);
+            renderPieces(false);
+            showVictory();
+        }
+        else {
+            showBanner();
+        }
+        syncChrome();
+    }
+    function showTitle() {
+        play.hidden = true;
+        start.hidden = false;
+        scrim.hidden = true;
+        renderStart();
+    }
+    function hitSlot(x, y) {
+        let insideIndex = null;
+        let insideArea = Infinity;
+        for (let index = 0; index < slotEls.length; index++) {
+            const rect = slotEls[index].getBoundingClientRect();
+            if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                const area = rect.width * rect.height;
+                if (area < insideArea) {
+                    insideArea = area;
+                    insideIndex = index;
+                }
+            }
+        }
+        if (insideIndex != null)
+            return insideIndex;
+        let bestIndex = null;
+        let bestDistance = 17;
+        for (let index = 0; index < slotEls.length; index++) {
+            const rect = slotEls[index].getBoundingClientRect();
+            if (rect.width > 78 && rect.height > 78)
+                continue;
+            const cx = Math.max(rect.left, Math.min(x, rect.right));
+            const cy = Math.max(rect.top, Math.min(y, rect.bottom));
+            const distance = Math.hypot(x - cx, y - cy);
+            if (distance <= 16 && distance < bestDistance) {
+                bestDistance = distance;
+                bestIndex = index;
+            }
+        }
+        return bestIndex;
+    }
+    function overTray(x, y) {
+        const rect = trayEl.getBoundingClientRect();
+        return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
+    function clearTargets() {
+        for (const slot of slotEls)
+            slot.classList.remove("is-target");
+        trayEl.classList.remove("is-target");
+    }
+    function liftPiece(event, el) {
+        if (!drag)
+            return;
+        const instrument = catalog().get(drag.id);
+        if (instrument)
+            applyLabel(el, instrument, "float");
+        const rect = el.getBoundingClientRect();
+        const width = Math.min(200, Math.max(148, rect.width));
+        const height = Math.min(96, Math.max(72, rect.height));
+        drag.ox = ((event.clientX - rect.left) * width) / Math.max(rect.width, 1);
+        drag.oy = ((event.clientY - rect.top) * height) / Math.max(rect.height, 1);
+        el.classList.add("is-floating");
+        el.style.position = "fixed";
+        el.style.width = `${width}px`;
+        el.style.height = `${height}px`;
+        el.style.zIndex = "40";
+        el.style.left = `${event.clientX - drag.ox}px`;
+        el.style.top = `${event.clientY - drag.oy}px`;
+        document.body.appendChild(el);
+        drag.lifted = true;
+        playSfx("pick");
+        const from = locOf(drag.id);
+        if (from.type === "slot")
+            slotEls[from.index]?.classList.add("is-empty");
+    }
+    function onPieceDown(event) {
+        if (event.pointerType === "mouse" && event.button !== 0)
+            return;
+        if (!canStart())
+            return;
+        unlockAudio();
+        const el = event.currentTarget;
+        const id = el.dataset.id;
+        if (!id)
+            return;
+        try {
+            el.setPointerCapture(event.pointerId);
+        }
+        catch {
+            /* synthetic events */
+        }
+        drag = {
+            id,
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            ox: 0,
+            oy: 0,
+            lifted: false,
+        };
+    }
+    function onPieceMove(event) {
+        if (!drag || event.pointerId !== drag.pointerId)
+            return;
+        const el = event.currentTarget;
+        const distance = Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY);
+        if (!drag.lifted && distance > 8)
+            liftPiece(event, el);
+        if (!drag.lifted)
+            return;
+        event.preventDefault();
+        el.style.left = `${event.clientX - drag.ox}px`;
+        el.style.top = `${event.clientY - drag.oy}px`;
+        clearTargets();
+        const slot = hitSlot(event.clientX, event.clientY);
+        if (slot != null)
+            slotEls[slot]?.classList.add("is-target");
+        else if (overTray(event.clientX, event.clientY))
+            trayEl.classList.add("is-target");
+    }
+    function finishDrag(x, y) {
+        if (!drag)
+            return;
+        const id = drag.id;
+        const lifted = drag.lifted;
+        drag = null;
+        clearTargets();
+        if (!lifted) {
+            handleTap(id);
+            return;
+        }
+        const slot = hitSlot(x, y);
+        const from = locOf(id);
+        if (slot != null) {
+            const occupant = arrangement[slot];
+            if (occupant === id) {
+                renderPieces(true);
+                playSfx("drop");
+                return;
+            }
+            const swapping = occupant != null && from.type === "slot";
+            moveToSlot(id, slot);
+            commit(swapping ? "swap" : "drop");
+            return;
+        }
+        if (overTray(x, y) && from.type === "slot") {
+            moveToTray(id);
+            commit("return");
+            return;
+        }
+        renderPieces(true);
+        playSfx("drop");
+    }
+    function onPieceUp(event) {
+        if (!drag || event.pointerId !== drag.pointerId)
+            return;
+        finishDrag(event.clientX, event.clientY);
+    }
+    function onPieceCancel(event) {
+        if (!drag || event.pointerId !== drag.pointerId)
+            return;
+        drag = null;
+        clearTargets();
+        renderPieces(true);
+    }
+    function handleTap(id) {
+        if (!canStart())
+            return;
+        unlockAudio();
+        if (selectedId && selectedId !== id) {
+            const a = locOf(selectedId);
+            const b = locOf(id);
+            if (a.type === "tray" && b.type === "tray") {
+                selectedId = id;
+                renderPieces(false);
+                playSfx("pick");
+                return;
+            }
+            const kind = a.type === "slot" && b.type === "slot" ? "swap" : "drop";
+            swapIds(selectedId, id);
+            selectedId = null;
+            commit(kind);
+            return;
+        }
+        selectedId = selectedId === id ? null : id;
+        playSfx(selectedId ? "pick" : "drop");
+        renderPieces(false);
+    }
+    function handleTapSlot(index) {
+        if (!canStart() || !selectedId)
+            return;
+        const occupant = arrangement[index];
+        if (occupant === selectedId) {
+            selectedId = null;
+            renderPieces(false);
+            return;
+        }
+        const from = locOf(selectedId);
+        const swapping = occupant != null && from.type === "slot";
+        moveToSlot(selectedId, index);
+        selectedId = null;
+        commit(swapping ? "swap" : "drop");
+    }
+    function onSlotUp(event) {
+        if (drag)
+            return;
+        if (event.target !== event.currentTarget)
+            return;
+        const slot = event.currentTarget;
+        const index = Number(slot.dataset.index);
+        if (Number.isNaN(index))
+            return;
+        handleTapSlot(index);
+    }
+    function onPieceKey(event) {
+        if (event.key !== "Enter" && event.key !== " ")
+            return;
+        event.preventDefault();
+        const el = event.currentTarget;
+        if (!el.dataset.id)
+            return;
+        handleTap(el.dataset.id);
+    }
+    function onSlotKey(event) {
+        if (event.key !== "Enter" && event.key !== " ")
+            return;
+        event.preventDefault();
+        const slot = event.currentTarget;
+        handleTapSlot(Number(slot.dataset.index));
+    }
+    function applySolution() {
+        const data = level();
+        const target = targetWeights(data.holdings);
+        const slots = slotPercents();
+        const remaining = data.holdings.map((holding) => holding.instrumentId);
+        arrangement = slots.map((weight) => {
+            const index = remaining.findIndex((id) => target.get(id) === weight);
+            if (index < 0)
+                return null;
+            const id = remaining[index];
+            remaining.splice(index, 1);
+            return id;
+        });
+        const used = new Set(arrangement.filter((id) => id != null));
+        tray = piecesOf(data)
+            .map((piece) => piece.instrumentId)
+            .filter((id) => !used.has(id));
+        score = computeScore();
+        solved = isPerfectScore(score);
+    }
+    function jumpTo(levelNumber) {
+        if (levelNumber < 1 || levelNumber > maxOpenLevel())
+            return;
+        if (levelNumber === currentLevel || (isMaster() && levelNumber === 10)) {
+            currentLevel = levelNumber;
+            enterFromTitle();
+            return;
+        }
+        unlockAudio();
+        currentLevel = levelNumber;
+        solved = false;
+        selectedId = null;
+        freshArrangement(levelNumber);
+        score = 0;
+        clearPieces();
+        slotEls = [];
+        boardEl.classList.remove("is-perfect", "is-masterpiece");
+        hideVictory();
+        persist();
+        openPlay(true);
+    }
+    function enterFromTitle() {
+        unlockAudio();
+        if (isMaster() && currentLevel === 10) {
+            currentLevel = 10;
+            if (!placementFits(10, { version: 1, currentLevel: 10, highestCompleted, soundEnabled, arrangement, tray }) || !isPerfectScore(computeScore())) {
+                freshArrangement(10);
+                applySolution();
+            }
+            else {
+                score = computeScore();
+                solved = true;
+            }
+            highestCompleted = 10;
+            solved = true;
+            score = computeScore();
+            persist();
+            openPlay(false);
+            return;
+        }
+        if (arrangement.length !== level().holdings.length)
+            freshArrangement(currentLevel);
+        score = computeScore();
+        solved = isPerfectScore(score);
+        openPlay(true);
+    }
+    function goNext() {
+        if (currentLevel >= 10)
+            return;
+        highestCompleted = Math.max(highestCompleted, currentLevel);
+        currentLevel += 1;
+        solved = false;
+        selectedId = null;
+        freshArrangement(currentLevel);
+        score = 0;
+        solved = false;
+        hideVictory();
+        boardEl.classList.remove("is-perfect", "is-masterpiece");
+        clearPieces();
+        slotEls = [];
+        persist();
+        openPlay(true);
+    }
+    function replay() {
+        clearSave();
+        currentLevel = 1;
+        highestCompleted = 0;
+        solved = false;
+        selectedId = null;
+        freshArrangement(1);
+        score = 0;
+        clearPieces();
+        slotEls = [];
+        boardEl.classList.remove("is-perfect", "is-masterpiece");
+        hideVictory();
+        persist();
+        openPlay(true);
+    }
+    function resetAll() {
+        clearSave();
+        currentLevel = 1;
+        highestCompleted = 0;
+        solved = false;
+        selectedId = null;
+        soundEnabled = true;
+        setSoundEnabled(true);
+        freshArrangement(1);
+        score = 0;
+        clearPieces();
+        slotEls = [];
+        scrim.hidden = true;
+        showTitle();
+    }
+    function showToast(message) {
+        toast.hidden = false;
+        toast.textContent = message;
+        window.setTimeout(() => {
+            if (alive)
+                toast.hidden = true;
+        }, 2200);
+    }
+    shell.addEventListener("pointerdown", () => unlockAudio());
+    shell.addEventListener("click", (event) => {
+        const target = event.target;
+        if (target.closest("[data-play]")) {
+            enterFromTitle();
+            return;
+        }
+        const jump = target.closest("[data-jump]");
+        if (jump) {
+            jumpTo(Number(jump.dataset.jump));
+            return;
+        }
+        if (target.closest("[data-home]")) {
+            showTitle();
+            return;
+        }
+        if (target.closest("[data-sound]")) {
+            unlockAudio();
+            soundEnabled = !soundEnabled;
+            setSoundEnabled(soundEnabled);
+            if (soundEnabled)
+                playSfx("pick");
+            persist();
+            syncChrome();
+            return;
+        }
+        if (target.closest("[data-reset]")) {
+            scrim.hidden = false;
+            scrim.querySelector("[data-cancel]")?.focus();
+            return;
+        }
+        if (target.closest("[data-cancel]")) {
+            scrim.hidden = true;
+            return;
+        }
+        if (target.closest("[data-confirm]")) {
+            resetAll();
+            return;
+        }
+        if (target.closest("[data-next]")) {
+            goNext();
+            return;
+        }
+        if (target.closest("[data-replay]")) {
+            replay();
+            return;
+        }
+        if (target.closest("[data-title]")) {
+            showTitle();
+            return;
+        }
+        if (target.closest("[data-portfolio]")) {
+            const model = level().metaFlat.modelNo;
+            viewPortfolio(model);
+            persist();
+            showToast("Saved. This opens the wealth plan in Neptoon.");
+        }
+    });
+    const onKey = (event) => {
+        if (event.key === "Escape" && !scrim.hidden)
+            scrim.hidden = true;
+    };
+    window.addEventListener("keydown", onKey);
+    const onHide = () => {
+        if (document.visibilityState === "hidden")
+            persist();
+        else
+            resumeAudio();
+    };
+    document.addEventListener("visibilitychange", onHide);
+    window.addEventListener("pagehide", persist);
+    const resize = () => {
+        if (play.hidden || drag)
+            return;
+        layoutBoard(false);
+    };
+    const observer = new ResizeObserver(() => resize());
+    observer.observe(boardEl);
+    window.__neptoon = {
+        score: () => score,
+        level: () => currentLevel,
+        signal: () => signalName(score),
+        solved: () => solved,
+        arrangement: () => arrangement.slice(),
+        tray: () => tray.slice(),
+        highest: () => highestCompleted,
+        drop: (instrumentId, target) => {
+            if (play.hidden)
+                enterFromTitle();
+            busy = false;
+            solved = false;
+            victoryEl.hidden = true;
+            boardEl.classList.remove("is-perfect");
+            if (target === "tray") {
+                if (locOf(instrumentId).type === "slot")
+                    moveToTray(instrumentId);
+            }
+            else {
+                moveToSlot(instrumentId, target);
+            }
+            selectedId = null;
+            commit(target === "tray" ? "return" : "drop");
+        },
+    };
+    renderStart();
+    paintSignal("none");
+    return {
+        destroy() {
+            alive = false;
+            observer.disconnect();
+            window.removeEventListener("keydown", onKey);
+            document.removeEventListener("visibilitychange", onHide);
+            window.removeEventListener("pagehide", persist);
+            if (window.__neptoon)
+                delete window.__neptoon;
+            root.replaceChildren();
+        },
+    };
+}
+function clampLevel(value) {
+    if (!Number.isFinite(value))
+        return 1;
+    return Math.min(10, Math.max(1, Math.round(value)));
+}
+function clampCompleted(value) {
+    if (!Number.isFinite(value))
+        return 0;
+    return Math.min(10, Math.max(0, Math.round(value)));
+}
+
+mountGame(document.getElementById("game"));
