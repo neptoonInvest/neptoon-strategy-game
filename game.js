@@ -1426,12 +1426,34 @@ for (const id of tray) {
             showTitle();
             return;
         }
-        if (target.closest("[data-portfolio]")) {
-            const model = level().metaFlat.modelNo;
-            viewPortfolio(model);
-            persist();
-            showToast(t("portfolioSaved"));
-        }
+
+if (target.closest("[data-portfolio]")) {
+
+  const current = level();
+  const modelNo = Number(current.metaFlat.modelNo);
+
+  if(
+    !current.metaFlat.sendToMyWealth ||
+    !Number.isInteger(modelNo) ||
+    modelNo <= 0
+  ){
+    return;
+  }
+
+  window.dispatchEvent(
+    new CustomEvent("neptoon:strategy-to-mywealth", {
+      detail: {
+        level: current.level,
+        modelNo
+      }
+    })
+  );
+
+  return;
+}
+
+
+
     });
     const onKey = (event) => {
         if (event.key === "Escape" && !scrim.hidden)
