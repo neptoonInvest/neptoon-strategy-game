@@ -494,8 +494,9 @@ export function strategyLine(level) {
 
 
 export const GAME_LEVELS = [
-  level: 1,
-  metaFlat: {
+  {
+    level: 1,
+    metaFlat: {
     title: "The First Investment",
     titleDa: "Den første investering",
     description: "One stock. One allocation.",
