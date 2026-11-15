@@ -1052,3 +1052,7 @@ button:focus-visible,
 @media (prefers-reduced-motion: reduce) {
   .allocation-segment { transition: none; }
 }
+
+/* STRATEGY RULE FEEDBACK — verified against executable constraints */
+.mandate-rules li.is-met { color: #E4F3FC; }
+.mandate-rules li.is-met::marker { color: #6EC6ED; }
