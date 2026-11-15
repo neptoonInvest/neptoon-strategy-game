@@ -4,6 +4,7 @@ import { levelByNumber, piecesOf, strategyLine } from "./levels.js";
 import { viewPortfolio } from "./portfolio.js";
 import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, evaluateStrategy, targetWeights, } from "./score.js";
 import { clearSave, loadSave, writeSave } from "./storage.js";
+import { getGameText } from "./i18n.js";
 function getColor(classNo) {
     const n = Number(classNo);
     if (n === 100) return "#D94B55";
@@ -43,7 +44,51 @@ function iconCrown() {
 function iconMark() {
     return `<svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="14" height="18" fill="#6EC6ED"/><rect x="17" y="1" width="14" height="10" fill="#4E79BD"/><rect x="17" y="13" width="14" height="6" fill="#E4F3FC"/><rect x="1" y="21" width="30" height="10" fill="#4E79BD"/></svg>`;
 }
-export function mountGame(root) {
+// Extra interface strings supplement the shared i18n.js dictionary.
+const GAME_EXTRA_TEXT = {
+    en: {
+        display: "KNOW YOUR<br>STRATEGIES", tag: "10 LEVELS. ONE MASTERPIECE.",
+        subtitle: "Drag the investments. Crack the strategy.",
+        masterLine: "You beat all 10 levels.", trackCaption: "Tap a level to replay it.",
+        resetProgress: "Reset progress", backToLevels: "Back to levels",
+        soundOn: "Sound on", soundOff: "Sound off", level: "LEVEL",
+        leftOut: "Left out", allPlacedLabel: "All placed",
+        startOver: "Start over?", resetMessage: "Your level progress will be cleared.",
+        cancel: "CANCEL", reset: "RESET", strategyMaster: "STRATEGY MASTER",
+        beatAll: "YOU BEAT ALL 10 LEVELS.", closer: "Closer.",
+        keepAdjusting: "Keep adjusting.", emptyAllocation: "Empty allocation",
+        satisfied: "Satisfied", percent: "percent", portfolioSaved: "Saved. This opens the wealth plan in Neptoon.",
+        relive: "RELIVE THE FINALE", continueLevel: "CONTINUE LEVEL", playLevel: "PLAY LEVEL",
+        trackMaster: "Strategy master. All ten levels complete. Tap any level to replay it.",
+        trackContinue: "Continue level {n}. Level 10 is the finale.",
+        trackNew: "Ten levels. Level 10 is locked until you reach it.",
+        complete: "complete", inProgress: "in progress"
+    },
+    da: {
+        display: "KEND DINE<br>STRATEGIER", tag: "10 NIVEAUER. ÉT MESTERVÆRK.",
+        subtitle: "Træk investeringerne på plads. Løs strategien.",
+        masterLine: "Du gennemførte alle 10 niveauer.", trackCaption: "Tryk på et niveau for at spille igen.",
+        resetProgress: "Nulstil fremskridt", backToLevels: "Tilbage til niveauerne",
+        soundOn: "Lyd til", soundOff: "Lyd fra", level: "NIVEAU",
+        leftOut: "Fravalgt", allPlacedLabel: "Alle placeret",
+        startOver: "Starte forfra?", resetMessage: "Dine fremskridt på niveauerne bliver slettet.",
+        cancel: "ANNULLER", reset: "NULSTIL", strategyMaster: "STRATEGIMESTER",
+        beatAll: "DU GENNEMFØRTE ALLE 10 NIVEAUER.", closer: "Tættere på.",
+        keepAdjusting: "Prøv en anden fordeling.", emptyAllocation: "Tom position",
+        satisfied: "Opfyldt", percent: "procent", portfolioSaved: "Gemt. Formueplanen åbnes i Neptoon.",
+        relive: "GENOPLEV FINALEN", continueLevel: "FORTSÆT NIVEAU", playLevel: "SPIL NIVEAU",
+        trackMaster: "Strategimester. Alle ti niveauer er gennemført. Tryk på et niveau for at spille igen.",
+        trackContinue: "Fortsæt niveau {n}. Niveau 10 er finalen.",
+        trackNew: "Ti niveauer. Niveau 10 låses op, når du når dertil.",
+        complete: "gennemført", inProgress: "i gang"
+    }
+};
+
+export function mountGame(root, options = {}) {
+    const initialLang = options.lang || new URLSearchParams(window.location.search).get("lang") || document.documentElement.lang || "en";
+    let lang = String(initialLang).toLowerCase().startsWith("da") ? "da" : "en";
+    const t = (key) => getGameText(lang)[key] ?? GAME_EXTRA_TEXT[lang][key] ?? key;
+    const fmt = (key, n) => t(key).replace("{n}", String(n));
     let alive = true;
     let currentLevel = 1;
     let highestCompleted = 0;
@@ -212,6 +257,34 @@ export function mountGame(root) {
     toast.hidden = true;
     toast.setAttribute("role", "status");
     shell.append(start, play, scrim, toast);
+    function renderStaticText() {
+        root.lang = lang;
+        start.querySelector(".display").innerHTML = t("display");
+        start.querySelector(".tag").textContent = t("tag");
+        start.querySelector(".subtitle").textContent = t("subtitle");
+        start.querySelector(".master-line").textContent = t("masterLine");
+        start.querySelector("[data-track-caption]").textContent = t("trackCaption");
+        start.querySelector("[data-reset]").textContent = t("resetProgress");
+        play.querySelector("[data-home]").setAttribute("aria-label", t("backToLevels"));
+        play.querySelector(".signal-kicker").textContent = t("strategySignal");
+        play.querySelector(".mandate-title").textContent = t("strategy");
+        play.querySelector(".allocation-header span:first-child").textContent = t("allocation");
+        for (const key of ["stocks", "equity", "bonds", "gold", "bitcoin"]) {
+            const item = play.querySelector(`.allocation-item.${key} small`);
+            if (item) item.textContent = t(key === "equity" ? "funds" : key);
+        }
+        coachEl.textContent = t("dragInstruction");
+        bannerEl.textContent = t("masterpiece");
+        play.querySelector("[data-next]").textContent = t("nextLevel");
+        play.querySelector("[data-replay]").textContent = t("replay");
+        play.querySelector("[data-portfolio]").textContent = t("viewPortfolio");
+        play.querySelector("[data-title]").textContent = t("backToTitle");
+        scrim.querySelector("#reset-title").textContent = t("startOver");
+        scrim.querySelector(".modal p").textContent = t("resetMessage");
+        scrim.querySelector("[data-cancel]").textContent = t("cancel");
+        scrim.querySelector("[data-confirm]").textContent = t("reset");
+        for (const button of play.querySelectorAll("[data-reset]")) button.setAttribute("aria-label", t("resetProgress"));
+    }
     const boardEl = play.querySelector("[data-board]");
     const trayEl = play.querySelector("[data-tray]");
     const trayGrid = play.querySelector("[data-tray-grid]");
@@ -313,7 +386,7 @@ export function mountGame(root) {
         root.dataset.solved = solved ? "true" : "false";
         for (const button of shell.querySelectorAll("[data-sound]")) {
             button.setAttribute("aria-pressed", soundEnabled ? "true" : "false");
-            button.setAttribute("aria-label", soundEnabled ? "Sound on" : "Sound off");
+            button.setAttribute("aria-label", soundEnabled ? t("soundOn") : t("soundOff"));
             button.innerHTML = iconSound(soundEnabled);
         }
     }
@@ -344,8 +417,8 @@ export function mountGame(root) {
                 const button = item;
                 button.type = "button";
                 button.dataset.jump = String(n);
-                const state = done ? ", complete" : n === currentLevel ? ", in progress" : "";
-                button.setAttribute("aria-label", `Level ${n}${state}`);
+                const state = done ? `, ${t("complete")}` : n === currentLevel ? `, ${t("inProgress")}` : "";
+                button.setAttribute("aria-label", `${t("level")} ${n}${state}`);
                 if (n === currentLevel)
                     button.setAttribute("aria-current", "step");
             }
@@ -362,19 +435,19 @@ export function mountGame(root) {
         const resetBtn = start.querySelector("[data-reset]");
         const trackText = start.querySelector("[data-track-text]");
         if (isMaster() && (currentLevel === 10 || solved)) {
-            button.textContent = "RELIVE THE FINALE";
+            button.textContent = t("relive");
             masterLine.hidden = false;
-            trackText.textContent = "Strategy master. All ten levels complete. Tap any level to replay it.";
+            trackText.textContent = t("trackMaster");
         }
         else if (isReturning()) {
-            button.textContent = `CONTINUE LEVEL ${currentLevel}`;
+            button.textContent = `${t("continueLevel")} ${currentLevel}`;
             masterLine.hidden = true;
-            trackText.textContent = `Continue level ${currentLevel}. Level 10 is the finale.`;
+            trackText.textContent = fmt("trackContinue", currentLevel);
         }
         else {
-            button.textContent = "PLAY LEVEL 1";
+            button.textContent = `${t("playLevel")} 1`;
             masterLine.hidden = true;
-            trackText.textContent = "Ten levels. Level 10 is locked until you reach it.";
+            trackText.textContent = t("trackNew");
         }
         resetBtn.hidden = !isReturning() && !isMaster();
         const caption = start.querySelector("[data-track-caption]");
@@ -487,7 +560,7 @@ export function mountGame(root) {
     if (totalLabel) {
 
         totalLabel.textContent =
-            `${Math.round(allocated)}% allocated`;
+            `${Math.round(allocated)}% ${t("allocated")}`;
 
     }
 
@@ -496,19 +569,19 @@ export function mountGame(root) {
 
     function renderHud() {
         const data = level();
-        play.querySelector("[data-level-kicker]").textContent = `LEVEL ${currentLevel}`;
-        play.querySelector("[data-level-title]").textContent = data.metaFlat.title;
+        play.querySelector("[data-level-kicker]").textContent = `${t("level")} ${currentLevel}`;
+        play.querySelector("[data-level-title]").textContent = (lang === "da" ? data.metaFlat.titleDa : data.metaFlat.title) || data.metaFlat.title;
         const mandate = play.querySelector("[data-mandate-rules]");
         if (mandate) {
             mandate.replaceChildren();
-            for (const rule of (data.metaFlat.rules || [])) {
+            for (const rule of ((lang === "da" ? data.metaFlat.rulesDa : data.metaFlat.rules) || data.metaFlat.rules || [])) {
                 const li = document.createElement("li");
                 li.textContent = rule;
                 const result = evaluateStrategy(data, slotPercents(), arrangement);
                 const ruleIndex = mandate.children.length;
                 if (result.passed[ruleIndex]) {
                     li.classList.add("is-met");
-                    li.setAttribute("aria-label", `Satisfied: ${rule}`);
+                    li.setAttribute("aria-label", `${t("satisfied")}: ${rule}`);
                 }
                 mandate.appendChild(li);
             }
@@ -520,14 +593,14 @@ export function mountGame(root) {
     function paintSignal(flash) {
         const name = signalName(score);
         signalEl.dataset.state = name;
-        wordEl.textContent = SIGNAL_LABEL[name];
+        wordEl.textContent = t(name);
         ringEl.style.strokeDashoffset = String(100 * (1 - Math.max(0, Math.min(1, score))));
         signalEl.classList.remove("up", "down");
         if (flash === "up" || flash === "down") {
             void signalEl.offsetWidth;
             signalEl.classList.add(flash);
             signalLive.textContent =
-                flash === "up" ? `${SIGNAL_LABEL[name]}. Closer.` : `${SIGNAL_LABEL[name]}. Keep adjusting.`;
+                flash === "up" ? `${t(name)}. ${t("closer")}` : `${t(name)}. ${t("keepAdjusting")}`;
         }
         else if (flash === "none") {
             signalLive.textContent = "";
@@ -665,7 +738,7 @@ button.style.setProperty(
         const nodes = ids.map((id) => ensurePiece(id));
         const first = animate ? new Map(nodes.map((node) => [node, node.getBoundingClientRect()])) : null;
         trayLabel.textContent =
-            solved && tray.length > 0 ? "Left out" : tray.length === 0 ? "All placed" : "Investments";
+            solved && tray.length > 0 ? t("leftOut") : tray.length === 0 ? t("allPlacedLabel") : t("investments");
         const columns = tray.length <= 1 ? 1 : tray.length === 2 ? 2 : tray.length === 3 ? 3 : 4;
         trayGrid.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
         slotEls.forEach((slot, index) => {
@@ -675,7 +748,7 @@ button.style.setProperty(
             if (!id) {
                 slot.tabIndex = 0;
                 slot.setAttribute("role", "button");
-                slot.setAttribute("aria-label", `Empty allocation ${index + 1}`);
+                slot.setAttribute("aria-label", `${t("emptyAllocation")} ${index + 1}`);
             }
             else {
                 slot.tabIndex = -1;
@@ -784,7 +857,7 @@ for (const id of tray) {
         badge.className = "weight";
         badge.textContent = `${pct}%`;
         el.append(badge);
-        el.setAttribute("aria-label", `${instrument.instrumentName}, ${pct} percent`);
+        el.setAttribute("aria-label", `${instrument.instrumentName}, ${pct} ${t("percent")}`);
     }
     function undock(el) {
         el.classList.remove("is-floating");
@@ -884,8 +957,8 @@ for (const id of tray) {
         const finale = currentLevel === 10;
         victoryEl.hidden = false;
         play.querySelector("[data-crown]").hidden = !finale;
-        play.querySelector("[data-victory-kicker]").textContent = finale ? "STRATEGY MASTER" : `LEVEL ${currentLevel} COMPLETE!`;
-        play.querySelector("[data-victory-title]").textContent = finale ? "YOU BEAT ALL 10 LEVELS." : "YOU CRACKED THE STRATEGY.";
+        play.querySelector("[data-victory-kicker]").textContent = finale ? t("strategyMaster") : `${t("level")} ${currentLevel} ${lang === "da" ? "GENNEMFØRT!" : "COMPLETE!"}`;
+        play.querySelector("[data-victory-title]").textContent = finale ? t("beatAll") : t("cracked");
         play.querySelector("[data-mix]").textContent = strategyLine(data);
         const next = play.querySelector("[data-next]");
         const replay = play.querySelector("[data-replay]");
@@ -1357,7 +1430,7 @@ for (const id of tray) {
             const model = level().metaFlat.modelNo;
             viewPortfolio(model);
             persist();
-            showToast("Saved. This opens the wealth plan in Neptoon.");
+            showToast(t("portfolioSaved"));
         }
     });
     const onKey = (event) => {
@@ -1388,6 +1461,7 @@ for (const id of tray) {
         arrangement: () => arrangement.slice(),
         tray: () => tray.slice(),
         highest: () => highestCompleted,
+        language: () => lang,
         drop: (instrumentId, target) => {
             if (play.hidden)
                 enterFromTitle();
@@ -1406,9 +1480,23 @@ for (const id of tray) {
             commit(target === "tray" ? "return" : "drop");
         },
     };
+    renderStaticText();
     renderStart();
     paintSignal("none");
+    function setLanguage(nextLang) {
+        const normalized = String(nextLang).toLowerCase().startsWith("da") ? "da" : "en";
+        if (normalized === lang) return;
+        lang = normalized;
+        renderStaticText();
+        renderStart();
+        renderHud();
+        paintSignal("none");
+        renderPieces(false);
+        if (!victoryEl.hidden) showVictory();
+    }
     return {
+        setLanguage,
+        getLanguage: () => lang,
         destroy() {
             alive = false;
             observer.disconnect();
@@ -1432,4 +1520,5 @@ function clampCompleted(value) {
     return Math.min(10, Math.max(0, Math.round(value)));
 }
 
-mountGame(document.getElementById("game"));
+const standaloneRoot = document.getElementById("game");
+if (standaloneRoot) mountGame(standaloneRoot);
