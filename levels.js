@@ -788,7 +788,6 @@ export function levelByNumber(level) {
   if (!found) throw new Error(`Missing level ${level}`);
   return found;
 }
-
 export function piecesOf(level) {
   return [...level.holdings, ...(level.decoys ?? [])];
 }
