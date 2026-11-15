@@ -2,7 +2,7 @@ import { playSfx, resumeAudio, setSoundEnabled, unlockAudio } from "./audio.js";
 import { layoutWeighted } from "./layout.js";
 import { levelByNumber, piecesOf, strategyLine } from "./levels.js";
 import { viewPortfolio } from "./portfolio.js";
-import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, similarityScore, targetWeights, } from "./score.js";
+import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, evaluateStrategy, targetWeights, } from "./score.js";
 import { clearSave, loadSave, writeSave } from "./storage.js";
 function getColor(classNo) {
     const n = Number(classNo);
@@ -222,7 +222,7 @@ export function mountGame(root) {
         return level().holdings.map((holding) => percentOf(holding.weight));
     }
     function computeScore() {
-        return similarityScore(slotPercents(), arrangement, targetWeights(level().holdings));
+        return evaluateStrategy(level(), slotPercents(), arrangement).score;
     }
     function freshArrangement(levelNumber) {
         const data = levelByNumber(levelNumber);
@@ -386,6 +386,12 @@ export function mountGame(root) {
             for (const rule of (data.metaFlat.rules || [])) {
                 const li = document.createElement("li");
                 li.textContent = rule;
+                const result = evaluateStrategy(data, slotPercents(), arrangement);
+                const ruleIndex = mandate.children.length;
+                if (result.passed[ruleIndex]) {
+                    li.classList.add("is-met");
+                    li.setAttribute("aria-label", `Satisfied: ${rule}`);
+                }
                 mandate.appendChild(li);
             }
         }
