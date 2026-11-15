@@ -4,12 +4,14 @@ import { levelByNumber, piecesOf, strategyLine } from "./levels.js";
 import { viewPortfolio } from "./portfolio.js";
 import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, similarityScore, targetWeights, } from "./score.js";
 import { clearSave, loadSave, writeSave } from "./storage.js";
-const ACCENTS = ["#6EC6ED", "#4E79BD", "#9FD4F4", "#7AA2D6", "#D7F1FC", "#3E6AAB"];
-function accentFor(id) {
-    let hash = 0;
-    for (let i = 0; i < id.length; i++)
-        hash = (hash * 33 + id.charCodeAt(i)) >>> 0;
-    return ACCENTS[hash % ACCENTS.length];
+function getColor(classNo) {
+    const n = Number(classNo);
+    if (n === 100) return "#D94B55";
+    if (n === 22) return "#D4AF37";
+    if (n === 23) return "#C0C0C0";
+    if (n >= 5 && n <= 20) return "#4E79BD";
+    if (n >= 1 && n <= 4) return "#8B98AA";
+    return "#6EC6ED";
 }
 function shuffle(list, seed) {
     const copy = list.slice();
@@ -114,7 +116,30 @@ export function mountGame(root) {
         <p class="signal-word" data-word>Searching</p>
       </div>
     </div>
-    <p class="clue" data-clue></p>
+    <div class="game-mandate" data-mandate>
+      <p class="mandate-title">YOUR STRATEGY</p>
+      <ul class="mandate-rules" data-mandate-rules></ul>
+    </div>
+    <div class="allocation-monitor">
+      <div class="allocation-header">
+        <span>YOUR ALLOCATION</span>
+        <span data-allocation-total>0% allocated</span>
+      </div>
+      <div class="allocation-bar" data-allocation-bar>
+        <div class="allocation-segment stocks" data-allocation-stocks></div>
+        <div class="allocation-segment equity" data-allocation-equity></div>
+        <div class="allocation-segment bonds" data-allocation-bonds></div>
+        <div class="allocation-segment gold" data-allocation-gold></div>
+        <div class="allocation-segment bitcoin" data-allocation-bitcoin></div>
+      </div>
+      <div class="allocation-legend">
+        <span><i class="stocks"></i>Stocks</span>
+        <span><i class="equity"></i>Funds</span>
+        <span><i class="bonds"></i>Bonds</span>
+        <span><i class="gold"></i>Gold</span>
+        <span><i class="bitcoin"></i>Bitcoin</span>
+      </div>
+    </div>
     <p class="sr-only" data-signal-live></p>
     <div class="stage">
       <div class="board" data-board>
@@ -326,11 +351,44 @@ export function mountGame(root) {
         renderTrack(track, true);
         syncChrome();
     }
+    function renderAllocationMonitor() {
+        const weights = { stocks: 0, equity: 0, bonds: 0, gold: 0, bitcoin: 0 };
+        const instruments = catalog();
+        const slots = slotPercents();
+        let allocated = 0;
+        arrangement.forEach((id, index) => {
+            if (id == null) return;
+            const weight = Number(slots[index]) || 0;
+            allocated += weight;
+            const instrument = instruments.get(id);
+            if (!instrument) return;
+            const n = Number(instrument.classNo);
+            if (n === 100) weights.stocks += weight;
+            else if (n === 22) weights.gold += weight;
+            else if (n === 23) weights.bitcoin += weight;
+            else if (n >= 5 && n <= 20) weights.equity += weight;
+            else if (n >= 1 && n <= 4) weights.bonds += weight;
+        });
+        for (const key of Object.keys(weights)) {
+            const segment = play.querySelector(`[data-allocation-${key}]`);
+            if (segment) segment.style.width = `${Math.max(0, Math.min(100, weights[key]))}%`;
+        }
+        const label = play.querySelector("[data-allocation-total]");
+        if (label) label.textContent = `${Math.round(allocated)}% allocated`;
+    }
     function renderHud() {
         const data = level();
         play.querySelector("[data-level-kicker]").textContent = `LEVEL ${currentLevel}`;
         play.querySelector("[data-level-title]").textContent = data.metaFlat.title;
-        play.querySelector("[data-clue]").textContent = data.metaFlat.description;
+        const mandate = play.querySelector("[data-mandate-rules]");
+        if (mandate) {
+            mandate.replaceChildren();
+            for (const rule of (data.metaFlat.rules || [])) {
+                const li = document.createElement("li");
+                li.textContent = rule;
+                mandate.appendChild(li);
+            }
+        }
         const ticks = play.querySelector("[data-ticks]");
         renderTrack(ticks, false);
         coachEl.hidden = !(currentLevel === 1 && !solved && arrangement.every((id) => id == null));
@@ -405,7 +463,7 @@ export function mountGame(root) {
         button.type = "button";
         button.className = "piece";
         button.dataset.id = id;
-        button.style.setProperty("--accent", accentFor(id));
+        button.style.setProperty("--accent", getColor(instrument.classNo));
         button.addEventListener("pointerdown", onPieceDown);
         button.addEventListener("pointermove", onPieceMove);
         button.addEventListener("pointerup", onPieceUp);
@@ -506,10 +564,10 @@ export function mountGame(root) {
             undock(el);
             const rect = slotRects[index];
             const mode = rect ? labelMode(rect.w, rect.h) : "short";
-            if (instrument)
+            if (instrument) {
                 applyLabel(el, instrument, mode);
-            if (solved && instrument)
-                stampWeight(el, instrument);
+                stampWeight(el, instrument, index);
+            }
             el.classList.toggle("is-selected", selectedId === id);
             slotEls[index]?.appendChild(el);
         }
@@ -522,6 +580,7 @@ export function mountGame(root) {
             el.classList.toggle("is-selected", selectedId === id);
             trayGrid.appendChild(el);
         }
+        renderAllocationMonitor();
         if (!first || reduceMotion())
             return;
         busy = true;
@@ -560,10 +619,9 @@ export function mountGame(root) {
             }
         }, 260);
     }
-    function stampWeight(el, instrument) {
-        const pct = targetWeights(level().holdings).get(instrument.instrumentId);
-        if (pct == null)
-            return;
+    function stampWeight(el, instrument, slotIndex) {
+        const pct = slotPercents()[slotIndex];
+        if (pct == null) return;
         const badge = document.createElement("span");
         badge.className = "weight";
         badge.textContent = `${pct}%`;
