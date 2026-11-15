@@ -132,14 +132,46 @@ export function mountGame(root) {
         <div class="allocation-segment gold" data-allocation-gold></div>
         <div class="allocation-segment bitcoin" data-allocation-bitcoin></div>
       </div>
-      <div class="allocation-legend">
-        <span><i class="stocks"></i>Stocks</span>
-        <span><i class="equity"></i>Funds</span>
-        <span><i class="bonds"></i>Bonds</span>
-        <span><i class="gold"></i>Gold</span>
-        <span><i class="bitcoin"></i>Bitcoin</span>
-      </div>
-    </div>
+
+
+<div class="allocation-legend">
+
+  <div class="allocation-item stocks">
+    <span class="allocation-icon">▥</span>
+    <strong data-weight-stocks>0%</strong>
+    <small>Stocks</small>
+  </div>
+
+  <div class="allocation-item equity">
+    <span class="allocation-icon">▤</span>
+    <strong data-weight-equity>0%</strong>
+    <small>Funds</small>
+  </div>
+
+  <div class="allocation-item bonds">
+    <span class="allocation-icon">▰</span>
+    <strong data-weight-bonds>0%</strong>
+    <small>Bonds</small>
+  </div>
+
+  <div class="allocation-item gold">
+    <span class="allocation-icon">◆</span>
+    <strong data-weight-gold>0%</strong>
+    <small>Gold</small>
+  </div>
+
+  <div class="allocation-item bitcoin">
+    <span class="allocation-icon">₿</span>
+    <strong data-weight-bitcoin>0%</strong>
+    <small>Bitcoin</small>
+  </div>
+
+</div>
+    
+
+
+
+</div>
     <p class="sr-only" data-signal-live></p>
     <div class="stage">
       <div class="board" data-board>
@@ -351,31 +383,117 @@ export function mountGame(root) {
         renderTrack(track, true);
         syncChrome();
     }
-    function renderAllocationMonitor() {
-        const weights = { stocks: 0, equity: 0, bonds: 0, gold: 0, bitcoin: 0 };
-        const instruments = catalog();
-        const slots = slotPercents();
-        let allocated = 0;
-        arrangement.forEach((id, index) => {
-            if (id == null) return;
-            const weight = Number(slots[index]) || 0;
-            allocated += weight;
-            const instrument = instruments.get(id);
-            if (!instrument) return;
-            const n = Number(instrument.classNo);
-            if (n === 100) weights.stocks += weight;
-            else if (n === 22) weights.gold += weight;
-            else if (n === 23) weights.bitcoin += weight;
-            else if (n >= 5 && n <= 20) weights.equity += weight;
-            else if (n >= 1 && n <= 4) weights.bonds += weight;
-        });
-        for (const key of Object.keys(weights)) {
-            const segment = play.querySelector(`[data-allocation-${key}]`);
-            if (segment) segment.style.width = `${Math.max(0, Math.min(100, weights[key]))}%`;
+
+
+
+ function renderAllocationMonitor() {
+
+    const weights = {
+        stocks: 0,
+        equity: 0,
+        bonds: 0,
+        gold: 0,
+        bitcoin: 0
+    };
+
+    const instruments = catalog();
+    const slots = slotPercents();
+
+    let allocated = 0;
+
+    /*
+       CALCULATE ALLOCATION BY ASSET CLASS
+    */
+
+    arrangement.forEach((id, index) => {
+
+        if (id == null) return;
+
+        const weight = Number(slots[index]) || 0;
+
+        allocated += weight;
+
+        const instrument = instruments.get(id);
+
+        if (!instrument) return;
+
+        const n = Number(instrument.classNo);
+
+        if (n === 100) {
+            weights.stocks += weight;
         }
-        const label = play.querySelector("[data-allocation-total]");
-        if (label) label.textContent = `${Math.round(allocated)}% allocated`;
+        else if (n === 22) {
+            weights.gold += weight;
+        }
+        else if (n === 23) {
+            weights.bitcoin += weight;
+        }
+        else if (n >= 5 && n <= 20) {
+            weights.equity += weight;
+        }
+        else if (n >= 1 && n <= 4) {
+            weights.bonds += weight;
+        }
+
+    });
+
+    /*
+       UPDATE BAR SEGMENTS AND CLASS PERCENTAGES
+    */
+
+    for (const key of Object.keys(weights)) {
+
+        const value = weights[key];
+
+        // Colored allocation bar
+
+        const segment =
+            play.querySelector(
+                `[data-allocation-${key}]`
+            );
+
+        if (segment) {
+
+            segment.style.width =
+                `${Math.max(0, Math.min(100, value))}%`;
+
+        }
+
+        // Aggregate percentage beneath class icon
+
+        const classLabel =
+            play.querySelector(
+                `[data-weight-${key}]`
+            );
+
+        if (classLabel) {
+
+            classLabel.textContent =
+                `${Math.round(value)}%`;
+
+        }
+
     }
+
+    /*
+       UPDATE TOTAL PORTFOLIO ALLOCATION
+    */
+
+    const totalLabel =
+        play.querySelector(
+            "[data-allocation-total]"
+        );
+
+    if (totalLabel) {
+
+        totalLabel.textContent =
+            `${Math.round(allocated)}% allocated`;
+
+    }
+
+}
+
+
     function renderHud() {
         const data = level();
         play.querySelector("[data-level-kicker]").textContent = `LEVEL ${currentLevel}`;
