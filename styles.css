@@ -1034,6 +1034,25 @@ button:focus-visible,
   padding: 2px;
 }
 
+/* WEIGHT ON AVAILABLE INVESTMENTS */
+
+.mode-tray .weight {
+    position: absolute;
+    top: 7px;
+    right: 8px;
+    bottom: auto;
+
+    font-size: 12px;
+    font-weight: 700;
+    color: #E4F3FC;
+
+    background: #071631;
+    padding: 3px 5px;
+
+    pointer-events: none;
+    z-index: 2;
+}
+
 /* Preserve space for the mosaic on shorter phones. */
 @media (max-height: 700px) {
   .game-mandate { padding: 5px 8px; }
