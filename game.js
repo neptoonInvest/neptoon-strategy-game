@@ -577,15 +577,44 @@ export function mountGame(root) {
             el.classList.toggle("is-selected", selectedId === id);
             slotEls[index]?.appendChild(el);
         }
-        for (const id of tray) {
-            const instrument = instruments.get(id);
-            const el = ensurePiece(id);
-            undock(el);
-            if (instrument)
-                applyLabel(el, instrument, "tray");
-            el.classList.toggle("is-selected", selectedId === id);
-            trayGrid.appendChild(el);
+
+for (const id of tray) {
+
+    const instrument = instruments.get(id);
+    const el = ensurePiece(id);
+
+    undock(el);
+
+    if (instrument) {
+
+        applyLabel(el, instrument, "tray");
+
+        const target =
+            targetWeights(level().holdings)
+                .get(instrument.instrumentId);
+
+        if (target != null) {
+
+            const badge = document.createElement("span");
+
+            badge.className = "weight";
+            badge.textContent = `${target}%`;
+
+            el.appendChild(badge);
+
         }
+
+    }
+
+    el.classList.toggle(
+        "is-selected",
+        selectedId === id
+    );
+
+    trayGrid.appendChild(el);
+
+}
+
         renderAllocationMonitor();
         if (!first || reduceMotion())
             return;
