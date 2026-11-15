@@ -491,6 +491,136 @@ export function strategyLine(level) {
 }
 
 
+
+
+const GAME_LEVELS= {
+  level: 1,
+  metaFlat: {
+    title: "The First Investment",
+    titleDa: "Den første investering",
+    description: "One stock. One allocation.",
+    descriptionDa: "Én aktie. Én fordeling.",
+    isWealthPlan: false,
+    modelNo: null,
+    rules: [
+      "Construct a portfolio with one stock.",
+      "Allocate 100% to NVIDIA.",
+    ],
+    rulesDa: [
+      "Sammensæt en portefølje med én aktie.",
+      "Fordel 100 % til NVIDIA.",
+    ],
+  },
+  holdings: [
+    hold(NVDA, 100)
+  ],
+},
+{
+  level: 2,
+  metaFlat: {
+    title: "Two Investments",
+    titleDa: "To investeringer",
+    description: "Two stocks. One portfolio.",
+    descriptionDa: "To aktier. Én portefølje.",
+    isWealthPlan: false,
+    modelNo: null,
+    rules: [
+      "Construct a portfolio with two stocks.",
+      "Allocate 62% to Apple and 38% to Microsoft.",
+    ],
+    rulesDa: [
+      "Sammensæt en portefølje med to aktier.",
+      "Fordel 62 % til Apple og 38 % til Microsoft.",
+    ],
+  },
+  holdings: [
+    hold(AAPL, 62),
+    hold(MSFT, 38)
+  ],
+},
+{
+  level: 3,
+  metaFlat: {
+    title: "Three Investments",
+    titleDa: "Tre investeringer",
+    description: "Three stocks. Three weights.",
+    descriptionDa: "Tre aktier. Tre vægte.",
+    isWealthPlan: false,
+    modelNo: null,
+    rules: [
+      "Construct a portfolio with three stocks.",
+      "Allocate 50% to Novo Nordisk.",
+      "Allocate 30% to Tesla and 20% to ASML.",
+    ],
+    rulesDa: [
+      "Sammensæt en portefølje med tre aktier.",
+      "Fordel 50 % til Novo Nordisk.",
+      "Fordel 30 % til Tesla og 20 % til ASML.",
+    ],
+  },
+  holdings: [
+    hold(NOVO, 50),
+    hold(TSLA, 30),
+    hold(ASML, 20)
+  ],
+},
+{
+  level: 4,
+  metaFlat: {
+    title: "Four Investments",
+    titleDa: "Fire investeringer",
+    description: "Combine stocks and an ETF.",
+    descriptionDa: "Kombinér aktier og en ETF.",
+    isWealthPlan: false,
+    modelNo: null,
+    rules: [
+      "Construct a portfolio with four investments.",
+      "Allocate 40% to MSCI World.",
+      "Allocate the remaining 60% across three stocks.",
+    ],
+    rulesDa: [
+      "Sammensæt en portefølje med fire investeringer.",
+      "Fordel 40 % til MSCI World.",
+      "Fordel de resterende 60 % på tre aktier.",
+    ],
+  },
+  holdings: [
+    hold(IWDA, 40),
+    hold(AMZN, 28),
+    hold(GOOGL, 20),
+    hold(LLY, 12)
+  ],
+},
+{
+  level: 5,
+  metaFlat: {
+    title: "Five Investments",
+    titleDa: "Fem investeringer",
+    description: "Five positions and one decoy.",
+    descriptionDa: "Fem positioner og én distraktion.",
+    isWealthPlan: false,
+    modelNo: null,
+    rules: [
+      "Construct a portfolio with five investments.",
+      "Allocate 35% to the S&P 500 ETF.",
+      "Exclude the extra investment.",
+    ],
+    rulesDa: [
+      "Sammensæt en portefølje med fem investeringer.",
+      "Fordel 35 % til S&P 500 ETF'en.",
+      "Udelad den ekstra investering.",
+    ],
+  },
+  holdings: [
+    hold(VOO, 35),
+    hold(META, 25),
+    hold(NESN, 20),
+    hold(SAP, 15),
+    hold(SHEL, 5)
+  ],
+  decoys: [AVGO],
+},
+
 {
   level: 6,
   metaFlat: {
