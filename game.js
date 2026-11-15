@@ -157,8 +157,9 @@ export function mountGame(root, options = {}) {
         </svg>
       </div>
       <div class="signal-copy">
-        <p class="signal-kicker">Strategy signal</p>
-        <p class="signal-word" data-word>Searching</p>
+<p class="signal-kicker">PORTFOLIO MATCH</p>
+<p class="signal-word" data-word>0%</p>
+
       </div>
     </div>
     <div class="game-mandate" data-mandate>
@@ -266,7 +267,10 @@ export function mountGame(root, options = {}) {
         start.querySelector("[data-track-caption]").textContent = t("trackCaption");
         start.querySelector("[data-reset]").textContent = t("resetProgress");
         play.querySelector("[data-home]").setAttribute("aria-label", t("backToLevels"));
-        play.querySelector(".signal-kicker").textContent = t("strategySignal");
+
+       play.querySelector(".signal-kicker").textContent =
+    lang === "da" ? "PORTEFØLJEMATCH" : "PORTFOLIO MATCH";
+
         play.querySelector(".mandate-title").textContent = t("strategy");
         play.querySelector(".allocation-header span:first-child").textContent = t("allocation");
         for (const key of ["stocks", "equity", "bonds", "gold", "bitcoin"]) {
@@ -379,17 +383,51 @@ export function mountGame(root, options = {}) {
     function canStart() {
         return alive && !play.hidden && !solved && !busy && !drag;
     }
-    function syncChrome() {
-        root.dataset.screen = play.hidden ? "start" : solved && currentLevel === 10 ? "finale" : solved ? "victory" : "play";
-        root.dataset.level = String(currentLevel);
-        root.dataset.signal = signalName(score);
-        root.dataset.solved = solved ? "true" : "false";
-        for (const button of shell.querySelectorAll("[data-sound]")) {
-            button.setAttribute("aria-pressed", soundEnabled ? "true" : "false");
-            button.setAttribute("aria-label", soundEnabled ? t("soundOn") : t("soundOff"));
-            button.innerHTML = iconSound(soundEnabled);
-        }
+
+
+function syncChrome() {
+
+    root.dataset.screen =
+        play.hidden
+            ? "start"
+            : solved && currentLevel === 10
+                ? "finale"
+                : solved
+                    ? "victory"
+                    : "play";
+
+    root.dataset.level = String(currentLevel);
+
+    // Keep existing signal state for CSS compatibility
+    root.dataset.signal = signalName(score);
+
+    // NEW · Portfolio Match percentage
+    const matchPercent =
+        Math.max(0, Math.min(100, Math.round(score * 100)));
+
+    root.dataset.match = String(matchPercent);
+
+    root.dataset.solved = solved ? "true" : "false";
+
+    for (const button of shell.querySelectorAll("[data-sound]")) {
+
+        button.setAttribute(
+            "aria-pressed",
+            soundEnabled ? "true" : "false"
+        );
+
+        button.setAttribute(
+            "aria-label",
+            soundEnabled ? t("soundOn") : t("soundOff")
+        );
+
+        button.innerHTML = iconSound(soundEnabled);
+
     }
+
+}
+
+
     function maxOpenLevel() {
         return isMaster() ? 10 : Math.min(10, highestCompleted + 1);
     }
@@ -590,23 +628,49 @@ export function mountGame(root, options = {}) {
         renderTrack(ticks, false);
         coachEl.hidden = !(currentLevel === 1 && !solved && arrangement.every((id) => id == null));
     }
-    function paintSignal(flash) {
-        const name = signalName(score);
-        signalEl.dataset.state = name;
-        wordEl.textContent = t(name);
-        ringEl.style.strokeDashoffset = String(100 * (1 - Math.max(0, Math.min(1, score))));
-        signalEl.classList.remove("up", "down");
-        if (flash === "up" || flash === "down") {
-            void signalEl.offsetWidth;
-            signalEl.classList.add(flash);
-            signalLive.textContent =
-                flash === "up" ? `${t(name)}. ${t("closer")}` : `${t(name)}. ${t("keepAdjusting")}`;
-        }
-        else if (flash === "none") {
-            signalLive.textContent = "";
-        }
-        syncChrome();
+
+function paintSignal(flash) {
+
+    const matchPercent =
+        Math.max(0, Math.min(100, Math.round(score * 100)));
+
+    const perfect = isPerfectScore(score);
+
+    // Numeric portfolio match
+    signalEl.dataset.state = perfect ? "perfect" : "matching";
+
+    wordEl.textContent = `${matchPercent}%`;
+
+    // Existing circular gauge: 0–100%
+    ringEl.style.strokeDashoffset =
+        String(100 - matchPercent);
+
+    // Green ring at exact match
+    ringEl.style.stroke =
+        perfect ? "#22C55E" : "#4E79BD";
+
+    signalEl.classList.remove("up", "down");
+
+    if (flash === "up" || flash === "down") {
+
+        void signalEl.offsetWidth;
+
+        signalEl.classList.add(flash);
+
+        signalLive.textContent =
+            `${lang === "da" ? "Porteføljematch" : "Portfolio match"}: ${matchPercent}%`;
+
+    } else if (flash === "none") {
+
+        signalLive.textContent = "";
+
     }
+
+    syncChrome();
+
+}
+
+
     function labelMode(width, height) {
         if (width >= 150 && height >= 84)
             return "full";
@@ -1475,7 +1539,8 @@ if (target.closest("[data-portfolio]")) {
     };
     const observer = new ResizeObserver(() => resize());
     observer.observe(boardEl);
-    window.__neptoon = {
+  
+  window.__neptoon = {
         score: () => score,
         level: () => currentLevel,
         signal: () => signalName(score),
