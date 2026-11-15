@@ -29,7 +29,7 @@ const QQQ = { instrumentId: "QQQ.US", instrumentName: "Invesco QQQ Trust", gameL
 ===================================================== */
 
 /* GOVERNMENT BONDS */
-const LYQ2 = {
+ const LYQ2 = {
   instrumentId: "LYQ2.XETRA",
   instrumentName: "Amundi Euro Government Bond 1-3Y UCITS ETF Acc",
   gameLabel: "LYQ2",
