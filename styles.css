@@ -1053,6 +1053,37 @@ button:focus-visible,
     z-index: 2;
 }
 
+/* SUBTLE WEIGHT — AVAILABLE INVESTMENTS */
+
+.mode-tray .weight {
+    position: absolute;
+
+    top: auto;
+    right: 7px;
+    bottom: 6px;
+    left: auto;
+
+    background: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+
+    color: #A8B9D1;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0;
+
+    line-height: 1;
+    pointer-events: none;
+    z-index: 2;
+}
+.mode-tray .sub {
+    max-width: calc(100% - 28px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 /* Preserve space for the mosaic on shorter phones. */
 @media (max-height: 700px) {
   .game-mandate { padding: 5px 8px; }
