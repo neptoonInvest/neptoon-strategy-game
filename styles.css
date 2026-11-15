@@ -1106,3 +1106,52 @@ button:focus-visible,
 /* STRATEGY RULE FEEDBACK — verified against executable constraints */
 .mandate-rules li.is-met { color: #E4F3FC; }
 .mandate-rules li.is-met::marker { color: #6EC6ED; }
+
+/* =====================================
+   NEPTOON — ASSET CLASS CARD COLORS
+   ===================================== */
+
+/* All investment cards */
+
+.piece {
+    background:
+        linear-gradient(
+            135deg,
+            color-mix(
+                in srgb,
+                var(--asset-tint, #4E79BD) 20%,
+                #071631
+            ),
+            #071631 85%
+        );
+
+    color: #FFFFFF;
+}
+
+/* Stronger asset-class indicator */
+
+.piece::before {
+    height: 4px;
+    background: var(--accent, #4E79BD);
+}
+
+/* Available investments */
+
+.mode-tray {
+    border: 1px solid
+        color-mix(
+            in srgb,
+            var(--asset-tint, #4E79BD) 55%,
+            #071631
+        );
+}
+
+/* Preserve clear typography */
+
+.piece .ticker {
+    color: #FFFFFF;
+}
+
+.piece .sub {
+    color: #E4F3FC;
+}
