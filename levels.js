@@ -493,7 +493,7 @@ export function strategyLine(level) {
 
 
 
-const GAME_LEVELS= {
+export const GAME_LEVELS = [
   level: 1,
   metaFlat: {
     title: "The First Investment",
@@ -780,8 +780,8 @@ const GAME_LEVELS= {
     hold(NVDA, 5),
     hold(OPP_AVGO, 5)
   ],
-},
-
+}
+];
 export function levelByNumber(level) {
   const found = GAME_LEVELS.find((entry) => entry.level === level);
   if (!found) throw new Error(`Missing level ${level}`);
