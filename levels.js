@@ -532,7 +532,7 @@ export function strategyLine(level) {
     description: "Build an aggressive portfolio of actively managed funds.",
     descriptionDa: "Sammensæt en aggressiv portefølje med aktivt forvaltede fonde.",
     isWealthPlan: true,
-    modelNo: null, // Insert actual Danske Bank modelNo
+    modelNo: 8, // Insert actual Danske Bank modelNo
     sendToMyWealth: true,
     rules: [
       "Construct the Danske Bank Generic Aggressive portfolio.",
@@ -596,7 +596,7 @@ export function strategyLine(level) {
     description: "Build an aggressive strategy with European and global funds.",
     descriptionDa: "Sammensæt en aggressiv strategi med europæiske og globale fonde.",
     isWealthPlan: true,
-    modelNo: null, // Insert actual Deutsche Bank modelNo
+    modelNo: 6, // Insert actual Deutsche Bank modelNo
     sendToMyWealth: true,
     rules: [
       "Construct the Deutsche Bank Aggressive portfolio.",
