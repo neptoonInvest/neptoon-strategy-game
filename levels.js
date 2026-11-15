@@ -1,4 +1,4 @@
-import { percentOf } from "./score.js";
+import { percentOf } from "./score.js";  
 
 /** Static demonstration portfolios for the ten-level prototype. */
 // classNo: 100 = stocks, 5–20 = equity funds, 22 = gold.
