@@ -470,6 +470,11 @@ export function mountGame(root) {
         button.className = "piece";
         button.dataset.id = id;
         button.style.setProperty("--accent", getColor(instrument.classNo));
+button.style.setProperty(
+    "--asset-tint",
+    getColor(instrument.classNo)
+);
+
         button.addEventListener("pointerdown", onPieceDown);
         button.addEventListener("pointermove", onPieceMove);
         button.addEventListener("pointerup", onPieceUp);
