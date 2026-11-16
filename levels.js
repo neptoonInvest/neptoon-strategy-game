@@ -8,7 +8,7 @@ const AAPL = { instrumentId: "AAPL.US", instrumentName: "Apple", gameLabel: "AAP
 const MSFT = { instrumentId: "MSFT.US", instrumentName: "Microsoft", gameLabel: "MSFT", mediumLabel: "Microsoft", classNo: 100 };
 const NOVO = { instrumentId: "NOVO-B.CO", instrumentName: "Novo Nordisk", gameLabel: "NOVO", mediumLabel: "Novo Nordisk", classNo: 100 };
 const TSLA = { instrumentId: "TSLA.US", instrumentName: "Tesla", gameLabel: "TSLA", mediumLabel: "Tesla", classNo: 100 };
-const IWDA = { instrumentId: "IWDA.AS", instrumentName: "iShares Core MSCI World ETF", gameLabel: "IWDA", mediumLabel: "MSCI World", classNo: 17 };
+const EUNL2 = { instrumentId: "EUNL.XETRA", instrumentName: "iShares Core MSCI World ETF EUR", gameLabel: "EUNL, mediumLabel: "MSCI World", classNo: 17 };
 const VOO = { instrumentId: "VOO.US", instrumentName: "Vanguard S&P 500 ETF", gameLabel: "VOO", mediumLabel: "S&P 500", classNo: 8 };
 const ASML = { instrumentId: "ASML.AS", instrumentName: "ASML", gameLabel: "ASML", mediumLabel: "ASML", classNo: 100 };
 const AMZN = { instrumentId: "AMZN.US", instrumentName: "Amazon", gameLabel: "AMZN", mediumLabel: "Amazon", classNo: 100 };
@@ -24,6 +24,7 @@ const SHEL = { instrumentId: "SHEL.L", instrumentName: "Shell", gameLabel: "SHEL
 const VEU = { instrumentId: "VEU.US", instrumentName: "Vanguard FTSE All-World ex-US ETF", gameLabel: "VEU", mediumLabel: "All-World ex-US", classNo: 17 };
 const GLD = { instrumentId: "GLD.US", instrumentName: "SPDR Gold Shares", gameLabel: "GLD", mediumLabel: "Gold", classNo: 22 };
 const QQQ = { instrumentId: "QQQ.US", instrumentName: "Invesco QQQ Trust", gameLabel: "QQQ", mediumLabel: "Nasdaq 100", classNo: 8 };
+const CARLSBERG = { instrumentId: "CARL-B.CO", instrumentName: "Carlsberg B", gameLabel: "CARL B", mediumLabel: "Carlsberg B", classNo: 100 };
 /* =====================================================
    NEPTOON STRATEGY GAME · EXTENDED INVESTMENT UNIVERSE
 ===================================================== */
@@ -304,7 +305,7 @@ const BOHR_SHORT_BONDS = {
 
 const BOHR_CORP = {
   instrumentId: "IE00B3F81R35",
-  instrumentName: "iShares Core EUR Corporate Bond",
+  instrumentName: "iShares Core EUR Corporate Bond (IG)",
   gameLabel: "CORP",
   mediumLabel: "Corporate Bonds",
   classNo: 3
@@ -312,7 +313,7 @@ const BOHR_CORP = {
 
 const BOHR_HY = {
   instrumentId: "IE00B66F4759",
-  instrumentName: "iShares EUR High Yield",
+  instrumentName: "iShares EUR High Yield (High Yield)",
   gameLabel: "HY",
   mediumLabel: "High Yield Bonds",
   classNo: 3
@@ -505,15 +506,15 @@ export const GAME_LEVELS = [
     modelNo: null,
     rules: [
       "Construct a portfolio with one stock.",
-      "Allocate 100% to NVIDIA.",
+      "Allocate 100% to NOVO NORDISK-B A/S.",
     ],
     rulesDa: [
       "Sammensæt en portefølje med én aktie.",
-      "Fordel 100 % til NVIDIA.",
+      "Fordel 100 % til NOVO.",
     ],
   },
   holdings: [
-    hold(NVDA, 100)
+    hold(NOVO, 100)
   ],
 },
 {
@@ -527,16 +528,16 @@ export const GAME_LEVELS = [
     modelNo: null,
     rules: [
       "Construct a portfolio with two stocks.",
-      "Allocate 62% to Apple and 38% to Microsoft.",
+      "Allocate most to the highest risk stock.",
     ],
     rulesDa: [
       "Sammensæt en portefølje med to aktier.",
-      "Fordel 62 % til Apple og 38 % til Microsoft.",
+      "Fordel mest til den aktie med nok mest risko.",
     ],
   },
   holdings: [
-    hold(AAPL, 62),
-    hold(MSFT, 38)
+    hold(TSLA, 62),
+    hold(CARLSBERG, 38)
   ],
 },
 {
@@ -549,20 +550,20 @@ export const GAME_LEVELS = [
     isWealthPlan: false,
     modelNo: null,
     rules: [
-      "Construct a portfolio with three stocks.",
-      "Allocate 50% to Novo Nordisk.",
-      "Allocate 30% to Tesla and 20% to ASML.",
+      "Construct a portfolio with three stocks .",
+      "Portfolio has clear focus on obesity drugs",
+      "Add the smallest position in Consumer Staples",
     ],
     rulesDa: [
       "Sammensæt en portefølje med tre aktier.",
-      "Fordel 50 % til Novo Nordisk.",
-      "Fordel 30 % til Tesla og 20 % til ASML.",
+      "Fokus er på udvikling af produkter mod fedme.",
+      "Tilføj mindste position i en forbrugsaktie.",
     ],
   },
   holdings: [
-    hold(NOVO, 50),
-    hold(TSLA, 30),
-    hold(ASML, 20)
+    hold(LLY, 60),
+    hold(AVGO, 30),
+    hold(NESN, 10)
   ],
 },
 {
@@ -576,20 +577,20 @@ export const GAME_LEVELS = [
     modelNo: null,
     rules: [
       "Construct a portfolio with four investments.",
-      "Allocate 40% to MSCI World.",
-      "Allocate the remaining 60% across three stocks.",
+      "Allocate max to the ETF and minimum to the company with Facebook.",
+      "Amazon Inc. has a weight of 50% of the single stocks part only",
     ],
     rulesDa: [
       "Sammensæt en portefølje med fire investeringer.",
-      "Fordel 40 % til MSCI World.",
-      "Fordel de resterende 60 % på tre aktier.",
+      "Fordel mest til ETF MSCI World og mindst til Facebook aktien.",
+      "Amazon Inc. fylder halvdelen af enkeltaktiene som gruppe.",
     ],
   },
   holdings: [
-    hold(IWDA, 40),
-    hold(AMZN, 28),
-    hold(GOOGL, 20),
-    hold(LLY, 12)
+    hold(EUNL, 60),
+    hold(AMZN, 20),
+    hold(GOOGL, 15),
+    hold(META, 5)
   ],
 },
 {
@@ -603,23 +604,23 @@ export const GAME_LEVELS = [
     modelNo: null,
     rules: [
       "Construct a portfolio with five investments.",
-      "Allocate 35% to the S&P 500 ETF.",
-      "Exclude the extra investment.",
+      "Allocate from lowest risk to higest risk.",
+      "Lowest risk asset gets lowest weight.",
     ],
     rulesDa: [
       "Sammensæt en portefølje med fem investeringer.",
-      "Fordel 35 % til S&P 500 ETF'en.",
-      "Udelad den ekstra investering.",
+      "Fordel andele i henhold til risiko på aktiverne.",
+      "Laveste risikoaktiv får laveste vægt.",
     ],
   },
   holdings: [
-    hold(VOO, 35),
-    hold(META, 25),
-    hold(NESN, 20),
-    hold(SAP, 15),
-    hold(SHEL, 5)
+    hold(DE_GOV_BONDS, 5),
+    hold(BOHR_CORP, 10),
+    hold(BOHR_HY, 20),
+    hold(XDN0 , 25),
+    hold(DBPG, 40)
   ],
-  decoys: [AVGO],
+  decoys: [LYQ2],
 },
 
 {
