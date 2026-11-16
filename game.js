@@ -70,7 +70,7 @@ function iconMark() {
 const GAME_EXTRA_TEXT = {
     en: {
         display: "KNOW YOUR<br>STRATEGIES", tag: "10 LEVELS. ONE MASTERPIECE.",
-        subtitle: "Drag the investments. Crack the strategy.",
+   subtitle: "Select an investment. Then select a portfolio slot.",
         masterLine: "You beat all 10 levels.", trackCaption: "Tap a level to replay it.",
         resetProgress: "Reset progress", backToLevels: "Back to levels",
         soundOn: "Sound on", soundOff: "Sound off", level: "LEVEL",
@@ -88,7 +88,7 @@ const GAME_EXTRA_TEXT = {
     },
     da: {
         display: "KEND DINE<br>STRATEGIER", tag: "10 NIVEAUER. ÉT MESTERVÆRK.",
-        subtitle: "Træk investeringerne på plads. Løs strategien.",
+  subtitle: "Vælg en investering. Vælg derefter en plads i porteføljen.",
         masterLine: "Du gennemførte alle 10 niveauer.", trackCaption: "Tryk på et niveau for at spille igen.",
         resetProgress: "Nulstil fremskridt", backToLevels: "Tilbage til niveauerne",
         soundOn: "Lyd til", soundOff: "Lyd fra", level: "NIVEAU",
@@ -792,10 +792,26 @@ button.style.setProperty(
     getColor(instrument.classNo)
 );
 
-        button.addEventListener("pointerdown", onPieceDown);
-        button.addEventListener("pointermove", onPieceMove);
-        button.addEventListener("pointerup", onPieceUp);
-        button.addEventListener("pointercancel", onPieceCancel);
+
+/* TAP-TO-SELECT ONLY · DRAGGING DISABLED */
+
+button.draggable = false;
+
+button.addEventListener("click", event => {
+
+    if (!canStart()) return;
+
+    const id = event.currentTarget.dataset.id;
+
+    if (!id) return;
+
+    handleTap(id);
+
+});
+
+
+
+
         button.addEventListener("keydown", onPieceKey);
         button.addEventListener("contextmenu", (event) => event.preventDefault());
         pieceEls.set(id, button);
@@ -817,7 +833,20 @@ button.style.setProperty(
             const slot = document.createElement("div");
             slot.className = "slot";
             slot.dataset.index = String(index);
-            slot.addEventListener("pointerup", onSlotUp);
+        
+slot.addEventListener("click", event => {
+
+    if (event.target !== event.currentTarget) return;
+
+    const index = Number(event.currentTarget.dataset.index);
+
+    if (!Number.isInteger(index)) return;
+
+    handleTapSlot(index);
+
+});
+
+
             slot.addEventListener("keydown", onSlotKey);
             boardEl.appendChild(slot);
             slotEls.push(slot);
