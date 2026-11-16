@@ -518,8 +518,7 @@ function syncChrome() {
     }
 
 
-
- function renderAllocationMonitor() {
+function renderAllocationMonitor() {
 
     const weights = {
         stocks: 0,
@@ -536,6 +535,14 @@ function syncChrome() {
 
     /*
        CALCULATE ALLOCATION BY ASSET CLASS
+
+       stocks  = Individual stocks
+       equity  = Equity Funds
+       bonds   = Government Bonds
+       gold    = Credit Bonds
+       bitcoin = Alternatives
+
+       Existing DOM bindings preserved.
     */
 
     arrangement.forEach((id, index) => {
@@ -552,20 +559,32 @@ function syncChrome() {
 
         const n = Number(instrument.classNo);
 
+        // Individual stocks
         if (n === 100) {
             weights.stocks += weight;
         }
-        else if (n === 22) {
-            weights.gold += weight;
-        }
-        else if (n === 23) {
-            weights.bitcoin += weight;
-        }
-        else if (n >= 5 && n <= 20) {
+
+        // Equity Funds: 5–19 and 25–28
+        else if (
+            (n >= 5 && n <= 19) ||
+            (n >= 25 && n <= 28)
+        ) {
             weights.equity += weight;
         }
-        else if (n >= 1 && n <= 4) {
+
+        // Government Bonds: 0–1
+        else if (n >= 0 && n <= 1) {
             weights.bonds += weight;
+        }
+
+        // Credit Bonds: 2–4
+        else if (n >= 2 && n <= 4) {
+            weights.gold += weight;
+        }
+
+        // Alternatives: 20–24
+        else if (n >= 20 && n <= 24) {
+            weights.bitcoin += weight;
         }
 
     });
@@ -578,21 +597,15 @@ function syncChrome() {
 
         const value = weights[key];
 
-        // Colored allocation bar
-
         const segment =
             play.querySelector(
                 `[data-allocation-${key}]`
             );
 
         if (segment) {
-
             segment.style.width =
                 `${Math.max(0, Math.min(100, value))}%`;
-
         }
-
-        // Aggregate percentage beneath class icon
 
         const classLabel =
             play.querySelector(
@@ -600,10 +613,8 @@ function syncChrome() {
             );
 
         if (classLabel) {
-
             classLabel.textContent =
                 `${Math.round(value)}%`;
-
         }
 
     }
@@ -618,15 +629,11 @@ function syncChrome() {
         );
 
     if (totalLabel) {
-
         totalLabel.textContent =
             `${Math.round(allocated)}% ${t("allocated")}`;
-
     }
 
 }
-
-
     function renderHud() {
         const data = level();
         play.querySelector("[data-level-kicker]").textContent = `${t("level")} ${currentLevel}`;
