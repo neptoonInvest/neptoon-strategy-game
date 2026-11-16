@@ -492,8 +492,6 @@ export function strategyLine(level) {
 }
 
 
-
-
 export const GAME_LEVELS = [
   {
     level: 1,
