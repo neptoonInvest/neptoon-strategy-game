@@ -14,7 +14,7 @@ export const GAME_TEXT = {
     allPlaced: "ALL PLACED",
     nextLevel: "NEXT LEVEL",
     replay: "REPLAY FROM LEVEL 1",
-    viewPortfolio: "VIEW PORTFOLIO",
+    viewPortfolio: "ADD TO 'MYWEALTH'",
     backToTitle: "Back to title",
     strategySignal: "STRATEGY SIGNAL",
     searching: "Searching",
@@ -24,8 +24,8 @@ export const GAME_TEXT = {
     perfect: "Perfect!",
     levelComplete: "LEVEL COMPLETE!",
     cracked: "YOU CRACKED THE STRATEGY.",
-    dragInstruction: "Drag the card onto the board.",
-    masterpiece: "THE MASTERPIECE"
+    dragInstruction: "Click target asset and then click destination.",
+    masterpiece: "THE MASTERPUZZLE"
   },
 
   da: {
@@ -41,7 +41,7 @@ export const GAME_TEXT = {
     allPlaced: "ALLE PLACERET",
     nextLevel: "NÆSTE NIVEAU",
     replay: "START FORFRA",
-    viewPortfolio: "SE PORTEFØLJE",
+    viewPortfolio: "Tilføj til MinFormue",
     backToTitle: "Tilbage til start",
     strategySignal: "STRATEGISIGNAL",
     searching: "Søger",
@@ -51,8 +51,8 @@ export const GAME_TEXT = {
     perfect: "Perfekt!",
     levelComplete: "NIVEAU GENNEMFØRT!",
     cracked: "DU LØSTE STRATEGIEN.",
-    dragInstruction: "Træk investeringen ind på spillepladen.",
-    masterpiece: "MESTERVÆRKET"
+    dragInstruction: "Klik på det aktiv du vil flytte - derefter klik der hvor aktivet skal hen.",
+    masterpiece: "MASTERPUZZLE"
   }
 };
 
