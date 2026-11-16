@@ -1275,3 +1275,66 @@ button:focus-visible,
 
     color: #FFFFFF;
 }
+
+
+.tray-instrument-name {
+  width: 100%;
+  min-width: 0;
+  margin: 3px 0 7px;
+
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.15px;
+
+  color: #b8d4f2;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}	
+
+.victory {
+  padding: 14px 16px;
+}
+
+.victory-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #72C6ED;
+  margin-bottom: 5px;
+}
+
+.victory-title {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+
+.victory .mix {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #C1CFE0;
+  margin-bottom: 12px;
+}
+
+.victory .play-btn {
+  min-height: 38px;
+  padding: 9px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: 0;
+}
+.victory-stars {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  margin: -12px 0 4px;
+  color: #D4AF37;
+  font-size: 17px;
+  line-height: 1;
+}
+
