@@ -919,8 +919,14 @@ if (instrumentNameEl) {
     instrumentNameEl.textContent =
         selectedInstrument
             ? [
-                selectedInstrument.classMajorTop,
-                selectedInstrument.typeLabel,
+                lang === "da"
+                    ? selectedInstrument.classMajorTopDa
+                    : selectedInstrument.classMajorTop,
+
+                lang === "da"
+                    ? selectedInstrument.typeLabelDa
+                    : selectedInstrument.typeLabel,
+
                 selectedInstrument.instrumentName
               ]
                 .filter(Boolean)
@@ -928,7 +934,6 @@ if (instrumentNameEl) {
             : "";
 
 }
-
 
 
 
