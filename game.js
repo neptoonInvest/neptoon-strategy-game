@@ -121,7 +121,7 @@ export function mountGame(root, options = {}) {
     let solved = false;
     let score = 0;
     let busy = false;
-    let drag = null;
+
     let layoutToken = 0;
     const pieceEls = new Map();
     let slotEls = [];
@@ -436,7 +436,7 @@ for (const [key, label] of Object.entries(allocationLabels[lang])) {
         return { type: "tray" };
     }
     function canStart() {
-        return alive && !play.hidden && !solved && !busy && !drag;
+return alive && !play.hidden && !solved && !busy;
     }
 
 
@@ -876,7 +876,7 @@ slot.addEventListener("click", event => {
             boardEl.classList.add("bloom");
             busy = true;
             window.setTimeout(() => {
-                if (alive && token === layoutToken && !drag)
+            if (alive && token === layoutToken)
                     busy = false;
             }, 220);
         }
@@ -1189,37 +1189,7 @@ for (const id of tray) {
         scrim.hidden = true;
         renderStart();
     }
-    function hitSlot(x, y) {
-        let insideIndex = null;
-        let insideArea = Infinity;
-        for (let index = 0; index < slotEls.length; index++) {
-            const rect = slotEls[index].getBoundingClientRect();
-            if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-                const area = rect.width * rect.height;
-                if (area < insideArea) {
-                    insideArea = area;
-                    insideIndex = index;
-                }
-            }
-        }
-        if (insideIndex != null)
-            return insideIndex;
-        let bestIndex = null;
-        let bestDistance = 17;
-        for (let index = 0; index < slotEls.length; index++) {
-            const rect = slotEls[index].getBoundingClientRect();
-            if (rect.width > 78 && rect.height > 78)
-                continue;
-            const cx = Math.max(rect.left, Math.min(x, rect.right));
-            const cy = Math.max(rect.top, Math.min(y, rect.bottom));
-            const distance = Math.hypot(x - cx, y - cy);
-            if (distance <= 16 && distance < bestDistance) {
-                bestDistance = distance;
-                bestIndex = index;
-            }
-        }
-        return bestIndex;
-    }
+
     function overTray(x, y) {
         const rect = trayEl.getBoundingClientRect();
         return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
@@ -1254,6 +1224,7 @@ for (const id of tray) {
         if (from.type === "slot")
             slotEls[from.index]?.classList.add("is-empty");
     }
+
     function onPieceDown(event) {
         if (event.pointerType === "mouse" && event.button !== 0)
             return;
@@ -1382,17 +1353,7 @@ for (const id of tray) {
         selectedId = null;
         commit(swapping ? "swap" : "drop");
     }
-    function onSlotUp(event) {
-        if (drag)
-            return;
-        if (event.target !== event.currentTarget)
-            return;
-        const slot = event.currentTarget;
-        const index = Number(slot.dataset.index);
-        if (Number.isNaN(index))
-            return;
-        handleTapSlot(index);
-    }
+
     function onPieceKey(event) {
         if (event.key !== "Enter" && event.key !== " ")
             return;
@@ -1624,7 +1585,7 @@ if (target.closest("[data-portfolio]")) {
     document.addEventListener("visibilitychange", onHide);
     window.addEventListener("pagehide", persist);
     const resize = () => {
-        if (play.hidden || drag)
+if (play.hidden)
             return;
         layoutBoard(false);
     };
