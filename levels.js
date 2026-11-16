@@ -74,6 +74,30 @@ const EUNL = {
   classNo: 17
 };
 
+const PEP = {
+  instrumentId: "PEP.US",
+  instrumentName: "PepsiCo Inc.",
+  gameLabel: "PEPSI",
+  mediumLabel: "PepsiCo",
+  classNo: 100
+};
+
+const MCD = {
+  instrumentId: "MCD.US",
+  instrumentName: "McDonald's Corporation",
+  gameLabel: "MCD",
+  mediumLabel: "McDonald's",
+  classNo: 100
+};
+
+const KO = {
+  instrumentId: "KO.US",
+  instrumentName: "The Coca-Cola Company",
+  gameLabel: "COCA-COLA",
+  mediumLabel: "Coca-Cola",
+  classNo: 100
+};
+
 /* GOLD */
 const PSG8 = {
   instrumentId: "8PSG.XETRA",
@@ -419,9 +443,39 @@ const DB_EM = {
   classNo: 14
 };
 
+const DANSKE = {
+  instrumentId: "DANSKE.CO",
+  instrumentName: "Danske Bank A/S",
+  gameLabel: "DANSKE",
+  mediumLabel: "Danske Bank",
+  classNo: 100
+};
+
+const CBK = {
+  instrumentId: "CBK.XETRA",
+  instrumentName: "Commerzbank AG",
+  gameLabel: "COMMERZ",
+  mediumLabel: "Commerzbank",
+  classNo: 100
+};
+
 /* =====================================================
    LEVEL 9 · DEUTSCHE BANK AGGRESSIVE
 ===================================================== */
+const HEIA = {
+  instrumentId: "HEIA.AS",
+  instrumentName: "Heineken N.V.",
+  gameLabel: "HEINEKEN",
+  mediumLabel: "Heineken",
+  classNo: 100
+};
+const RBREW = {
+  instrumentId: "RBREW.CO",
+  instrumentName: "Royal Unibrew A/S",
+  gameLabel: "ROYAL",
+  mediumLabel: "Royal Unibrew",
+  classNo: 100
+};
 
 const DE_GOV_BONDS = {
   instrumentId: "LU1287023185",
@@ -493,27 +547,41 @@ export function strategyLine(level) {
 
 
 export const GAME_LEVELS = [
-  {
-    level: 1,
-    metaFlat: {
+{
+  level: 1,
+
+  metaFlat: {
     title: "The First Investment",
     titleDa: "Den første investering",
+
     description: "One stock. One allocation.",
     descriptionDa: "Én aktie. Én fordeling.",
+
     isWealthPlan: false,
     modelNo: null,
+
     rules: [
       "Construct a portfolio with one stock.",
-      "Allocate 100% to NOVO NORDISK-B A/S.",
+      "Identify the software company co-founded by Bill Gates.",
+      "Allocate the entire portfolio to that company."
     ],
+
     rulesDa: [
       "Sammensæt en portefølje med én aktie.",
-      "Fordel 100 % til NOVO.",
-    ],
+      "Find softwarevirksomheden, som Bill Gates var med til at grundlægge.",
+      "Fordel hele porteføljen til dette selskab."
+    ]
   },
+
   holdings: [
-    hold(NOVO, 100)
+    hold(MSFT, 100)
   ],
+
+  decoys: [
+    AAPL,
+    NOVO,
+    KO
+  ]
 },
 {
   level: 2,
@@ -524,19 +592,30 @@ export const GAME_LEVELS = [
     descriptionDa: "To aktier. Én portefølje.",
     isWealthPlan: false,
     modelNo: null,
-    rules: [
-      "Construct a portfolio with two stocks.",
-      "Allocate most to the highest risk stock.",
-    ],
-    rulesDa: [
-      "Sammensæt en portefølje med to aktier.",
-      "Fordel mest til den aktie med nok mest risko.",
-    ],
+rules: [
+  "Construct a portfolio with two stocks.",
+  "Select the American car manufacturer named after a pioneering electrical engineer and the Danish brewery founded in 1847.",
+  "Allocate the largest position to the American company."
+],
+
+rulesDa: [
+  "Sammensæt en portefølje med to aktier.",
+  "Vælg den amerikanske bilproducent opkaldt efter en banebrydende elektroingeniør og det danske bryggeri grundlagt i 1847.",
+  "Fordel den største andel til det amerikanske selskab."
+],
+     
   },
   holdings: [
     hold(TSLA, 62),
     hold(CARLSBERG, 38)
   ],
+
+decoys: [
+  HEIA,
+  RBREW,
+  AAPL,
+   JNJ
+]
 },
 {
   level: 3,
@@ -547,50 +626,72 @@ export const GAME_LEVELS = [
     descriptionDa: "Tre aktier. Tre vægte.",
     isWealthPlan: false,
     modelNo: null,
-    rules: [
-      "Construct a portfolio with three stocks .",
-      "Portfolio has clear focus on obesity drugs",
-      "Add the smallest position in Consumer Staples",
-    ],
-    rulesDa: [
-      "Sammensæt en portefølje med tre aktier.",
-      "Fokus er på udvikling af produkter mod fedme.",
-      "Tilføj mindste position i en forbrugsaktie.",
-    ],
+  rules: [
+  "Construct a portfolio with three stocks.",
+  "Focus on obesity medicine, global health hand semiconductor technology.",
+  "Include Swiss Consumer Staples as the smallest position. No Danish companies."
+],
+
+rulesDa: [
+  "Sammensæt en portefølje med tre aktier.",
+  "Fokusér på fedmemedicin, global sundhed og halvlederteknologi.",
+  "Medtag schweiziske dagligvarer som den mindste position. Ingen danske selskaber."
+],
   },
   holdings: [
     hold(LLY, 60),
     hold(AVGO, 30),
     hold(NESN, 10)
   ],
+
+decoys: [
+  NOVO,
+  KO,
+  MCD
+],
+
+   
 },
+
 {
   level: 4,
+
   metaFlat: {
     title: "Four Investments",
     titleDa: "Fire investeringer",
+
     description: "Combine stocks and an ETF.",
     descriptionDa: "Kombinér aktier og en ETF.",
+
     isWealthPlan: false,
     modelNo: null,
+
     rules: [
       "Construct a portfolio with four investments.",
-      "Allocate max to the ETF and minimum to the company with Facebook.",
-      "Amazon Inc. has a weight of 50% of the single stocks part only",
+      "Allocate the largest position to the global ETF and the smallest to the company behind Facebook.",
+      "Include at least one Nordic company. Amazon represents half of the individual-stock allocation."
     ],
+
     rulesDa: [
       "Sammensæt en portefølje med fire investeringer.",
-      "Fordel mest til ETF MSCI World og mindst til Facebook aktien.",
-      "Amazon Inc. fylder halvdelen af enkeltaktiene som gruppe.",
-    ],
+      "Fordel mest til den globale ETF og mindst til selskabet bag Facebook.",
+      "Medtag mindst ét nordisk selskab. Amazon udgør halvdelen af enkeltaktiernes samlede vægt."
+    ]
   },
+
   holdings: [
     hold(EUNL, 60),
     hold(AMZN, 20),
-    hold(GOOGL, 15),
+    hold(DANSKE, 15),
     hold(META, 5)
   ],
+
+  decoys: [
+    CBK,
+    AAPL
+  ]
 },
+   
 {
   level: 5,
   metaFlat: {
@@ -600,16 +701,17 @@ export const GAME_LEVELS = [
     descriptionDa: "Fem positioner og én distraktion.",
     isWealthPlan: false,
     modelNo: null,
-    rules: [
-      "Construct a portfolio with five investments.",
-      "Allocate from lowest risk to higest risk.",
-      "Lowest risk asset gets lowest weight.",
-    ],
-    rulesDa: [
-      "Sammensæt en portefølje med fem investeringer.",
-      "Fordel andele i henhold til risiko på aktiverne.",
-      "Laveste risikoaktiv får laveste vægt.",
-    ],
+   rules: [
+  "Construct a portfolio with five investments.",
+  "Build a risk ladder from government bonds to growth equities.",
+  "Allocate progressively larger weights as risk increases. All positions must carry investment risk."
+],
+
+rulesDa: [
+  "Sammensæt en portefølje med fem investeringer.",
+  "Opbyg en risikostige fra statsobligationer til vækstaktier.",
+  "Fordel stigende vægte med stigende risiko. Alle positioner skal have investeringsrisiko."
+],
   },
   holdings: [
     hold(DE_GOV_BONDS, 5),
@@ -631,16 +733,17 @@ export const GAME_LEVELS = [
     isWealthPlan: true,
     modelNo: 3,
     sendToMyWealth: true,
-    rules: [
-      "Construct the Neptoon Bohr portfolio.",
-      "Allocate 45% to short-term bonds.",
-      "Exclude the zero-weight investment.",
-    ],
-    rulesDa: [
-      "Sammensæt Neptoon Bohr-porteføljen.",
-      "Fordel 45 % til korte obligationer.",
-      "Udelad investeringen med 0 % vægt.",
-    ],
+rules: [
+  "Construct the defensive Neptoon Bohr portfolio.",
+  "Build the portfolio using Government Bonds, Credit Bonds and Alternatives.",
+  "Government Bonds must have the largest allocation. Exclude Single Stocks and Equity Funds."
+],
+
+rulesDa: [
+  "Sammensæt den defensive Neptoon Bohr-portefølje.",
+  "Opbyg porteføljen med statsobligationer, kreditobligationer og alternative investeringer.",
+  "Statsobligationer skal have den største andel. Udelad enkeltaktier og aktiefonde."
+],
   },
   holdings: [
     hold(BOHR_SHORT_BONDS, 45),
@@ -664,16 +767,17 @@ export const GAME_LEVELS = [
     isWealthPlan: true,
     modelNo: 8, // Insert actual Danske Bank modelNo
     sendToMyWealth: true,
-    rules: [
-      "Construct the Danske Bank Generic Aggressive portfolio.",
-      "Combine seven actively managed funds.",
-      "Allocate 20% to bonds and 80% to equities.",
-    ],
-    rulesDa: [
-      "Sammensæt Danske Bank Generic Aggressive-porteføljen.",
-      "Kombinér syv aktivt forvaltede fonde.",
-      "Fordel 20 % til obligationer og 80 % til aktier.",
-    ],
+rules: [
+  "Construct the Danske Bank Generic Aggressive portfolio.",
+  "Combine seven actively managed funds across Government Bonds, Credit Bonds and Equity Funds.",
+  "Allocate 80% to Equity Funds and 20% to Bonds. Exclude Single Stocks and Alternatives."
+],
+
+rulesDa: [
+  "Sammensæt Danske Bank Generic Aggressive-porteføljen.",
+  "Kombinér syv aktivt forvaltede fonde inden for statsobligationer, kreditobligationer og aktiefonde.",
+  "Fordel 80 % til aktiefonde og 20 % til obligationer. Udelad enkeltaktier og alternative investeringer."
+],
   },
   holdings: [
     hold(DB_LONG_BONDS, 10),
@@ -688,25 +792,31 @@ export const GAME_LEVELS = [
 
 {
   level: 8,
+
   metaFlat: {
     title: "Sparindex Balanced",
     titleDa: "Sparindex Balanceret",
+
     description: "Build the Sparindex Balanced investment strategy.",
     descriptionDa: "Sammensæt Sparindex Balanced-investeringsstrategien.",
+
     isWealthPlan: true,
     modelNo: 21,
     sendToMyWealth: true,
+
     rules: [
-      "Construct the seven-investment portfolio.",
-      "Combine bonds with diversified equity funds.",
-      "Allocate 20% to bonds and 80% to equities.",
+      "Construct the Sparindex Balanced portfolio with seven investments.",
+      "Combine Government Bonds, Credit Bonds and diversified Equity Funds.",
+      "Allocate 80% to Equity Funds and 20% to Bonds. Exclude Single Stocks and Alternatives."
     ],
+
     rulesDa: [
-      "Sammensæt porteføljen med syv investeringer.",
-      "Kombinér obligationer med diversificerede aktiefonde.",
-      "Fordel 20 % til obligationer og 80 % til aktier.",
-    ],
+      "Sammensæt Sparindex Balanced-porteføljen med syv investeringer.",
+      "Kombinér statsobligationer, kreditobligationer og diversificerede aktiefonde.",
+      "Fordel 80 % til aktiefonde og 20 % til obligationer. Udelad enkeltaktier og alternative investeringer."
+    ]
   },
+
   holdings: [
     hold(SP_NYK_BOND, 10),
     hold(SP_SYD_IG, 5),
@@ -715,9 +825,8 @@ export const GAME_LEVELS = [
     hold(SP_US, 35),
     hold(SP_EU, 20),
     hold(SP_EM, 10)
-  ],
+  ]
 },
-
 {
   level: 9,
   metaFlat: {
@@ -728,16 +837,17 @@ export const GAME_LEVELS = [
     isWealthPlan: true,
     modelNo: 6, // Insert actual Deutsche Bank modelNo
     sendToMyWealth: true,
-    rules: [
-      "Construct the Deutsche Bank Aggressive portfolio.",
-      "Combine seven funds across bonds and equities.",
-      "Allocate 35% to US equities.",
-    ],
-    rulesDa: [
-      "Sammensæt Deutsche Bank Aggressive-porteføljen.",
-      "Kombinér syv fonde på tværs af obligationer og aktier.",
-      "Fordel 35 % til amerikanske aktier.",
-    ],
+rules: [
+  "Construct the Deutsche Bank Aggressive portfolio.",
+  "Select seven funds from the Deutsche Bank investment universe.",
+  "Allocate 80% to Equity Funds and 20% to Bonds. Exclude funds from competing providers."
+],
+
+rulesDa: [
+  "Sammensæt Deutsche Bank Aggressive-porteføljen.",
+  "Vælg syv fonde fra Deutsche Banks investeringsunivers.",
+  "Fordel 80 % til aktiefonde og 20 % til obligationer. Udelad fonde fra konkurrerende udbydere."
+],
   },
   holdings: [
     hold(DE_GOV_BONDS, 10),
@@ -748,29 +858,40 @@ export const GAME_LEVELS = [
     hold(DE_EUROPE, 20),
     hold(DE_EM, 10)
   ],
+
+   decoys: [
+  DB_USA,
+  SP_US
+],
 },
 
 {
   level: 10,
+
   metaFlat: {
     title: "Neptoon Oppenheimer",
     titleDa: "Neptoon Oppenheimer",
+
     description: "The final seven-investment challenge.",
     descriptionDa: "Den sidste udfordring med syv investeringer.",
+
     isWealthPlan: true,
     modelNo: 7,
     sendToMyWealth: true,
+
     rules: [
       "Construct the Neptoon Oppenheimer portfolio.",
-      "Combine global equities, Bitcoin and leveraged investments.",
-      "Allocate 30% to the largest position.",
+      "Combine Equity Funds, Single Stocks and Alternatives, including Bitcoin and leveraged investments.",
+      "Build seven positions with no Government Bonds or Credit Bonds. The largest position represents 30%."
     ],
+
     rulesDa: [
       "Sammensæt Neptoon Oppenheimer-porteføljen.",
-      "Kombinér globale aktier, Bitcoin og gearede investeringer.",
-      "Fordel 30 % til den største position.",
-    ],
+      "Kombinér aktiefonde, enkeltaktier og alternative investeringer, herunder Bitcoin og gearede investeringer.",
+      "Sammensæt syv positioner uden stats- eller kreditobligationer. Den største position udgør 30 %."
+    ]
   },
+
   holdings: [
     hold(OPP_WORLD, 30),
     hold(OPP_EM, 15),
@@ -780,7 +901,14 @@ export const GAME_LEVELS = [
     hold(NVDA, 5),
     hold(OPP_AVGO, 5)
   ],
-}
+
+  decoys: [
+    AAPL,
+    MSFT,
+    DE_GOV_BONDS,
+    DE_IG_BONDS
+  ]
+},
 ];
 export function levelByNumber(level) {
   const found = GAME_LEVELS.find((entry) => entry.level === level);
