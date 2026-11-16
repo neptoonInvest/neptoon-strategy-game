@@ -3,83 +3,256 @@ import { percentOf } from "./score.js";
 /** Static demonstration portfolios for the ten-level prope. */
 // classNo: 100 = stocks, 5–20 = equity funds, 
 // ETF classNo values are provisional and should be checked against Neptoon data.
-const NVDA = { instrumentId: "NVDA.US", instrumentName: "NVIDIA", gameLabel: "NVDA", mediumLabel: "NVIDIA", classNo: 100 };
-const AAPL = { instrumentId: "AAPL.US", instrumentName: "Apple", gameLabel: "AAPL", mediumLabel: "Apple", classNo: 100 };
-const MSFT = { instrumentId: "MSFT.US", instrumentName: "Microsoft", gameLabel: "MSFT", mediumLabel: "Microsoft", classNo: 100 };
-const NOVO = { instrumentId: "NOVO-B.CO", instrumentName: "Novo Nordisk", gameLabel: "NOVO", mediumLabel: "Novo Nordisk", classNo: 100 };
-const TSLA = { instrumentId: "TSLA.US", instrumentName: "Tesla", gameLabel: "TSLA", mediumLabel: "Tesla", classNo: 100 };
-const EUNL2 = { instrumentId: "EUNL.XETRA", instrumentName: "iShares Core MSCI World ETF EUR", gameLabel: "EUNL", mediumLabel: "MSCI World", classNo: 17 };
-const VOO = { instrumentId: "VOO.US", instrumentName: "Vanguard S&P 500 ETF", gameLabel: "VOO", mediumLabel: "S&P 500", classNo: 8 };
-const ASML = { instrumentId: "ASML.AS", instrumentName: "ASML", gameLabel: "ASML", mediumLabel: "ASML", classNo: 100 };
-const AMZN = { instrumentId: "AMZN.US", instrumentName: "Amazon", gameLabel: "AMZN", mediumLabel: "Amazon", classNo: 100 };
-const GOOGL = { instrumentId: "GOOGL.US", instrumentName: "Alphabet", gameLabel: "GOOGL", mediumLabel: "Alphabet", classNo: 100 };
-const META = { instrumentId: "META.US", instrumentName: "Meta", gameLabel: "META", mediumLabel: "Meta", classNo: 100 };
-const LLY = { instrumentId: "LLY.US", instrumentName: "Eli Lilly", gameLabel: "LLY", mediumLabel: "Eli Lilly", classNo: 100 };
-const AVGO = { instrumentId: "AVGO.US", instrumentName: "Broadcom", gameLabel: "AVGO", mediumLabel: "Broadcom", classNo: 100 };
-const JNJ = { instrumentId: "JNJ.US", instrumentName: "Johnson & Johnson", gameLabel: "JNJ", mediumLabel: "J&J", classNo: 100 };
-const NESN = { instrumentId: "NESN.SW", instrumentName: "Nestlé", gameLabel: "NESN", mediumLabel: "Nestlé", classNo: 100 };
-const SAP = { instrumentId: "SAP.DE", instrumentName: "SAP", gameLabel: "SAP", mediumLabel: "SAP", classNo: 100 };
-const LVMH = { instrumentId: "MC.PA", instrumentName: "LVMH", gameLabel: "LVMH", mediumLabel: "LVMH", classNo: 100 };
-const SHEL = { instrumentId: "SHEL.L", instrumentName: "Shell", gameLabel: "SHEL", mediumLabel: "Shell", classNo: 100 };
-const VEU = { instrumentId: "VEU.US", instrumentName: "Vanguard FTSE All-World ex-US ETF", gameLabel: "VEU", mediumLabel: "All-World ex-US", classNo: 17 };
-const GLD = { instrumentId: "GLD.US", instrumentName: "SPDR Gold Shares", gameLabel: "GLD", mediumLabel: "Gold", classNo: 22 };
-const QQQ = { instrumentId: "QQQ.US", instrumentName: "Invesco QQQ Trust", gameLabel: "QQQ", mediumLabel: "Nasdaq 100", classNo: 8 };
-const CARLSBERG = { instrumentId: "CARL-B.CO", instrumentName: "Carlsberg B", gameLabel: "CARL B", mediumLabel: "Carlsberg B", classNo: 100 };
+/* ============================================
+   NEPTOON · BILINGUAL INSTRUMENT DEFINITIONS
+   ============================================ */
+
+const NVDA = {
+  instrumentId: "NVDA.US", instrumentName: "NVIDIA",
+  gameLabel: "NVDA", mediumLabel: "NVIDIA", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const AAPL = {
+  instrumentId: "AAPL.US", instrumentName: "Apple",
+  gameLabel: "AAPL", mediumLabel: "Apple", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const MSFT = {
+  instrumentId: "MSFT.US", instrumentName: "Microsoft",
+  gameLabel: "MSFT", mediumLabel: "Microsoft", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const NOVO = {
+  instrumentId: "NOVO-B.CO", instrumentName: "Novo Nordisk",
+  gameLabel: "NOVO", mediumLabel: "Novo Nordisk", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const TSLA = {
+  instrumentId: "TSLA.US", instrumentName: "Tesla",
+  gameLabel: "TSLA", mediumLabel: "Tesla", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const EUNL2 = {
+  instrumentId: "EUNL.XETRA", instrumentName: "iShares Core MSCI World ETF EUR",
+  gameLabel: "EUNL", mediumLabel: "MSCI World", classNo: 17,
+  classMajorTop: "Global Equities", classMajorTopDa: "Globale aktier",
+  typeLabel: "ETF", typeLabelDa: "ETF"
+};
+
+const VOO = {
+  instrumentId: "VOO.US", instrumentName: "Vanguard S&P 500 ETF",
+  gameLabel: "VOO", mediumLabel: "S&P 500", classNo: 8,
+  classMajorTop: "US Equities", classMajorTopDa: "Amerikanske aktier",
+  typeLabel: "ETF", typeLabelDa: "ETF"
+};
+
+const ASML = {
+  instrumentId: "ASML.AS", instrumentName: "ASML",
+  gameLabel: "ASML", mediumLabel: "ASML", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const AMZN = {
+  instrumentId: "AMZN.US", instrumentName: "Amazon",
+  gameLabel: "AMZN", mediumLabel: "Amazon", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const GOOGL = {
+  instrumentId: "GOOGL.US", instrumentName: "Alphabet",
+  gameLabel: "GOOGL", mediumLabel: "Alphabet", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const META = {
+  instrumentId: "META.US", instrumentName: "Meta",
+  gameLabel: "META", mediumLabel: "Meta", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const LLY = {
+  instrumentId: "LLY.US", instrumentName: "Eli Lilly",
+  gameLabel: "LLY", mediumLabel: "Eli Lilly", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const AVGO = {
+  instrumentId: "AVGO.US", instrumentName: "Broadcom",
+  gameLabel: "AVGO", mediumLabel: "Broadcom", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const JNJ = {
+  instrumentId: "JNJ.US", instrumentName: "Johnson & Johnson",
+  gameLabel: "JNJ", mediumLabel: "J&J", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const NESN = {
+  instrumentId: "NESN.SW", instrumentName: "Nestlé",
+  gameLabel: "NESN", mediumLabel: "Nestlé", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const SAP = {
+  instrumentId: "SAP.DE", instrumentName: "SAP",
+  gameLabel: "SAP", mediumLabel: "SAP", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const LVMH = {
+  instrumentId: "MC.PA", instrumentName: "LVMH",
+  gameLabel: "LVMH", mediumLabel: "LVMH", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const SHEL = {
+  instrumentId: "SHEL.L", instrumentName: "Shell",
+  gameLabel: "SHEL", mediumLabel: "Shell", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
+
+const VEU = {
+  instrumentId: "VEU.US", instrumentName: "Vanguard FTSE All-World ex-US ETF",
+  gameLabel: "VEU", mediumLabel: "All-World ex-US", classNo: 17,
+  classMajorTop: "Global Equities", classMajorTopDa: "Globale aktier",
+  typeLabel: "ETF", typeLabelDa: "ETF"
+};
+
+const GLD = {
+  instrumentId: "GLD.US", instrumentName: "SPDR Gold Shares",
+  gameLabel: "GLD", mediumLabel: "Gold", classNo: 22,
+  classMajorTop: "Gold", classMajorTopDa: "Guld",
+  typeLabel: "ETF", typeLabelDa: "ETF"
+};
+
+const QQQ = {
+  instrumentId: "QQQ.US", instrumentName: "Invesco QQQ Trust",
+  gameLabel: "QQQ", mediumLabel: "Nasdaq 100", classNo: 8,
+  classMajorTop: "US Equities", classMajorTopDa: "Amerikanske aktier",
+  typeLabel: "ETF", typeLabelDa: "ETF"
+};
+
+const CARLSBERG = {
+  instrumentId: "CARL-B.CO", instrumentName: "Carlsberg B",
+  gameLabel: "CARL B", mediumLabel: "Carlsberg B", classNo: 100,
+  classMajorTop: "", classMajorTopDa: "",
+  typeLabel: "Stock", typeLabelDa: "Aktie"
+};
 /* =====================================================
    NEPTOON STRATEGY GAME · EXTENDED INVESTMENT UNIVERSE
+   BILINGUAL CLASSIFICATION · EN / DA
 ===================================================== */
 
 /* GOVERNMENT BONDS */
- const LYQ2 = {
+
+const LYQ2 = {
   instrumentId: "LYQ2.XETRA",
   instrumentName: "Amundi Euro Government Bond 1-3Y UCITS ETF Acc",
   gameLabel: "LYQ2",
   mediumLabel: "Euro Gov Bonds 1-3Y",
-  classNo: 1
+  classNo: 1,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 /* CORPORATE BONDS */
+
 const EUNW = {
   instrumentId: "EUNW.XETRA",
   instrumentName: "iShares EUR High Yield Corporate Bond UCITS ETF EUR (Dist)",
   gameLabel: "EUNW",
   mediumLabel: "EUR High Yield Bonds",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 /* NORDIC EQUITIES */
+
 const XDN0 = {
   instrumentId: "XDN0.XETRA",
   instrumentName: "Xtrackers MSCI Nordic",
   gameLabel: "XDN0",
   mediumLabel: "Nordic Equities",
-  classNo: 5
+  classNo: 5,
+
+  classMajorTop: "Nordic Equities",
+  classMajorTopDa: "Nordiske aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 /* BRAZILIAN EQUITIES */
+
 const BRZ4 = {
   instrumentId: "4BRZ.XETRA",
   instrumentName: "iShares MSCI Brazil UCITS ETF (DE) USD (Acc)",
   gameLabel: "4BRZ",
   mediumLabel: "Brazil Equities",
-  classNo: 16
+  classNo: 16,
+
+  classMajorTop: "Emerging Markets",
+  classMajorTopDa: "Nye markeder",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 /* GLOBAL EQUITIES */
+
 const EUNL = {
   instrumentId: "EUNL.XETRA",
   instrumentName: "iShares Core MSCI World UCITS ETF USD (Acc)",
   gameLabel: "EUNL",
   mediumLabel: "MSCI World",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Global Equities",
+  classMajorTopDa: "Globale aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
+
+/* INDIVIDUAL STOCKS */
 
 const PEP = {
   instrumentId: "PEP.US",
   instrumentName: "PepsiCo Inc.",
   gameLabel: "PEPSI",
   mediumLabel: "PepsiCo",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
 
 const MCD = {
@@ -87,7 +260,12 @@ const MCD = {
   instrumentName: "McDonald's Corporation",
   gameLabel: "MCD",
   mediumLabel: "McDonald's",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
 
 const KO = {
@@ -95,66 +273,111 @@ const KO = {
   instrumentName: "The Coca-Cola Company",
   gameLabel: "COCA-COLA",
   mediumLabel: "Coca-Cola",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
 
 /* GOLD */
+
 const PSG8 = {
   instrumentId: "8PSG.XETRA",
   instrumentName: "Invesco Physical Gold A",
   gameLabel: "8PSG",
   mediumLabel: "Physical Gold",
-  classNo: 22
+  classNo: 22,
+
+  classMajorTop: "Alternatives",
+  classMajorTopDa: "Alternativer",
+  typeLabel: "Gold ETC",
+  typeLabelDa: "Guld ETC"
 };
 
 /* REAL ESTATE EQUITIES */
+
 const IQQ6 = {
   instrumentId: "IQQ6.XETRA",
   instrumentName: "iShares Developed Markets Property Yield UCITS ETF",
   gameLabel: "IQQ6",
   mediumLabel: "Global Property",
-  classNo: 18
+  classNo: 18,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 /* BITCOIN */
+
 const WBIT = {
   instrumentId: "WBIT.XETRA",
   instrumentName: "WisdomTree Physical Bitcoin",
   gameLabel: "WBIT",
   mediumLabel: "Bitcoin",
-  classNo: 23
+  classNo: 23,
+
+  classMajorTop: "Alternatives",
+  classMajorTopDa: "Alternativer",
+  typeLabel: "ETP",
+  typeLabelDa: "ETP"
 };
 
 /* EUROPEAN DEFENCE EQUITIES */
+
 const EUDF = {
   instrumentId: "EUDF.XETRA",
   instrumentName: "WisdomTree Europe Defence UCITS ETF EUR Unhedged Acc",
   gameLabel: "EUDF",
   mediumLabel: "Europe Defence",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Equities",
+  classMajorTopDa: "Aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 /* LEVERAGED US EQUITIES */
+
 const DBPG = {
   instrumentId: "DBPG.XETRA",
   instrumentName: "Xtrackers S&P 500 2x Leveraged Daily Swap UCITS ETF 1C",
   gameLabel: "DBPG",
-  mediumLabel: "S&P 500 2x",
-  classNo: 8
+  mediumLabel: "S&P 500 Leveraged X2",
+  classNo: 8,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
+
 /* =====================================================
    NEPTOON · WEALTH PLAN INSTRUMENTS
    Temporary instrumentId = ISIN
 ===================================================== */
-
 /* NEPTOON OPPENHEIMER */
+
+/* =====================================================
+   NEPTOON OPPENHEIMER
+   BILINGUAL INSTRUMENT CLASSIFICATION
+===================================================== */
 
 const OPP_WORLD = {
   instrumentId: "IE00B4L5Y983",
   instrumentName: "iShares Core MSCI World UCITS ETF USD (Acc)",
   gameLabel: "WORLD",
   mediumLabel: "MSCI World",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const OPP_EM = {
@@ -162,7 +385,12 @@ const OPP_EM = {
   instrumentName: "iShares Core MSCI Emerging Markets",
   gameLabel: "EM",
   mediumLabel: "Emerging Markets",
-  classNo: 14
+  classNo: 14,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const OPP_BTC = {
@@ -170,7 +398,12 @@ const OPP_BTC = {
   instrumentName: "WisdomTree Physical Bitcoin",
   gameLabel: "BTC",
   mediumLabel: "Bitcoin",
-  classNo: 23
+  classNo: 23,
+
+  classMajorTop: "Alternatives",
+  classMajorTopDa: "Alternativer",
+  typeLabel: "Bitcoin ETP",
+  typeLabelDa: "Bitcoin ETP"
 };
 
 const OPP_AI = {
@@ -178,7 +411,12 @@ const OPP_AI = {
   instrumentName: "Xtrackers Artificial Intelligence & Big Data",
   gameLabel: "AI",
   mediumLabel: "AI & Big Data",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const OPP_SP2X = {
@@ -186,7 +424,12 @@ const OPP_SP2X = {
   instrumentName: "Xtrackers S&P 500 2x Leveraged Daily Swap",
   gameLabel: "SP2X",
   mediumLabel: "S&P 500 2x",
-  classNo: 8
+  classNo: 8,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const OPP_AVGO = {
@@ -194,18 +437,31 @@ const OPP_AVGO = {
   instrumentName: "Broadcom Inc",
   gameLabel: "AVGO",
   mediumLabel: "Broadcom",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
 
 
-/* SPARINDEX DEFENSIVE */
+/* =====================================================
+   SPARINDEX DEFENSIVE
+   BILINGUAL INSTRUMENT CLASSIFICATION
+===================================================== */
 
 const SP_NYK_BOND = {
   instrumentId: "DK0063181698",
   instrumentName: "Nykredit Invest Lange Obligationer",
   gameLabel: "NYK",
   mediumLabel: "Nykredit Bonds",
-  classNo: 1
+  classNo: 1,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SP_SYD_IG = {
@@ -213,7 +469,12 @@ const SP_SYD_IG = {
   instrumentName: "Sydinvest Virksomhedsobligationer IG",
   gameLabel: "IG",
   mediumLabel: "Corporate Bonds IG",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SP_SYD_HY = {
@@ -221,7 +482,12 @@ const SP_SYD_HY = {
   instrumentName: "Sydinvest Virksomhedsobligationer HY",
   gameLabel: "HY",
   mediumLabel: "Corporate Bonds HY",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SP_DK = {
@@ -229,7 +495,12 @@ const SP_DK = {
   instrumentName: "Sydinvest Indeks Danmark",
   gameLabel: "DK",
   mediumLabel: "Denmark Equity",
-  classNo: 5
+  classNo: 5,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SP_US = {
@@ -237,7 +508,12 @@ const SP_US = {
   instrumentName: "Sydinvest USA Value",
   gameLabel: "USA",
   mediumLabel: "USA Value",
-  classNo: 8
+  classNo: 8,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SP_EU = {
@@ -245,7 +521,12 @@ const SP_EU = {
   instrumentName: "Sydinvest Europa Value",
   gameLabel: "EU",
   mediumLabel: "Europe Value",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SP_EM = {
@@ -253,18 +534,30 @@ const SP_EM = {
   instrumentName: "Sydinvest Globale Emerging Aktier",
   gameLabel: "EM",
   mediumLabel: "Emerging Equities",
-  classNo: 14
+  classNo: 14,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
-
-
 /* SYDBANK AGGRESSIVE */
+
+/* =====================================================
+   SYDBANK AGGRESSIVE
+===================================================== */
 
 const SYD_GOV = {
   instrumentId: "LU1287023185",
   instrumentName: "Amundi Euro Government Bond 7-10Y",
   gameLabel: "GOV",
   mediumLabel: "Euro Gov Bonds",
-  classNo: 1
+  classNo: 1,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const SYD_CORP = {
@@ -272,7 +565,12 @@ const SYD_CORP = {
   instrumentName: "iShares Core EUR Corporate Bond",
   gameLabel: "CORP",
   mediumLabel: "EUR Corporate Bonds",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const SYD_HY = {
@@ -280,7 +578,12 @@ const SYD_HY = {
   instrumentName: "iShares EUR High Yield",
   gameLabel: "HY",
   mediumLabel: "EUR High Yield",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const SYD_DK = {
@@ -288,7 +591,12 @@ const SYD_DK = {
   instrumentName: "Sparindex OMX C25 KL",
   gameLabel: "C25",
   mediumLabel: "OMX C25",
-  classNo: 5
+  classNo: 5,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SYD_US = {
@@ -296,7 +604,12 @@ const SYD_US = {
   instrumentName: "Sparindex USA Growth KL",
   gameLabel: "USA",
   mediumLabel: "USA Growth",
-  classNo: 8
+  classNo: 8,
+
+  classMajorTop: "US Equities",
+  classMajorTopDa: "Amerikanske aktier",
+ typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SYD_EU = {
@@ -304,7 +617,12 @@ const SYD_EU = {
   instrumentName: "Sparindex STOXX Europe 600",
   gameLabel: "EU",
   mediumLabel: "Europe 600",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "European Equities",
+  classMajorTopDa: "Europæiske aktier",
+ typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const SYD_EM = {
@@ -312,8 +630,14 @@ const SYD_EM = {
   instrumentName: "Sparindex Emerging Markets KL",
   gameLabel: "EM",
   mediumLabel: "Emerging Markets",
-  classNo: 14
+  classNo: 14,
+
+  classMajorTop: "Emerging Markets",
+  classMajorTopDa: "Nye markeder",
+ typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
+
 
 /* =====================================================
    NEPTOON BOHR · CAPITAL PRESERVATION
@@ -324,7 +648,12 @@ const BOHR_SHORT_BONDS = {
   instrumentName: "Nykredit Invest Korte Obligationer",
   gameLabel: "SHORT",
   mediumLabel: "Short Bonds",
-  classNo: 1
+  classNo: 1,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+ typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const BOHR_CORP = {
@@ -332,7 +661,12 @@ const BOHR_CORP = {
   instrumentName: "iShares Core EUR Corporate Bond (IG)",
   gameLabel: "CORP",
   mediumLabel: "Corporate Bonds",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const BOHR_HY = {
@@ -340,7 +674,12 @@ const BOHR_HY = {
   instrumentName: "iShares EUR High Yield (High Yield)",
   gameLabel: "HY",
   mediumLabel: "High Yield Bonds",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const BOHR_EM_BONDS = {
@@ -348,7 +687,12 @@ const BOHR_EM_BONDS = {
   instrumentName: "JPM USD Emerging Bonds",
   gameLabel: "EMB",
   mediumLabel: "Emerging Bonds",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const BOHR_COMMODITY = {
@@ -356,7 +700,12 @@ const BOHR_COMMODITY = {
   instrumentName: "Amundi Bloomberg Equal-weight Commodity",
   gameLabel: "CMDTY",
   mediumLabel: "Commodities",
-  classNo: 22
+  classNo: 22,
+
+  classMajorTop: "Alternatives",
+  classMajorTopDa: "Alternativer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const BOHR_GOLD = {
@@ -364,7 +713,12 @@ const BOHR_GOLD = {
   instrumentName: "Invesco Physical Gold A",
   gameLabel: "GOLD",
   mediumLabel: "Physical Gold",
-  classNo: 22
+  classNo: 22,
+
+  classMajorTop: "Alternatives",
+  classMajorTopDa: "Alternativer",
+  typeLabel: "ETC",
+  typeLabelDa: "ETC"
 };
 
 const BOHR_PROPERTY = {
@@ -372,7 +726,12 @@ const BOHR_PROPERTY = {
   instrumentName: "iShares Developed Markets Property",
   gameLabel: "REIT",
   mediumLabel: "Global Property",
-  classNo: 18
+  classNo: 18,
+
+  classMajorTop: "Alternatives",
+  classMajorTopDa: "Alternativer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const BOHR_SPACE = {
@@ -380,8 +739,14 @@ const BOHR_SPACE = {
   instrumentName: "Space Exploration Technologies Corp.",
   gameLabel: "SPACE",
   mediumLabel: "SpaceX",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
+
 
 /* =====================================================
    LEVEL 7 · DANSKE BANK GENERIC AGGRESSIVE
@@ -392,7 +757,12 @@ const DB_LONG_BONDS = {
   instrumentName: "Danske Lange Obligationer",
   gameLabel: "DB LONG",
   mediumLabel: "Long Bonds",
-  classNo: 1
+  classNo: 1,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DB_IG_BONDS = {
@@ -400,7 +770,12 @@ const DB_IG_BONDS = {
   instrumentName: "DB Euro Investment Grade-Obligationer",
   gameLabel: "DB IG",
   mediumLabel: "Investment Grade",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DB_HY_BONDS = {
@@ -408,7 +783,12 @@ const DB_HY_BONDS = {
   instrumentName: "DB Euro High Yield-Obligationer",
   gameLabel: "DB HY",
   mediumLabel: "High Yield",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+   typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DB_DENMARK = {
@@ -416,7 +796,12 @@ const DB_DENMARK = {
   instrumentName: "DB Danmark Fokus",
   gameLabel: "DB DK",
   mediumLabel: "Denmark Equity",
-  classNo: 5
+  classNo: 5,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DB_USA = {
@@ -424,7 +809,12 @@ const DB_USA = {
   instrumentName: "Danske Invest USA Restricted",
   gameLabel: "DB USA",
   mediumLabel: "USA Equity",
-  classNo: 8
+  classNo: 8,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DB_EUROPE = {
@@ -432,7 +822,12 @@ const DB_EUROPE = {
   instrumentName: "Danske Invest Europa",
   gameLabel: "DB EU",
   mediumLabel: "Europe Equity",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DB_EM = {
@@ -440,7 +835,12 @@ const DB_EM = {
   instrumentName: "Danske Invest Nye Markeder",
   gameLabel: "DB EM",
   mediumLabel: "Emerging Markets",
-  classNo: 14
+  classNo: 14,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DANSKE = {
@@ -448,7 +848,12 @@ const DANSKE = {
   instrumentName: "Danske Bank A/S",
   gameLabel: "DANSKE",
   mediumLabel: "Danske Bank",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
 
 const CBK = {
@@ -456,25 +861,43 @@ const CBK = {
   instrumentName: "Commerzbank AG",
   gameLabel: "COMMERZ",
   mediumLabel: "Commerzbank",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
+
 
 /* =====================================================
    LEVEL 9 · DEUTSCHE BANK AGGRESSIVE
 ===================================================== */
+
 const HEIA = {
   instrumentId: "HEIA.AS",
   instrumentName: "Heineken N.V.",
   gameLabel: "HEINEKEN",
   mediumLabel: "Heineken",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
+
 const RBREW = {
   instrumentId: "RBREW.CO",
   instrumentName: "Royal Unibrew A/S",
   gameLabel: "ROYAL",
   mediumLabel: "Royal Unibrew",
-  classNo: 100
+  classNo: 100,
+
+  classMajorTop: "",
+  classMajorTopDa: "",
+  typeLabel: "Stock",
+  typeLabelDa: "Aktie"
 };
 
 const DE_GOV_BONDS = {
@@ -482,7 +905,12 @@ const DE_GOV_BONDS = {
   instrumentName: "Amundi Euro Government Bond 7-10Y",
   gameLabel: "DE GOV",
   mediumLabel: "Euro Gov Bonds",
-  classNo: 1
+  classNo: 1,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "ETF",
+  typeLabelDa: "ETF"
 };
 
 const DE_IG_BONDS = {
@@ -490,7 +918,12 @@ const DE_IG_BONDS = {
   instrumentName: "DWS Invest ESG Euro Corporate Bonds",
   gameLabel: "DE IG",
   mediumLabel: "Corporate Bonds",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DE_HY_BONDS = {
@@ -498,7 +931,12 @@ const DE_HY_BONDS = {
   instrumentName: "DWS Invest ESG Euro High Yield",
   gameLabel: "DE HY",
   mediumLabel: "High Yield",
-  classNo: 3
+  classNo: 3,
+
+  classMajorTop: "Bonds",
+  classMajorTopDa: "Obligationer",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DE_GERMANY = {
@@ -506,7 +944,12 @@ const DE_GERMANY = {
   instrumentName: "DWS Aktien Strategie Deutschland",
   gameLabel: "DE GER",
   mediumLabel: "Germany Equity",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DE_USA = {
@@ -514,7 +957,12 @@ const DE_USA = {
   instrumentName: "DWS Invest CROCI US USD",
   gameLabel: "DE USA",
   mediumLabel: "USA Equity",
-  classNo: 8
+  classNo: 8,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DE_EUROPE = {
@@ -522,7 +970,12 @@ const DE_EUROPE = {
   instrumentName: "DWS Invest Focus Europe",
   gameLabel: "DE EU",
   mediumLabel: "Europe Equity",
-  classNo: 17
+  classNo: 17,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 const DE_EM = {
@@ -530,7 +983,12 @@ const DE_EM = {
   instrumentName: "DWS Invest ESG Global Em Mkts Eqs FC",
   gameLabel: "DE EM",
   mediumLabel: "Emerging Markets",
-  classNo: 14
+  classNo: 14,
+
+  classMajorTop: "Equity",
+  classMajorTopDa: "Aktier",
+  typeLabel: "Mutual Fund",
+  typeLabelDa: "InvestFond"
 };
 
 function hold(instrument, percent) {
