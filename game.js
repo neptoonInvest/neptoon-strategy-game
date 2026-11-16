@@ -5,15 +5,37 @@ import { viewPortfolio } from "./portfolio.js";
 import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, evaluateStrategy, targetWeights, } from "./score.js";
 import { clearSave, loadSave, writeSave } from "./storage.js";
 import { getGameText } from "./i18n.js";
+
 function getColor(classNo) {
+
     const n = Number(classNo);
-    if (n === 100) return "#D94B55";
-    if (n === 22) return "#D4AF37";
-    if (n === 23) return "#C0C0C0";
-    if (n >= 5 && n <= 20) return "#4E79BD";
-    if (n >= 1 && n <= 4) return "#8B98AA";
+
+    // Individual stocks
+    if (n === 100)
+        return "#D94B55";
+
+    // Equity Funds: 5–19 and 25–28
+    if ((n >= 5 && n <= 19) || (n >= 25 && n <= 28))
+       return "#2FA89B"; // Equity Funds — muted teal
+
+    // Government Bonds: 0–1
+    if (n >= 0 && n <= 1)
+        return "#8B98AA";
+
+    // Credit Bonds: 2–4
+    if (n >= 2 && n <= 4)
+        return "#6EC6ED";
+
+    // Alternatives: 20–24
+    if (n >= 20 && n <= 24)
+        return "#D4AF37";
+
+    // Fallback
     return "#6EC6ED";
+
 }
+
+
 function shuffle(list, seed) {
     const copy = list.slice();
     let state = seed % 2147483647 || 1;
