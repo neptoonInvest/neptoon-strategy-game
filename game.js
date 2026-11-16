@@ -983,10 +983,6 @@ for (const id of tray) {
 
         applyLabel(el, instrument, "tray");
 
-        const target =
-            targetWeights(level().holdings)
-                .get(instrument.instrumentId);
-
 const target =
     targetWeights(level().holdings)
         .get(instrument.instrumentId) ?? 0;
