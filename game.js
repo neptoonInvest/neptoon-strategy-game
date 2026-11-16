@@ -201,7 +201,6 @@ export function mountGame(root, options = {}) {
         <div class="allocation-segment bitcoin" data-allocation-bitcoin></div>
       </div>
 
-
 <div class="allocation-legend">
 
   <div class="allocation-item stocks">
@@ -213,29 +212,28 @@ export function mountGame(root, options = {}) {
   <div class="allocation-item equity">
     <span class="allocation-icon">▤</span>
     <strong data-weight-equity>0%</strong>
-    <small>Funds</small>
+    <small>Equity Funds</small>
   </div>
 
   <div class="allocation-item bonds">
     <span class="allocation-icon">▰</span>
     <strong data-weight-bonds>0%</strong>
-    <small>Bonds</small>
+    <small>Gov Bonds</small>
   </div>
 
   <div class="allocation-item gold">
-    <span class="allocation-icon">◆</span>
+    <span class="allocation-icon">▰</span>
     <strong data-weight-gold>0%</strong>
-    <small>Gold</small>
+    <small>Credit Bonds</small>
   </div>
 
   <div class="allocation-item bitcoin">
-    <span class="allocation-icon">₿</span>
+    <span class="allocation-icon">◆</span>
     <strong data-weight-bitcoin>0%</strong>
-    <small>Bitcoin</small>
+    <small>Alternatives</small>
   </div>
 
-</div>
-    
+</div>    
 
 
 
@@ -280,6 +278,8 @@ export function mountGame(root, options = {}) {
     toast.hidden = true;
     toast.setAttribute("role", "status");
     shell.append(start, play, scrim, toast);
+
+
     function renderStaticText() {
         root.lang = lang;
         start.querySelector(".display").innerHTML = t("display");
@@ -295,10 +295,43 @@ export function mountGame(root, options = {}) {
 
         play.querySelector(".mandate-title").textContent = t("strategy");
         play.querySelector(".allocation-header span:first-child").textContent = t("allocation");
-        for (const key of ["stocks", "equity", "bonds", "gold", "bitcoin"]) {
-            const item = play.querySelector(`.allocation-item.${key} small`);
-            if (item) item.textContent = t(key === "equity" ? "funds" : key);
-        }
+     
+
+
+const allocationLabels = {
+
+    en: {
+        stocks: "Stocks",
+        equity: "Equity Funds",
+        bonds: "Gov Bonds",
+        gold: "Credit Bonds",
+        bitcoin: "Alternatives"
+    },
+
+    da: {
+        stocks: "Aktier",
+        equity: "Aktiefonde",
+        bonds: "Statsobl.",
+        gold: "Kreditobl.",
+        bitcoin: "Alternativer"
+    }
+
+};
+
+for (const [key, label] of Object.entries(allocationLabels[lang])) {
+
+    const item =
+        play.querySelector(`.allocation-item.${key} small`);
+
+    if (item) {
+        item.textContent = label;
+    }
+
+}
+
+
+
+
         coachEl.textContent = t("dragInstruction");
         bannerEl.textContent = t("masterpiece");
         play.querySelector("[data-next]").textContent = t("nextLevel");
