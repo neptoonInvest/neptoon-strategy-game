@@ -1252,3 +1252,26 @@ button:focus-visible,
 .game-root .allocation-item.bitcoin .allocation-icon {
     color: #C0C0C0;
 }
+
+/* =====================================
+   NEPTOON — ASSET CLASS BACKGROUNDS
+   ===================================== */
+
+.game-root .piece {
+    background:
+        linear-gradient(
+            135deg,
+            color-mix(
+                in srgb,
+                var(--asset-tint, #4E79BD) 38%,
+                #071631
+            ) 0%,
+            color-mix(
+                in srgb,
+                var(--asset-tint, #4E79BD) 16%,
+                #071631
+            ) 100%
+        );
+
+    color: #FFFFFF;
+}
