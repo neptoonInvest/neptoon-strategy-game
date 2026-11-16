@@ -1338,3 +1338,111 @@ button:focus-visible,
   line-height: 1;
 }
 
+/* ============================================
+   NEPTOON — FINAL CARD TYPOGRAPHY
+   Portfolio + Investment Tray
+   ============================================ */
+
+
+/* 01 · OCCUPIED PORTFOLIO WEIGHTS */
+
+.game-root .piece:not(.mode-tray) .weight {
+  position: absolute;
+
+  top: 5px;
+  right: 6px;
+  bottom: auto;
+  left: auto;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+
+/* 02 · SMALL PORTFOLIO SLOTS */
+
+.game-root .piece.mode-short:not(.mode-tray) .weight {
+  top: 3px;
+  right: 3px;
+
+  background: transparent;
+  padding: 0;
+
+  font-size: clamp(10px, 16cqmin, 12px);
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+
+/* 03 · AVAILABLE INVESTMENT WEIGHTS */
+
+.game-root .piece.mode-tray .weight {
+  position: absolute;
+
+  top: auto;
+  right: 7px;
+  bottom: 6px;
+  left: auto;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+
+  color: #A8B9D1;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+
+/* 04 · PREVENT TRAY NAME / WEIGHT OVERLAP */
+
+.game-root .piece.mode-tray .sub {
+  max-width: calc(100% - 30px);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* 05 · COMPACT TRAY TICKER LABELS */
+
+.game-root .piece.mode-tray .ticker {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+
+/* 06 · COMPACT TRAY INSTRUMENT NAMES */
+
+.game-root .piece.mode-tray .sub {
+  font-size: 10px;
+  line-height: 1.2;
+  color: #E4F3FC;
+}
+
+
+/* 07 · KEEP WEIGHTS CLEAR OF CARD CONTENT */
+
+.game-root .piece .weight {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
