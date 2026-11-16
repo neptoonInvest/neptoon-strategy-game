@@ -245,18 +245,28 @@ export function mountGame(root, options = {}) {
         <p class="banner" data-banner hidden>THE MASTERPIECE</p>
       </div>
     </div>
-    <div class="tray" data-tray>
-      <p class="tray-label" data-tray-label>Investments</p>
-      <div class="tray-grid" data-tray-grid></div>
-    </div>
+
+<div class="tray" data-tray>
+  <p class="tray-label" data-tray-label>Investments</p>
+  <p class="tray-instrument-name" id="trayInstrumentName"></p>
+  <div class="tray-grid" data-tray-grid></div>
+</div>
+
     <div class="victory" data-victory hidden>
       <div class="crown" data-crown hidden>${iconCrown()}</div>
+
+<div class="victory-stars" aria-hidden="true">
+  <span>♛</span>
+  <span>♛</span>
+  <span>♛</span>
+</div>
+
       <p class="victory-kicker" data-victory-kicker></p>
       <h2 class="victory-title" data-victory-title></h2>
       <p class="mix" data-mix></p>
       <button type="button" class="play-btn" data-next>NEXT LEVEL</button>
       <button type="button" class="play-btn" data-replay hidden>REPLAY FROM LEVEL 1</button>
-      <button type="button" class="ghost-btn" data-portfolio hidden>VIEW PORTFOLIO</button>
+      <button type="button" class="ghost-btn" data-portfolio hidden>ADD TO MYWEALTH</button>
       <button type="button" class="text-btn" data-title hidden>Back to title</button>
     </div>
   `;
@@ -894,6 +904,34 @@ slot.addEventListener("click", event => {
         const first = animate ? new Map(nodes.map((node) => [node, node.getBoundingClientRect()])) : null;
         trayLabel.textContent =
             solved && tray.length > 0 ? t("leftOut") : tray.length === 0 ? t("allPlacedLabel") : t("investments");
+
+
+const selectedInstrument =
+    selectedId
+        ? instruments.get(selectedId)
+        : null;
+
+const instrumentNameEl =
+    root.querySelector("#trayInstrumentName");
+
+if (instrumentNameEl) {
+
+    instrumentNameEl.textContent =
+        selectedInstrument
+            ? [
+                selectedInstrument.classMajorTop,
+                selectedInstrument.typeLabel,
+                selectedInstrument.instrumentName
+              ]
+                .filter(Boolean)
+                .join(" - ")
+            : "";
+
+}
+
+
+
+
         const columns = tray.length <= 1 ? 1 : tray.length === 2 ? 2 : tray.length === 3 ? 3 : 4;
         trayGrid.style.gridTemplateColumns = `repeat(${columns}, minmax(0, 1fr))`;
         slotEls.forEach((slot, index) => {
@@ -944,16 +982,16 @@ for (const id of tray) {
             targetWeights(level().holdings)
                 .get(instrument.instrumentId);
 
-        if (target != null) {
+const target =
+    targetWeights(level().holdings)
+        .get(instrument.instrumentId) ?? 0;
 
-            const badge = document.createElement("span");
+const badge = document.createElement("span");
 
-            badge.className = "weight";
-            badge.textContent = `${target}%`;
+badge.className = "weight";
+badge.textContent = `${target}%`;
 
-            el.appendChild(badge);
-
-        }
+el.appendChild(badge);
 
     }
 
