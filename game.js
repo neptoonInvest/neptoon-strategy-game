@@ -1033,6 +1033,7 @@ function paintSignal(flash) {
     }
 
 
+
 function applyLabel(el, instrument, mode) {
 
     el.classList.remove(
@@ -1045,10 +1046,51 @@ function applyLabel(el, instrument, mode) {
 
     el.classList.add(`mode-${mode}`);
 
-    /*
+    /* =========================================
+       DYNAMIC CARD TYPOGRAPHY
+    ========================================= */
+
+    const isBoardCard =
+        mode !== "tray" &&
+        mode !== "float";
+
+    if(isBoardCard){
+
+        const slot = el.closest(".slot");
+
+        const width =
+            slot?.clientWidth || 150;
+
+        const height =
+            slot?.clientHeight || 80;
+
+        const scale = Math.min(
+            width / 250,
+            height / 160
+        );
+
+        const fontSize = Math.max(
+            12,
+            Math.min(28, 18 * scale)
+        );
+
+        el.style.setProperty(
+            "--card-name-size",
+            `${fontSize}px`
+        );
+
+    } else {
+
+        el.style.removeProperty(
+            "--card-name-size"
+        );
+
+    }
+
+    /* =========================================
        PRIMARY LABEL
        Asset class · DA / EN
-    */
+    ========================================= */
 
     const classLabel =
         (
@@ -1059,10 +1101,10 @@ function applyLabel(el, instrument, mode) {
         instrument.classMajorTop ||
         "";
 
-    /*
+    /* =========================================
        SECONDARY LABEL
        Full instrument name
-    */
+    ========================================= */
 
     const instrumentName =
         instrument.instrumentName ||
@@ -1078,26 +1120,30 @@ function applyLabel(el, instrument, mode) {
 
     el.replaceChildren();
 
-    const primary = document.createElement("span");
+    const primary =
+        document.createElement("span");
+
     primary.className = "ticker";
     primary.textContent = classLabel;
 
-    const secondary = document.createElement("span");
+    const secondary =
+        document.createElement("span");
+
     secondary.className = "sub";
     secondary.textContent = instrumentName;
     secondary.title = instrumentName;
 
-    /*
-       ALL MODES
-       Same two-label hierarchy.
+    /* =========================================
+       APPEND LABELS
+    ========================================= */
 
-       CSS controls visibility and truncation
-       for different card dimensions.
-    */
-
-    el.append(primary, secondary);
+    el.append(
+        primary,
+        secondary
+    );
 
 }
+
 
 
     function ensurePiece(id) {
