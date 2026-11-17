@@ -1,969 +1,6 @@
 import { percentOf } from "./score.js";  
 
-/** Static demonstration portfolios for the ten-level prope. */
-// classNo: 100 = stocks, 5–20 = equity funds, 
-// ETF classNo values are provisional and should be checked against Neptoon data.
-/* ============================================
-   NEPTOON · BILINGUAL INSTRUMENT DEFINITIONS
-   ============================================ */
 
-const NVDA = {
-  instrumentId: "NVDA.US", instrumentName: "NVIDIA",
-  gameLabel: "NVDA", mediumLabel: "NVIDIA", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const AAPL = {
-  instrumentId: "AAPL.US", instrumentName: "Apple",
-  gameLabel: "AAPL", mediumLabel: "Apple", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const MSFT = {
-  instrumentId: "MSFT.US", instrumentName: "Microsoft",
-  gameLabel: "MSFT", mediumLabel: "Microsoft", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const NOVO = {
-  instrumentId: "NOVO-B.CO", instrumentName: "Novo Nordisk",
-  gameLabel: "NOVO", mediumLabel: "Novo Nordisk", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const TSLA = {
-  instrumentId: "TSLA.US", instrumentName: "Tesla",
-  gameLabel: "TSLA", mediumLabel: "Tesla", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const EUNL2 = {
-  instrumentId: "EUNL.XETRA", instrumentName: "iShares Core MSCI World ETF EUR",
-  gameLabel: "EUNL", mediumLabel: "MSCI World", classNo: 17,
-  classMajorTop: "Global Equities", classMajorTopDa: "Globale aktier",
-  typeLabel: "ETF", typeLabelDa: "ETF"
-};
-
-const VOO = {
-  instrumentId: "VOO.US", instrumentName: "Vanguard S&P 500 ETF",
-  gameLabel: "VOO", mediumLabel: "S&P 500", classNo: 8,
-  classMajorTop: "US Equities", classMajorTopDa: "Amerikanske aktier",
-  typeLabel: "ETF", typeLabelDa: "ETF"
-};
-
-const ASML = {
-  instrumentId: "ASML.AS", instrumentName: "ASML",
-  gameLabel: "ASML", mediumLabel: "ASML", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const AMZN = {
-  instrumentId: "AMZN.US", instrumentName: "Amazon",
-  gameLabel: "AMZN", mediumLabel: "Amazon", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const GOOGL = {
-  instrumentId: "GOOGL.US", instrumentName: "Alphabet",
-  gameLabel: "GOOGL", mediumLabel: "Alphabet", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const META = {
-  instrumentId: "META.US", instrumentName: "Meta",
-  gameLabel: "META", mediumLabel: "Meta", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const LLY = {
-  instrumentId: "LLY.US", instrumentName: "Eli Lilly",
-  gameLabel: "LLY", mediumLabel: "Eli Lilly", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const AVGO = {
-  instrumentId: "AVGO.US", instrumentName: "Broadcom",
-  gameLabel: "AVGO", mediumLabel: "Broadcom", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const JNJ = {
-  instrumentId: "JNJ.US", instrumentName: "Johnson & Johnson",
-  gameLabel: "JNJ", mediumLabel: "J&J", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const NESN = {
-  instrumentId: "NESN.SW", instrumentName: "Nestlé",
-  gameLabel: "NESN", mediumLabel: "Nestlé", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const SAP = {
-  instrumentId: "SAP.DE", instrumentName: "SAP",
-  gameLabel: "SAP", mediumLabel: "SAP", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const LVMH = {
-  instrumentId: "MC.PA", instrumentName: "LVMH",
-  gameLabel: "LVMH", mediumLabel: "LVMH", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const SHEL = {
-  instrumentId: "SHEL.L", instrumentName: "Shell",
-  gameLabel: "SHEL", mediumLabel: "Shell", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-
-const VEU = {
-  instrumentId: "VEU.US", instrumentName: "Vanguard FTSE All-World ex-US ETF",
-  gameLabel: "VEU", mediumLabel: "All-World ex-US", classNo: 17,
-  classMajorTop: "Global Equities", classMajorTopDa: "Globale aktier",
-  typeLabel: "ETF", typeLabelDa: "ETF"
-};
-
-const GLD = {
-  instrumentId: "GLD.US", instrumentName: "SPDR Gold Shares",
-  gameLabel: "GLD", mediumLabel: "Gold", classNo: 22,
-  classMajorTop: "Gold", classMajorTopDa: "Guld",
-  typeLabel: "ETF", typeLabelDa: "ETF"
-};
-
-const QQQ = {
-  instrumentId: "QQQ.US", instrumentName: "Invesco QQQ Trust",
-  gameLabel: "QQQ", mediumLabel: "Nasdaq 100", classNo: 8,
-  classMajorTop: "US Equities", classMajorTopDa: "Amerikanske aktier",
-  typeLabel: "ETF", typeLabelDa: "ETF"
-};
-
-const CARLSBERG = {
-  instrumentId: "CARL-B.CO", instrumentName: "Carlsberg B",
-  gameLabel: "CARL B", mediumLabel: "Carlsberg B", classNo: 100,
-  classMajorTop: "", classMajorTopDa: "",
-  typeLabel: "Stock", typeLabelDa: "Aktie"
-};
-/* =====================================================
-   NEPTOON STRATEGY GAME · EXTENDED INVESTMENT UNIVERSE
-   BILINGUAL CLASSIFICATION · EN / DA
-===================================================== */
-
-/* GOVERNMENT BONDS */
-
-const LYQ2 = {
-  instrumentId: "LYQ2.XETRA",
-  instrumentName: "Amundi Euro Government Bond 1-3Y UCITS ETF Acc",
-  gameLabel: "LYQ2",
-  mediumLabel: "Euro Gov Bonds 1-3Y",
-  classNo: 1,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* CORPORATE BONDS */
-
-const EUNW = {
-  instrumentId: "EUNW.XETRA",
-  instrumentName: "iShares EUR High Yield Corporate Bond UCITS ETF EUR (Dist)",
-  gameLabel: "EUNW",
-  mediumLabel: "EUR High Yield Bonds",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* NORDIC EQUITIES */
-
-const XDN0 = {
-  instrumentId: "XDN0.XETRA",
-  instrumentName: "Xtrackers MSCI Nordic",
-  gameLabel: "XDN0",
-  mediumLabel: "Nordic Equities",
-  classNo: 5,
-
-  classMajorTop: "Nordic Equities",
-  classMajorTopDa: "Nordiske aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* BRAZILIAN EQUITIES */
-
-const BRZ4 = {
-  instrumentId: "4BRZ.XETRA",
-  instrumentName: "iShares MSCI Brazil UCITS ETF (DE) USD (Acc)",
-  gameLabel: "4BRZ",
-  mediumLabel: "Brazil Equities",
-  classNo: 16,
-
-  classMajorTop: "Emerging Markets",
-  classMajorTopDa: "Nye markeder",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* GLOBAL EQUITIES */
-
-const EUNL = {
-  instrumentId: "EUNL.XETRA",
-  instrumentName: "iShares Core MSCI World UCITS ETF USD (Acc)",
-  gameLabel: "EUNL",
-  mediumLabel: "MSCI World",
-  classNo: 17,
-
-  classMajorTop: "Global Equities",
-  classMajorTopDa: "Globale aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* INDIVIDUAL STOCKS */
-
-const PEP = {
-  instrumentId: "PEP.US",
-  instrumentName: "PepsiCo Inc.",
-  gameLabel: "PEPSI",
-  mediumLabel: "PepsiCo",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-const MCD = {
-  instrumentId: "MCD.US",
-  instrumentName: "McDonald's Corporation",
-  gameLabel: "MCD",
-  mediumLabel: "McDonald's",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-const KO = {
-  instrumentId: "KO.US",
-  instrumentName: "The Coca-Cola Company",
-  gameLabel: "COCA-COLA",
-  mediumLabel: "Coca-Cola",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-/* GOLD */
-
-const PSG8 = {
-  instrumentId: "8PSG.XETRA",
-  instrumentName: "Invesco Physical Gold A",
-  gameLabel: "8PSG",
-  mediumLabel: "Physical Gold",
-  classNo: 22,
-
-  classMajorTop: "Alternatives",
-  classMajorTopDa: "Alternativer",
-  typeLabel: "Gold ETC",
-  typeLabelDa: "Guld ETC"
-};
-
-/* REAL ESTATE EQUITIES */
-
-const IQQ6 = {
-  instrumentId: "IQQ6.XETRA",
-  instrumentName: "iShares Developed Markets Property Yield UCITS ETF",
-  gameLabel: "IQQ6",
-  mediumLabel: "Global Property",
-  classNo: 18,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* BITCOIN */
-
-const WBIT = {
-  instrumentId: "WBIT.XETRA",
-  instrumentName: "WisdomTree Physical Bitcoin",
-  gameLabel: "WBIT",
-  mediumLabel: "Bitcoin",
-  classNo: 23,
-
-  classMajorTop: "Alternatives",
-  classMajorTopDa: "Alternativer",
-  typeLabel: "ETP",
-  typeLabelDa: "ETP"
-};
-
-/* EUROPEAN DEFENCE EQUITIES */
-
-const EUDF = {
-  instrumentId: "EUDF.XETRA",
-  instrumentName: "WisdomTree Europe Defence UCITS ETF EUR Unhedged Acc",
-  gameLabel: "EUDF",
-  mediumLabel: "Europe Defence",
-  classNo: 17,
-
-  classMajorTop: "Equities",
-  classMajorTopDa: "Aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* LEVERAGED US EQUITIES */
-
-const DBPG = {
-  instrumentId: "DBPG.XETRA",
-  instrumentName: "Xtrackers S&P 500 2x Leveraged Daily Swap UCITS ETF 1C",
-  gameLabel: "DBPG",
-  mediumLabel: "S&P 500 Leveraged X2",
-  classNo: 8,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-/* =====================================================
-   NEPTOON · WEALTH PLAN INSTRUMENTS
-   Temporary instrumentId = ISIN
-===================================================== */
-/* NEPTOON OPPENHEIMER */
-
-/* =====================================================
-   NEPTOON OPPENHEIMER
-   BILINGUAL INSTRUMENT CLASSIFICATION
-===================================================== */
-
-const OPP_WORLD = {
-  instrumentId: "IE00B4L5Y983",
-  instrumentName: "iShares Core MSCI World UCITS ETF USD (Acc)",
-  gameLabel: "WORLD",
-  mediumLabel: "MSCI World",
-  classNo: 17,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const OPP_EM = {
-  instrumentId: "IE00BKM4GZ66",
-  instrumentName: "iShares Core MSCI Emerging Markets",
-  gameLabel: "EM",
-  mediumLabel: "Emerging Markets",
-  classNo: 14,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const OPP_BTC = {
-  instrumentId: "GB00BJYDH287",
-  instrumentName: "WisdomTree Physical Bitcoin",
-  gameLabel: "BTC",
-  mediumLabel: "Bitcoin",
-  classNo: 23,
-
-  classMajorTop: "Alternatives",
-  classMajorTopDa: "Alternativer",
-  typeLabel: "Bitcoin ETP",
-  typeLabelDa: "Bitcoin ETP"
-};
-
-const OPP_AI = {
-  instrumentId: "IE00BGV5VN51",
-  instrumentName: "Xtrackers Artificial Intelligence & Big Data",
-  gameLabel: "AI",
-  mediumLabel: "AI & Big Data",
-  classNo: 17,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const OPP_SP2X = {
-  instrumentId: "LU0411078552",
-  instrumentName: "Xtrackers S&P 500 2x Leveraged Daily Swap",
-  gameLabel: "SP2X",
-  mediumLabel: "S&P 500 2x",
-  classNo: 8,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const OPP_AVGO = {
-  instrumentId: "US11135F1012",
-  instrumentName: "Broadcom Inc",
-  gameLabel: "AVGO",
-  mediumLabel: "Broadcom",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-
-/* =====================================================
-   SPARINDEX DEFENSIVE
-   BILINGUAL INSTRUMENT CLASSIFICATION
-===================================================== */
-
-const SP_NYK_BOND = {
-  instrumentId: "DK0063181698",
-  instrumentName: "Nykredit Invest Lange Obligationer",
-  gameLabel: "NYK",
-  mediumLabel: "Nykredit Bonds",
-  classNo: 1,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SP_SYD_IG = {
-  instrumentId: "DK0060409266",
-  instrumentName: "Sydinvest Virksomhedsobligationer IG",
-  gameLabel: "IG",
-  mediumLabel: "Corporate Bonds IG",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SP_SYD_HY = {
-  instrumentId: "DK0060089415",
-  instrumentName: "Sydinvest Virksomhedsobligationer HY",
-  gameLabel: "HY",
-  mediumLabel: "Corporate Bonds HY",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SP_DK = {
-  instrumentId: "DK0061541232",
-  instrumentName: "Sydinvest Indeks Danmark",
-  gameLabel: "DK",
-  mediumLabel: "Denmark Equity",
-  classNo: 5,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SP_US = {
-  instrumentId: "DK0010270776",
-  instrumentName: "Sydinvest USA Value",
-  gameLabel: "USA",
-  mediumLabel: "USA Value",
-  classNo: 8,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SP_EU = {
-  instrumentId: "DK0015323406",
-  instrumentName: "Sydinvest Europa Value",
-  gameLabel: "EU",
-  mediumLabel: "Europe Value",
-  classNo: 17,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SP_EM = {
-  instrumentId: "DK0060499747",
-  instrumentName: "Sydinvest Globale Emerging Aktier",
-  gameLabel: "EM",
-  mediumLabel: "Emerging Equities",
-  classNo: 14,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-/* SYDBANK AGGRESSIVE */
-
-/* =====================================================
-   SYDBANK AGGRESSIVE
-===================================================== */
-
-const SYD_GOV = {
-  instrumentId: "LU1287023185",
-  instrumentName: "Amundi Euro Government Bond 7-10Y",
-  gameLabel: "GOV",
-  mediumLabel: "Euro Gov Bonds",
-  classNo: 1,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const SYD_CORP = {
-  instrumentId: "IE00B3F81R35",
-  instrumentName: "iShares Core EUR Corporate Bond",
-  gameLabel: "CORP",
-  mediumLabel: "EUR Corporate Bonds",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const SYD_HY = {
-  instrumentId: "IE00B66F4759",
-  instrumentName: "iShares EUR High Yield",
-  gameLabel: "HY",
-  mediumLabel: "EUR High Yield",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const SYD_DK = {
-  instrumentId: "DK0060442556",
-  instrumentName: "Sparindex OMX C25 KL",
-  gameLabel: "C25",
-  mediumLabel: "OMX C25",
-  classNo: 5,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SYD_US = {
-  instrumentId: "DK0010298272",
-  instrumentName: "Sparindex USA Growth KL",
-  gameLabel: "USA",
-  mediumLabel: "USA Growth",
-  classNo: 8,
-
-  classMajorTop: "US Equities",
-  classMajorTopDa: "Amerikanske aktier",
- typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SYD_EU = {
-  instrumentId: "DK0064866149",
-  instrumentName: "Sparindex STOXX Europe 600",
-  gameLabel: "EU",
-  mediumLabel: "Europe 600",
-  classNo: 17,
-
-  classMajorTop: "European Equities",
-  classMajorTopDa: "Europæiske aktier",
- typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const SYD_EM = {
-  instrumentId: "DK0060300762",
-  instrumentName: "Sparindex Emerging Markets KL",
-  gameLabel: "EM",
-  mediumLabel: "Emerging Markets",
-  classNo: 14,
-
-  classMajorTop: "Emerging Markets",
-  classMajorTopDa: "Nye markeder",
- typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-
-/* =====================================================
-   NEPTOON BOHR · CAPITAL PRESERVATION
-===================================================== */
-
-const BOHR_SHORT_BONDS = {
-  instrumentId: "DK0060009249",
-  instrumentName: "Nykredit Invest Korte Obligationer",
-  gameLabel: "SHORT",
-  mediumLabel: "Short Bonds",
-  classNo: 1,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
- typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const BOHR_CORP = {
-  instrumentId: "IE00B3F81R35",
-  instrumentName: "iShares Core EUR Corporate Bond (IG)",
-  gameLabel: "CORP",
-  mediumLabel: "Corporate Bonds",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const BOHR_HY = {
-  instrumentId: "IE00B66F4759",
-  instrumentName: "iShares EUR High Yield (High Yield)",
-  gameLabel: "HY",
-  mediumLabel: "High Yield Bonds",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const BOHR_EM_BONDS = {
-  instrumentId: "IE00BDFC6G93",
-  instrumentName: "JPM USD Emerging Bonds",
-  gameLabel: "EMB",
-  mediumLabel: "Emerging Bonds",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const BOHR_COMMODITY = {
-  instrumentId: "LU1829218749",
-  instrumentName: "Amundi Bloomberg Equal-weight Commodity",
-  gameLabel: "CMDTY",
-  mediumLabel: "Commodities",
-  classNo: 22,
-
-  classMajorTop: "Alternatives",
-  classMajorTopDa: "Alternativer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const BOHR_GOLD = {
-  instrumentId: "IE00B579F325",
-  instrumentName: "Invesco Physical Gold A",
-  gameLabel: "GOLD",
-  mediumLabel: "Physical Gold",
-  classNo: 22,
-
-  classMajorTop: "Alternatives",
-  classMajorTopDa: "Alternativer",
-  typeLabel: "ETC",
-  typeLabelDa: "ETC"
-};
-
-const BOHR_PROPERTY = {
-  instrumentId: "IE00B1FZS350",
-  instrumentName: "iShares Developed Markets Property",
-  gameLabel: "REIT",
-  mediumLabel: "Global Property",
-  classNo: 18,
-
-  classMajorTop: "Alternatives",
-  classMajorTopDa: "Alternativer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const BOHR_SPACE = {
-  instrumentId: "US84615Q1031",
-  instrumentName: "Space Exploration Technologies Corp.",
-  gameLabel: "SPACE",
-  mediumLabel: "SpaceX",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-
-/* =====================================================
-   LEVEL 7 · DANSKE BANK GENERIC AGGRESSIVE
-===================================================== */
-
-const DB_LONG_BONDS = {
-  instrumentId: "DK0016105380",
-  instrumentName: "Danske Lange Obligationer",
-  gameLabel: "DB LONG",
-  mediumLabel: "Long Bonds",
-  classNo: 1,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DB_IG_BONDS = {
-  instrumentId: "DK0060448751",
-  instrumentName: "DB Euro Investment Grade-Obligationer",
-  gameLabel: "DB IG",
-  mediumLabel: "Investment Grade",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DB_HY_BONDS = {
-  instrumentId: "DK0060497378",
-  instrumentName: "DB Euro High Yield-Obligationer",
-  gameLabel: "DB HY",
-  mediumLabel: "High Yield",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-   typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DB_DENMARK = {
-  instrumentId: "DK0060244325",
-  instrumentName: "DB Danmark Fokus",
-  gameLabel: "DB DK",
-  mediumLabel: "Denmark Equity",
-  classNo: 5,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DB_USA = {
-  instrumentId: "DK0061270105",
-  instrumentName: "Danske Invest USA Restricted",
-  gameLabel: "DB USA",
-  mediumLabel: "USA Equity",
-  classNo: 8,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DB_EUROPE = {
-  instrumentId: "DK0010252956",
-  instrumentName: "Danske Invest Europa",
-  gameLabel: "DB EU",
-  mediumLabel: "Europe Equity",
-  classNo: 17,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DB_EM = {
-  instrumentId: "DK0060042026",
-  instrumentName: "Danske Invest Nye Markeder",
-  gameLabel: "DB EM",
-  mediumLabel: "Emerging Markets",
-  classNo: 14,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DANSKE = {
-  instrumentId: "DANSKE.CO",
-  instrumentName: "Danske Bank A/S",
-  gameLabel: "DANSKE",
-  mediumLabel: "Danske Bank",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-const CBK = {
-  instrumentId: "CBK.XETRA",
-  instrumentName: "Commerzbank AG",
-  gameLabel: "COMMERZ",
-  mediumLabel: "Commerzbank",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-
-/* =====================================================
-   LEVEL 9 · DEUTSCHE BANK AGGRESSIVE
-===================================================== */
-
-const HEIA = {
-  instrumentId: "HEIA.AS",
-  instrumentName: "Heineken N.V.",
-  gameLabel: "HEINEKEN",
-  mediumLabel: "Heineken",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-const RBREW = {
-  instrumentId: "RBREW.CO",
-  instrumentName: "Royal Unibrew A/S",
-  gameLabel: "ROYAL",
-  mediumLabel: "Royal Unibrew",
-  classNo: 100,
-
-  classMajorTop: "",
-  classMajorTopDa: "",
-  typeLabel: "Stock",
-  typeLabelDa: "Aktie"
-};
-
-const DE_GOV_BONDS = {
-  instrumentId: "LU1287023185",
-  instrumentName: "Amundi Euro Government Bond 7-10Y",
-  gameLabel: "DE GOV",
-  mediumLabel: "Euro Gov Bonds",
-  classNo: 1,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "ETF",
-  typeLabelDa: "ETF"
-};
-
-const DE_IG_BONDS = {
-  instrumentId: "LU2001241897",
-  instrumentName: "DWS Invest ESG Euro Corporate Bonds",
-  gameLabel: "DE IG",
-  mediumLabel: "Corporate Bonds",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DE_HY_BONDS = {
-  instrumentId: "LU2111935651",
-  instrumentName: "DWS Invest ESG Euro High Yield",
-  gameLabel: "DE HY",
-  mediumLabel: "High Yield",
-  classNo: 3,
-
-  classMajorTop: "Bonds",
-  classMajorTopDa: "Obligationer",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DE_GERMANY = {
-  instrumentId: "DE000DWS2D82",
-  instrumentName: "DWS Aktien Strategie Deutschland",
-  gameLabel: "DE GER",
-  mediumLabel: "Germany Equity",
-  classNo: 17,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
-
-const DE_USA = {
-  instrumentId: "LU1769939361",
-  instrumentName: "DWS Invest CROCI US USD",
-  gameLabel: "DE USA",
-  mediumLabel: "USA Equity",
-  classNo: 8,
-
-  classMajorTop: "Equity",
-  classMajorTopDa: "Aktier",
-  typeLabel: "Mutual Fund",
-  typeLabelDa: "InvestFond"
-};
 
 const DE_EUROPE = {
   instrumentId: "LU0145635479",
@@ -991,388 +28,1351 @@ const DE_EM = {
   typeLabelDa: "InvestFond"
 };
 
-function hold(instrument, percent) {
-  return { ...instrument, weight: percent / 100 };
-}
+
 
 /** Biggest weight first. Shown only after a level is solved. */
 export function strategyLine(level) {
+
   return [...level.holdings]
-    .sort((a, b) => percentOf(b.weight) - percentOf(a.weight) || a.mediumLabel.localeCompare(b.mediumLabel))
-    .map((holding) => `${holding.mediumLabel} ${percentOf(holding.weight)}%`)
+    .sort((a, b) =>
+      percentOf(b.weight) - percentOf(a.weight) ||
+      String(a.mediumLabel || a.instrumentName || "")
+        .localeCompare(
+          String(b.mediumLabel || b.instrumentName || "")
+        )
+    )
+    .map(holding =>
+      `${holding.mediumLabel || holding.instrumentName} ${percentOf(holding.weight)}%`
+    )
     .join(" · ");
+
 }
 
 
-export const GAME_LEVELS = [
-{
-  level: 1,
 
-  metaFlat: {
-    title: "The First Investment",
-    titleDa: "Den første investering",
 
-    description: "One stock. One allocation.",
-    descriptionDa: "Én aktie. Én fordeling.",
+/* =========================================
+   RANDOMIZER 1 — LEVEL 1
+   One individual stock
+========================================= */
 
-    isWealthPlan: false,
-    modelNo: null,
 
-    rules: [
-      "Construct a portfolio with one stock.",
-      "Identify the software company co-founded by Bill Gates.",
-      "Allocate the entire portfolio to that company."
+/* =========================================
+   LEVEL 1 — SINGLE STOCK
+========================================= */
+
+function buildLevel1() {
+
+  return {
+
+    level: 1,
+
+    metaFlat: {
+      title: "The First Investment",
+      titleDa: "Den første investering",
+
+      description: "One stock. One allocation.",
+      descriptionDa: "Én aktie. Én fordeling.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Identify one stock from its recognition story.",
+        "Allocate 100% of the portfolio to that stock."
+      ],
+
+      rulesDa: [
+        "Identificér én aktie ud fra dens genkendelseshistorie.",
+        "Fordel 100 % af porteføljen til aktien."
+      ]
+    },
+
+    slots: [
+      {
+        classNo: 100,
+        weight: 100
+      }
     ],
 
-    rulesDa: [
-      "Sammensæt en portefølje med én aktie.",
-      "Find softwarevirksomheden, som Bill Gates var med til at grundlægge.",
-      "Fordel hele porteføljen til dette selskab."
-    ]
-  },
+    decoyCount: 3,
 
-  holdings: [
-    hold(MSFT, 100)
-  ],
+    holdings: [],
+    decoys: []
 
-  decoys: [
-    AAPL,
-    NOVO,
-    KO
-  ]
-},
-{
-  level: 2,
-  metaFlat: {
-    title: "Two Investments",
-    titleDa: "To investeringer",
-    description: "Two stocks. One portfolio.",
-    descriptionDa: "To aktier. Én portefølje.",
-    isWealthPlan: false,
-    modelNo: null,
-rules: [
-  "Construct a portfolio with two stocks.",
-  "Select the American car manufacturer named after a pioneering electrical engineer and the Danish brewery founded in 1847.",
-  "Allocate the largest position to the American company."
-],
+  };
 
-rulesDa: [
-  "Sammensæt en portefølje med to aktier.",
-  "Vælg den amerikanske bilproducent opkaldt efter en banebrydende elektroingeniør og det danske bryggeri grundlagt i 1847.",
-  "Fordel den største andel til det amerikanske selskab."
-],
-     
-  },
-  holdings: [
-    hold(TSLA, 62),
-    hold(CARLSBERG, 38)
-  ],
+}
 
-decoys: [
-  HEIA,
-  RBREW,
-  AAPL,
-   JNJ
-]
-},
-{
-  level: 3,
-  metaFlat: {
-    title: "Three Investments",
-    titleDa: "Tre investeringer",
-    description: "Three stocks. Three weights.",
-    descriptionDa: "Tre aktier. Tre vægte.",
-    isWealthPlan: false,
-    modelNo: null,
-  rules: [
-  "Construct a portfolio with three stocks.",
-  "Focus on obesity medicine, global health hand semiconductor technology.",
-  "Include Swiss Consumer Staples as the smallest position. No Danish companies."
-],
 
-rulesDa: [
-  "Sammensæt en portefølje med tre aktier.",
-  "Fokusér på fedmemedicin, global sundhed og halvlederteknologi.",
-  "Medtag schweiziske dagligvarer som den mindste position. Ingen danske selskaber."
-],
-  },
-  holdings: [
-    hold(LLY, 60),
-    hold(AVGO, 30),
-    hold(NESN, 10)
-  ],
+/* =========================================
+   LEVEL 2 — TWO STOCKS
+========================================= */
 
-decoys: [
-  NOVO,
-  KO,
-  MCD
-],
+function buildLevel2() {
 
-   
-},
+  // Random largest allocation: 55–75%
+  const largestWeight =
+    55 + Math.floor(Math.random() * 5) * 5;
 
-{
-  level: 4,
+  const smallestWeight =
+    100 - largestWeight;
 
-  metaFlat: {
-    title: "Four Investments",
-    titleDa: "Fire investeringer",
+  return {
 
-    description: "Combine stocks and an ETF.",
-    descriptionDa: "Kombinér aktier og en ETF.",
+    level: 2,
 
-    isWealthPlan: false,
-    modelNo: null,
+    metaFlat: {
+      title: "Two Investments",
+      titleDa: "To investeringer",
 
-    rules: [
-      "Construct a portfolio with four investments.",
-      "Allocate the largest position to the global ETF and the smallest to the company behind Facebook.",
-      "Include at least one Nordic company. Amazon represents half of the individual-stock allocation."
+      description: "Two stocks. Two allocations.",
+      descriptionDa: "To aktier. To fordelinger.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Identify two stocks from their recognition stories.",
+        "Allocate the larger weight to the first stock.",
+        "Ensure the portfolio totals 100%."
+      ],
+
+      rulesDa: [
+        "Identificér to aktier ud fra deres genkendelseshistorier.",
+        "Fordel den største vægt til den første aktie.",
+        "Sørg for, at porteføljen samlet udgør 100 %."
+      ]
+    },
+
+    slots: [
+      {
+        classNo: 100,
+        weight: largestWeight
+      },
+      {
+        classNo: 100,
+        weight: smallestWeight
+      }
     ],
 
-    rulesDa: [
-      "Sammensæt en portefølje med fire investeringer.",
-      "Fordel mest til den globale ETF og mindst til selskabet bag Facebook.",
-      "Medtag mindst ét nordisk selskab. Amazon udgør halvdelen af enkeltaktiernes samlede vægt."
-    ]
-  },
+    decoyCount: 3,
 
-  holdings: [
-    hold(EUNL, 60),
-    hold(AMZN, 20),
-    hold(DANSKE, 15),
-    hold(META, 5)
-  ],
+    holdings: [],
+    decoys: []
 
-  decoys: [
-    CBK,
-    AAPL
-  ]
-},
-   
-{
-  level: 5,
-  metaFlat: {
-    title: "Five Investments",
-    titleDa: "Fem investeringer",
-    description: "Five positions and one decoy.",
-    descriptionDa: "Fem positioner og én distraktion.",
-    isWealthPlan: false,
-    modelNo: null,
-   rules: [
-  "Construct a portfolio with five investments.",
-  "Build a risk ladder from government bonds to growth equities.",
-  "Allocate progressively larger weights as risk increases. All positions must carry investment risk."
-],
+  };
 
-rulesDa: [
-  "Sammensæt en portefølje med fem investeringer.",
-  "Opbyg en risikostige fra statsobligationer til vækstaktier.",
-  "Fordel stigende vægte med stigende risiko. Alle positioner skal have investeringsrisiko."
-],
-  },
-  holdings: [
-    hold(DE_GOV_BONDS, 5),
-    hold(BOHR_CORP, 10),
-    hold(BOHR_HY, 20),
-    hold(XDN0 , 25),
-    hold(DBPG, 40)
-  ],
-  decoys: [LYQ2],
-},
+}
 
-{
-  level: 6,
-  metaFlat: {
-    title: "Neptoon Bohr",
-    titleDa: "Neptoon Bohr",
-    description: "Build the defensive Neptoon Bohr strategy.",
-    descriptionDa: "Sammensæt den defensive Neptoon Bohr-strategi.",
-    isWealthPlan: true,
-    modelNo: 3,
-    sendToMyWealth: true,
-rules: [
-  "Construct the defensive Neptoon Bohr portfolio.",
-  "Build the portfolio using Government Bonds, Credit Bonds and Alternatives.",
-  "Government Bonds must have the largest allocation. Exclude Single Stocks and Equity Funds."
-],
 
-rulesDa: [
-  "Sammensæt den defensive Neptoon Bohr-portefølje.",
-  "Opbyg porteføljen med statsobligationer, kreditobligationer og alternative investeringer.",
-  "Statsobligationer skal have den største andel. Udelad enkeltaktier og aktiefonde."
-],
-  },
-  holdings: [
-    hold(BOHR_SHORT_BONDS, 45),
-    hold(BOHR_CORP, 15),
-    hold(BOHR_HY, 15),
-    hold(BOHR_EM_BONDS, 10),
-    hold(BOHR_COMMODITY, 5),
-    hold(BOHR_GOLD, 5),
-    hold(BOHR_PROPERTY, 5)
-  ],
-  decoys: [BOHR_SPACE],
-},
+/* =========================================
+   LEVEL 3 — THREE STOCKS
+========================================= */
 
-{
-  level: 7,
-  metaFlat: {
-    title: "Danske Bank Aggressive",
-    titleDa: "Danske Bank Aggressiv",
-    description: "Build an aggressive portfolio of actively managed funds.",
-    descriptionDa: "Sammensæt en aggressiv portefølje med aktivt forvaltede fonde.",
-    isWealthPlan: true,
-    modelNo: 8, // Insert actual Danske Bank modelNo
-    sendToMyWealth: true,
-rules: [
-  "Construct the Danske Bank Generic Aggressive portfolio.",
-  "Combine seven actively managed funds across Government Bonds, Credit Bonds and Equity Funds.",
-  "Allocate 80% to Equity Funds and 20% to Bonds. Exclude Single Stocks and Alternatives."
-],
+function buildLevel3() {
 
-rulesDa: [
-  "Sammensæt Danske Bank Generic Aggressive-porteføljen.",
-  "Kombinér syv aktivt forvaltede fonde inden for statsobligationer, kreditobligationer og aktiefonde.",
-  "Fordel 80 % til aktiefonde og 20 % til obligationer. Udelad enkeltaktier og alternative investeringer."
-],
-  },
-  holdings: [
-    hold(DB_LONG_BONDS, 10),
-    hold(DB_IG_BONDS, 5),
-    hold(DB_HY_BONDS, 5),
-    hold(DB_DENMARK, 15),
-    hold(DB_USA, 35),
-    hold(DB_EUROPE, 20),
-    hold(DB_EM, 10)
-  ],
-},
+  // Generate valid strategic allocations
+  const combinations = [];
 
-{
-  level: 8,
+  for(let largest = 45; largest <= 60; largest += 5){
 
-  metaFlat: {
-    title: "Sparindex Balanced",
-    titleDa: "Sparindex Balanceret",
+    for(let middle = 25; middle <= 35; middle += 5){
 
-    description: "Build the Sparindex Balanced investment strategy.",
-    descriptionDa: "Sammensæt Sparindex Balanced-investeringsstrategien.",
+      const smallest = 100 - largest - middle;
 
-    isWealthPlan: true,
-    modelNo: 21,
-    sendToMyWealth: true,
+      if(
+        smallest >= 10 &&
+        smallest < middle &&
+        middle < largest
+      ){
+        combinations.push([
+          largest,
+          middle,
+          smallest
+        ]);
+      }
 
-    rules: [
-      "Construct the Sparindex Balanced portfolio with seven investments.",
-      "Combine Government Bonds, Credit Bonds and diversified Equity Funds.",
-      "Allocate 80% to Equity Funds and 20% to Bonds. Exclude Single Stocks and Alternatives."
+    }
+
+  }
+
+  // Select one allocation randomly
+  const weights =
+    combinations[
+      Math.floor(Math.random() * combinations.length)
+    ];
+
+  return {
+
+    level: 3,
+
+    metaFlat: {
+      title: "Three Investments",
+      titleDa: "Tre investeringer",
+
+      description: "Three stocks. Three allocations.",
+      descriptionDa: "Tre aktier. Tre fordelinger.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Identify three stocks from their recognition stories.",
+        "Allocate the largest weight to the first stock.",
+        "Allocate the smallest weight to the third stock."
+      ],
+
+      rulesDa: [
+        "Identificér tre aktier ud fra deres genkendelseshistorier.",
+        "Fordel den største vægt til den første aktie.",
+        "Fordel den mindste vægt til den tredje aktie."
+      ]
+    },
+
+    slots: [
+      {
+        classNo: 100,
+        weight: weights[0]
+      },
+      {
+        classNo: 100,
+        weight: weights[1]
+      },
+      {
+        classNo: 100,
+        weight: weights[2]
+      }
     ],
 
-    rulesDa: [
-      "Sammensæt Sparindex Balanced-porteføljen med syv investeringer.",
-      "Kombinér statsobligationer, kreditobligationer og diversificerede aktiefonde.",
-      "Fordel 80 % til aktiefonde og 20 % til obligationer. Udelad enkeltaktier og alternative investeringer."
-    ]
+    decoyCount: 3,
+
+    holdings: [],
+    decoys: []
+
+  };
+
+}
+
+
+/* =========================================
+   LEVEL 4 — STOCKS & EQUITY FUNDS
+========================================= */
+
+function buildLevel4() {
+
+  const combinations = [];
+
+  // Two equity funds
+  for(let fund1 = 35; fund1 <= 45; fund1 += 5){
+
+    for(let fund2 = 20; fund2 <= 30; fund2 += 5){
+
+      const fundTotal = fund1 + fund2;
+
+      if(fundTotal < 60 || fundTotal > 70){
+        continue;
+      }
+
+      const stockTotal = 100 - fundTotal;
+
+      // Two individual stocks
+      for(let stock1 = 15; stock1 <= 25; stock1 += 5){
+
+        const stock2 = stockTotal - stock1;
+
+        const weights = [
+          fund1,
+          fund2,
+          stock1,
+          stock2
+        ];
+
+        if(
+          stock2 >= 5 &&
+          stock1 > stock2 &&
+          new Set(weights).size === 4
+        ){
+          combinations.push(weights);
+        }
+
+      }
+
+    }
+
+  }
+
+  if(!combinations.length){
+    throw new Error("Level 4: No valid allocations");
+  }
+
+  const weights =
+    combinations[
+      Math.floor(Math.random() * combinations.length)
+    ];
+
+  return {
+
+    level: 4,
+
+    metaFlat: {
+      title: "Stocks & Equity Funds",
+      titleDa: "Aktier og aktiefonde",
+
+      description: "Four investments across two asset types.",
+      descriptionDa: "Fire investeringer fordelt på to aktivtyper.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Identify two equity funds and two individual stocks.",
+        "Allocate 60–70% to equity funds.",
+        "Assign the correct weight to each investment."
+      ],
+
+      rulesDa: [
+        "Identificér to aktiefonde og to enkeltaktier.",
+        "Fordel 60–70 % til aktiefonde.",
+        "Tildel hver investering den korrekte vægt."
+      ]
+    },
+
+slots: [
+  {
+    classNo: 17,
+    weight: weights[0]
   },
-
-  holdings: [
-    hold(SP_NYK_BOND, 10),
-    hold(SP_SYD_IG, 5),
-    hold(SP_SYD_HY, 5),
-    hold(SP_DK, 15),
-    hold(SP_US, 35),
-    hold(SP_EU, 20),
-    hold(SP_EM, 10)
-  ]
-},
-{
-  level: 9,
-  metaFlat: {
-    title: "Deutsche Bank Aggressive",
-    titleDa: "Deutsche Bank Aggressiv",
-    description: "Build an aggressive strategy with European and global funds.",
-    descriptionDa: "Sammensæt en aggressiv strategi med europæiske og globale fonde.",
-    isWealthPlan: true,
-    modelNo: 6, // Insert actual Deutsche Bank modelNo
-    sendToMyWealth: true,
-rules: [
-  "Construct the Deutsche Bank Aggressive portfolio.",
-  "Select seven funds from the Deutsche Bank investment universe.",
-  "Allocate 80% to Equity Funds and 20% to Bonds. Exclude funds from competing providers."
-],
-
-rulesDa: [
-  "Sammensæt Deutsche Bank Aggressive-porteføljen.",
-  "Vælg syv fonde fra Deutsche Banks investeringsunivers.",
-  "Fordel 80 % til aktiefonde og 20 % til obligationer. Udelad fonde fra konkurrerende udbydere."
-],
+  {
+    classNo: 5,
+    weight: weights[1]
   },
-  holdings: [
-    hold(DE_GOV_BONDS, 10),
-    hold(DE_IG_BONDS, 5),
-    hold(DE_HY_BONDS, 5),
-    hold(DE_GERMANY, 15),
-    hold(DE_USA, 35),
-    hold(DE_EUROPE, 20),
-    hold(DE_EM, 10)
-  ],
-
-   decoys: [
-  DB_USA,
-  SP_US
+  {
+    classNo: 100,
+    weight: weights[2]
+  },
+  {
+    classNo: 100,
+    weight: weights[3]
+  }
 ],
-},
 
-{
-  level: 10,
+    decoyCount: 3,
 
-  metaFlat: {
-    title: "Neptoon Oppenheimer",
-    titleDa: "Neptoon Oppenheimer",
+    holdings: [],
+    decoys: []
 
-    description: "The final seven-investment challenge.",
-    descriptionDa: "Den sidste udfordring med syv investeringer.",
+  };
 
-    isWealthPlan: true,
-    modelNo: 7,
-    sendToMyWealth: true,
+}
 
-    rules: [
-      "Construct the Neptoon Oppenheimer portfolio.",
-      "Combine Equity Funds, Single Stocks and Alternatives, including Bitcoin and leveraged investments.",
-      "Build seven positions with no Government Bonds or Credit Bonds. The largest position represents 30%."
+
+/* =========================================
+   LEVEL 5 — CLASSICAL BALANCED 50/50
+   Five funds / ETFs
+========================================= */
+
+function buildLevel5() {
+
+  const combinations = [];
+
+  // Bonds: exactly 50%
+  for(let bond1 = 25; bond1 <= 35; bond1 += 5){
+
+    const bond2 = 50 - bond1;
+
+    if(bond2 < 15 || bond2 > 25){
+      continue;
+    }
+
+    // Equities: exactly 50%
+    for(let equity1 = 20; equity1 <= 30; equity1 += 5){
+
+      for(let equity2 = 10; equity2 <= 20; equity2 += 5){
+
+        const equity3 =
+          50 - equity1 - equity2;
+
+        if(
+          equity3 < 5 ||
+          equity3 > 15
+        ){
+          continue;
+        }
+
+        combinations.push([
+          bond1,
+          bond2,
+          equity1,
+          equity2,
+          equity3
+        ]);
+
+      }
+
+    }
+
+  }
+
+  if(!combinations.length){
+    throw new Error("Level 5: No valid allocations");
+  }
+
+  const weights =
+    combinations[
+      Math.floor(Math.random() * combinations.length)
+    ];
+
+  return {
+
+    level: 5,
+
+    metaFlat: {
+      title: "The Balanced Portfolio",
+      titleDa: "Den balancerede portefølje",
+
+      description: "Five funds. Half bonds, half equities.",
+      descriptionDa: "Fem fonde. Halvdelen obligationer, halvdelen aktier.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Construct a balanced portfolio using five funds and ETFs.",
+        "Allocate exactly 50% to bonds and 50% to equities.",
+        "Identify all five investments from their recognition stories."
+      ],
+
+      rulesDa: [
+        "Sammensæt en balanceret portefølje med fem fonde og ETF'er.",
+        "Fordel præcis 50 % til obligationer og 50 % til aktier.",
+        "Identificér alle fem investeringer ud fra deres genkendelseshistorier."
+      ]
+    },
+
+    slots: [
+      { classNo: 0,  weight: weights[0] },
+      { classNo: 2,  weight: weights[1] },
+      { classNo: 8,  weight: weights[2] },
+      { classNo: 9,  weight: weights[3] },
+      { classNo: 18, weight: weights[4] }
     ],
 
-    rulesDa: [
-      "Sammensæt Neptoon Oppenheimer-porteføljen.",
-      "Kombinér aktiefonde, enkeltaktier og alternative investeringer, herunder Bitcoin og gearede investeringer.",
-      "Sammensæt syv positioner uden stats- eller kreditobligationer. Den største position udgør 30 %."
-    ]
-  },
+    decoyCount: 3,
 
-  holdings: [
-    hold(OPP_WORLD, 30),
-    hold(OPP_EM, 15),
-    hold(OPP_BTC, 15),
-    hold(OPP_AI, 15),
-    hold(OPP_SP2X, 15),
-    hold(NVDA, 5),
-    hold(OPP_AVGO, 5)
-  ],
+    holdings: [],
+    decoys: []
 
-  decoys: [
-    AAPL,
-    MSFT,
-    DE_GOV_BONDS,
-    DE_IG_BONDS
-  ]
-},
-];
+  };
+
+}
+
+
+function buildLevel6() {
+
+  const combinations = [];
+
+  for(let ig = 20; ig <= 30; ig += 5){
+
+    for(let hy = 10; hy <= 20; hy += 5){
+
+      const emd = 50 - ig - hy;
+
+      if(emd >= 5 && emd <= 15){
+        combinations.push([50, ig, hy, emd]);
+      }
+
+    }
+
+  }
+
+  if(!combinations.length){
+    throw new Error("Level 6: No valid allocations");
+  }
+
+  const weights = combinations[
+    Math.floor(Math.random() * combinations.length)
+  ];
+
+  return {
+
+    level: 6,
+
+    metaFlat: {
+      title: "The Cash Alternative",
+      titleDa: "Alternativet til kontanter",
+
+      description: "Four bond ETFs. No equities.",
+      descriptionDa: "Fire obligations-ETF'er. Ingen aktier.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Construct a portfolio using four bond ETFs.",
+        "Allocate exactly 50% to short-duration bonds.",
+        "Distribute the remaining 50% across investment-grade, high-yield and emerging-market bonds."
+      ],
+
+      rulesDa: [
+        "Sammensæt en portefølje med fire obligations-ETF'er.",
+        "Fordel præcis 50 % til korte obligationer.",
+        "Fordel de resterende 50 % mellem investment-grade-, high-yield- og emerging-market-obligationer."
+      ]
+    },
+
+    slots: [
+      { classNo: 0, weight: weights[0] },
+      { classNo: 2, weight: weights[1] },
+      { classNo: 3, weight: weights[2] },
+      { classNo: 4, weight: weights[3] }
+    ],
+
+    decoyCount: 3,
+
+    holdings: [],
+    decoys: []
+
+  };
+
+}
+
+
+/* =========================================
+   LEVEL 7 — THE 60/40 PORTFOLIO
+   40% Bonds / 60% Equities
+   Including 20% individual stocks
+========================================= */
+
+function buildLevel7() {
+
+  // Bond allocation: 40%
+  const ig = 10 + Math.floor(Math.random() * 2) * 5;
+  const hy = 20 - ig;
+
+  // Equity ETF allocation: 40%
+  const world = 25 + Math.floor(Math.random() * 2) * 5;
+  const denmark = 40 - world;
+
+  // Individual stocks: 20%
+  const stock1 =
+    5 + Math.floor(Math.random() * 3) * 5;
+
+  const stock2 = 20 - stock1;
+
+  return {
+
+    level: 7,
+
+    metaFlat: {
+      title: "The 60/40 Portfolio",
+      titleDa: "60/40-porteføljen",
+
+      description:
+        "A balanced strategy with two individual stocks.",
+
+      descriptionDa:
+        "En balanceret strategi med to enkeltaktier.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Construct a portfolio with 60% equities and 40% bonds.",
+        "Allocate 20% to two individual stocks.",
+        "Distribute the remaining equity allocation across global and Danish equity ETFs."
+      ],
+
+      rulesDa: [
+        "Sammensæt en portefølje med 60 % aktier og 40 % obligationer.",
+        "Fordel 20 % på to enkeltaktier.",
+        "Fordel den resterende aktieandel mellem globale og danske aktie-ETF'er."
+      ]
+    },
+
+    slots: [
+      { classNo: 0,   weight: 20 },
+      { classNo: 2,   weight: ig },
+      { classNo: 3,   weight: hy },
+
+      { classNo: 17,  weight: world },
+      { classNo: 5,   weight: denmark },
+
+      { classNo: 100, weight: stock1 },
+      { classNo: 100, weight: stock2 }
+    ],
+
+    decoyCount: 3,
+
+    holdings: [],
+    decoys: []
+
+  };
+
+}
+
+
+
+/* =========================================
+   LEVEL 8 — AGGRESSIVE ACTIVE PORTFOLIO
+   50% Bitcoin + Leveraged MSCI
+   50% Individual Stocks
+========================================= */
+
+function buildLevel8() {
+
+  // Bitcoin + leveraged MSCI: 50%
+  const bitcoin =
+    10 + Math.floor(Math.random() * 7) * 5;
+
+  const leveraged =
+    50 - bitcoin;
+
+  // Three stocks: 50%, minimum 10% each
+  const stockCombinations = [];
+
+  for(let stock1 = 10; stock1 <= 30; stock1 += 5){
+
+    for(let stock2 = 10; stock2 <= 30; stock2 += 5){
+
+      const stock3 =
+        50 - stock1 - stock2;
+
+      if(stock3 >= 10 && stock3 <= 30){
+        stockCombinations.push([
+          stock1,
+          stock2,
+          stock3
+        ]);
+      }
+
+    }
+
+  }
+
+  const stocks =
+    stockCombinations[
+      Math.floor(Math.random() * stockCombinations.length)
+    ];
+
+  return {
+
+    level: 8,
+
+    metaFlat: {
+      title: "The Aggressive Portfolio",
+      titleDa: "Den aggressive portefølje",
+
+      description:
+        "Bitcoin, leveraged equities and individual stocks.",
+
+      descriptionDa:
+        "Bitcoin, gearede aktier og enkeltaktier.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Construct an aggressive portfolio with five investments.",
+        "Allocate 50% to Bitcoin and leveraged MSCI exposure, with at least 10% in each.",
+        "Allocate the remaining 50% across three individual stocks, with at least 10% in each."
+      ],
+
+      rulesDa: [
+        "Sammensæt en aggressiv portefølje med fem investeringer.",
+        "Fordel 50 % mellem Bitcoin og gearet MSCI-eksponering, med mindst 10 % i hver.",
+        "Fordel de resterende 50 % mellem tre enkeltaktier, med mindst 10 % i hver."
+      ]
+    },
+
+    slots: [
+      { classNo: 24,  weight: bitcoin },
+      { classNo: 28,  weight: leveraged },
+
+      { classNo: 100, weight: stocks[0] },
+      { classNo: 100, weight: stocks[1] },
+      { classNo: 100, weight: stocks[2] }
+    ],
+
+    decoyCount: 3,
+
+    holdings: [],
+    decoys: []
+
+  };
+
+}
+
+
+/* =========================================
+   LEVEL 9 — NORDIC HOME BIAS
+   Four holdings
+========================================= */
+
+function buildLevel9() {
+
+  // MSCI World: 50–60%
+  const world =
+    50 + Math.floor(Math.random() * 3) * 5;
+
+  // Class 26: 5–10%
+  const class26 =
+    5 + Math.floor(Math.random() * 2) * 5;
+
+  // Fixed allocation to class 18
+  const class18 = 25;
+
+  // Nordic equities receive the remainder
+  const nordic =
+    100 - world - class26 - class18;
+
+  return {
+
+    level: 9,
+
+    metaFlat: {
+      title: "Nordic Home Bias",
+      titleDa: "Nordisk hjemmebias",
+
+      description:
+        "A global equity strategy with Nordic exposure.",
+
+      descriptionDa:
+        "En global aktiestrategi med nordisk eksponering.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Construct a four-investment portfolio.",
+        "Allocate 50–60% to MSCI World and 25% to class 18.",
+        "Allocate 5–10% to class 21 and the remaining weight to Nordic equities."
+      ],
+
+      rulesDa: [
+        "Sammensæt en portefølje med fire investeringer.",
+        "Fordel 50–60 % til MSCI World og 25 % til klasse 18.",
+        "Fordel 5–10 % til klasse 21 og resten til nordiske aktier."
+      ]
+    },
+
+    slots: [
+      { classNo: 17, weight: world },
+      { classNo: 26, weight: class26 },
+      { classNo: 18, weight: class18 },
+      { classNo: 6,  weight: nordic }
+    ],
+
+    decoyCount: 3,
+
+    holdings: [],
+    decoys: []
+
+  };
+
+}
+
+
+
+/* =========================================
+   LEVEL 10 — ALTERNATIVES PORTFOLIO
+   MSCI World + Four Alternatives
+========================================= */
+
+function buildLevel10() {
+
+  // MSCI World: 25–40%
+  const world =
+    25 + Math.floor(Math.random() * 4) * 5;
+
+  // Remaining allocation to alternatives
+  const residual = 100 - world;
+
+  // Minimum 5% for each alternative
+  const weights = [5, 5, 5, 5];
+
+  // Randomly distribute residual in 5% steps
+  const steps = (residual - 20) / 5;
+
+  for(let i = 0; i < steps; i++){
+
+    const index =
+      Math.floor(Math.random() * 4);
+
+    weights[index] += 5;
+
+  }
+
+  return {
+
+    level: 10,
+
+    metaFlat: {
+      title: "The Alternatives Portfolio",
+      titleDa: "Porteføljen med alternative investeringer",
+
+      description:
+        "Global equities, commodities, gold, property and infrastructure.",
+
+      descriptionDa:
+        "Globale aktier, råvarer, guld, ejendomme og infrastruktur.",
+
+      isWealthPlan: false,
+      modelNo: null,
+
+      rules: [
+        "Construct a portfolio with five investments.",
+        "Allocate 25–40% to MSCI World.",
+        "Distribute the remaining allocation across commodities, gold, real estate and infrastructure, with at least 5% in each."
+      ],
+
+      rulesDa: [
+        "Sammensæt en portefølje med fem investeringer.",
+        "Fordel 25–40 % til MSCI World.",
+        "Fordel resten mellem råvarer, guld, ejendomme og infrastruktur med mindst 5 % i hver."
+      ]
+    },
+
+    slots: [
+      { classNo: 17, weight: world },
+      { classNo: 20, weight: weights[0] },
+      { classNo: 21, weight: weights[1] },
+      { classNo: 22, weight: weights[2] },
+      { classNo: 23, weight: weights[3] }
+    ],
+
+    decoyCount: 3,
+
+    holdings: [],
+    decoys: []
+
+  };
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   GROSS INSTRUMENT LOOKUP
+========================================= */
+
+let instrumentByTicker = new Map();
+
+function tickerKey(value) {
+  return String(value || "")
+    .trim()
+    .toUpperCase();
+}
+
+function setInstrumentUniverse(instruments) {
+
+  instrumentByTicker = new Map(
+    instruments.map(inst => [
+      tickerKey(inst.tickerExchange),
+      inst
+    ])
+  );
+
+}
+
+function hold(tickerExchange, weight) {
+
+  const key = tickerKey(tickerExchange);
+  const instrument = instrumentByTicker.get(key);
+
+  if(!instrument){
+    throw new Error(`Unknown instrument: ${key}`);
+  }
+
+  return {
+    ...instrument,
+    weight: weight / 100
+  };
+
+}
+
+
+function randomItem(items) {
+  return items[Math.floor(Math.random() * items.length)];
+}
+
+function populateLevel(skeleton, gameUniverse) {
+
+  const used = new Set();
+
+  const holdings = skeleton.slots.map(slot => {
+
+    const candidates = gameUniverse.filter(inst =>
+      Number(inst.classNo) === Number(slot.classNo) &&
+      !used.has(inst.tickerExchange)
+    );
+
+    if(!candidates.length){
+      throw new Error(
+        `Level ${skeleton.level}: No eligible instrument for class ${slot.classNo}`
+      );
+    }
+
+    const selected = randomItem(candidates);
+
+    used.add(selected.tickerExchange);
+
+    return {
+      ...hold(selected.tickerExchange, slot.weight),
+      stories: selected.stories
+    };
+
+  });
+
+  const decoyCandidates = gameUniverse.filter(inst =>
+    !used.has(inst.tickerExchange)
+  );
+
+  if(decoyCandidates.length < skeleton.decoyCount){
+    throw new Error(
+      `Level ${skeleton.level}: Insufficient decoys`
+    );
+  }
+
+  const decoys = [];
+
+  for(let i = 0; i < skeleton.decoyCount; i++){
+
+    const index = Math.floor(
+      Math.random() * decoyCandidates.length
+    );
+
+    const [selected] = decoyCandidates.splice(index, 1);
+
+    decoys.push({
+      ...instrumentByTicker.get(selected.tickerExchange),
+      stories: selected.stories
+    });
+
+  }
+
+  return {
+    ...skeleton,
+    holdings,
+    decoys
+  };
+
+}
+
+
+
+
+
 export function levelByNumber(level) {
-  const found = GAME_LEVELS.find((entry) => entry.level === level);
-  if (!found) throw new Error(`Missing level ${level}`);
+
+  const found = GAME_LEVELS.find(
+    entry => entry.level === level
+  );
+
+  if(!found){
+    throw new Error(`Missing level ${level}`);
+  }
+
   return found;
+
 }
+
 export function piecesOf(level) {
-  return [...level.holdings, ...(level.decoys ?? [])];
+
+  return [
+    ...level.holdings,
+    ...(level.decoys ?? [])
+  ];
+
+}
+
+	
+
+/* =========================================
+   RANDOMIZER 2
+   Populate strategic skeleton
+========================================= */
+
+function randomIndex(length) {
+  return Math.floor(Math.random() * length);
+}
+
+function takeRandom(pool) {
+  const index = randomIndex(pool.length);
+  return pool.splice(index, 1)[0];
+}
+
+function populateLevel(skeleton, gameUniverse) {
+
+  const slots = skeleton.slots;
+  const used = new Set();
+
+  const holdings = slots.map(slot => {
+
+    const candidates = gameUniverse.filter(inst => {
+
+      const key = tickerKey(inst.tickerExchange);
+
+      return (
+        Number(inst.classNo) === Number(slot.classNo) &&
+        !used.has(key)
+      );
+
+    });
+
+    if(!candidates.length){
+      throw new Error(
+        `Level ${skeleton.level}: No available instrument for class ${slot.classNo}`
+      );
+    }
+
+    const selected = candidates[
+      randomIndex(candidates.length)
+    ];
+
+    const key = tickerKey(selected.tickerExchange);
+
+    used.add(key);
+
+    return {
+      ...hold(key, slot.weight),
+      stories: selected.stories
+    };
+
+  });
+
+  /* -----------------------------------------
+     DECOYS
+     Prefer the asset classes in this level
+  ----------------------------------------- */
+
+  const levelClasses = new Set(
+    slots.map(slot => Number(slot.classNo))
+  );
+
+  const eligible = gameUniverse.filter(inst =>
+    !used.has(tickerKey(inst.tickerExchange))
+  );
+
+  const sameClass = eligible.filter(inst =>
+    levelClasses.has(Number(inst.classNo))
+  );
+
+  const otherClasses = eligible.filter(inst =>
+    !levelClasses.has(Number(inst.classNo))
+  );
+
+  const decoys = [];
+
+  for(let i = 0; i < skeleton.decoyCount; i++){
+
+    const pool = sameClass.length
+      ? sameClass
+      : otherClasses;
+
+    if(!pool.length){
+      throw new Error(
+        `Level ${skeleton.level}: Insufficient decoys`
+      );
+    }
+
+    const selected = takeRandom(pool);
+    const key = tickerKey(selected.tickerExchange);
+
+    used.add(key);
+
+    decoys.push({
+      ...instrumentByTicker.get(key),
+      stories: selected.stories
+    });
+
+  }
+
+  return {
+    ...skeleton,
+    holdings,
+    decoys
+  };
+
+}
+
+
+
+
+
+/* =========================================
+   NEPTOON — GAME LEVEL FACTORY
+========================================= */
+
+export let GAME_LEVELS = [];
+
+const LEVEL_BUILDERS = [
+  buildLevel1,
+  buildLevel2,
+  buildLevel3,
+  buildLevel4,
+  buildLevel5,
+  buildLevel6,
+  buildLevel7,
+  buildLevel8,
+  buildLevel9,
+  buildLevel10
+];
+
+/* =========================================
+   INITIALIZE ALL 10 LEVELS
+========================================= */
+
+export function initializeGameLevels(
+  grossInstruments,
+  gameUniverse
+){
+
+  setInstrumentUniverse(grossInstruments);
+
+  if(!Array.isArray(gameUniverse)){
+    throw new Error("Invalid curated game universe");
+  }
+
+  const populated = LEVEL_BUILDERS.map(build => {
+
+    const skeleton = build();
+
+    const totalWeight = skeleton.slots.reduce(
+      (sum, slot) => sum + slot.weight,
+      0
+    );
+
+    if(totalWeight !== 100){
+      throw new Error(
+        `Level ${skeleton.level}: Weights sum to ${totalWeight}%`
+      );
+    }
+
+    const result = populateLevel(
+      skeleton,
+      gameUniverse
+    );
+
+    const pieces = [
+      ...result.holdings,
+      ...result.decoys
+    ];
+
+    const ids = pieces.map(p => p.instrumentId);
+
+    if(
+      ids.some(id => id == null) ||
+      new Set(ids).size !== ids.length
+    ){
+      throw new Error(
+        `Level ${skeleton.level}: Invalid or duplicate instrumentId`
+      );
+    }
+
+    console.log(
+      `LEVEL ${result.level} READY`,
+      {
+        holdings: result.holdings.length,
+        decoys: result.decoys.length,
+        weights: result.holdings.map(
+          h => Math.round(h.weight * 100)
+        ),
+        tickers: result.holdings.map(
+          h => h.tickerExchange
+        )
+      }
+    );
+
+    return result;
+
+  });
+
+  GAME_LEVELS = populated;
+
+  console.log(
+    "NEPTOON — ALL LEVELS READY",
+    GAME_LEVELS.length
+  );
+
+  return GAME_LEVELS;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function initializeGameLevels(
+  grossInstruments,
+  gameUniverse
+) {
+
+  setInstrumentUniverse(grossInstruments);
+
+  const builders = [
+    buildLevel1,
+    buildLevel2,
+    buildLevel3,
+    buildLevel4,
+    buildLevel5,
+    buildLevel6,
+    buildLevel7,
+    buildLevel8,
+    buildLevel9,
+    buildLevel10
+  ];
+
+  const populated = builders.map(build => {
+
+    const skeleton = build();
+
+    return populateLevel(
+      skeleton,
+      gameUniverse
+    );
+
+  });
+
+  GAME_LEVELS = populated;
+
+  console.log(
+    "NEPTOON GAME LEVELS INITIALIZED",
+    GAME_LEVELS
+  );
+
+  return GAME_LEVELS;
+
 }
