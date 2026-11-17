@@ -479,6 +479,67 @@ export function mountGame(root, options = {}) {
     shell.append(start, play, scrim, toast);
 
 
+/* =========================================
+   NEPTOON — STRATEGY TABLE
+========================================= */
+
+function renderStrategyTable() {
+
+  const tbody =
+    play.querySelector("[data-strategy-rows]");
+
+  if(!tbody) return;
+
+  const data = level();
+
+  tbody.replaceChildren();
+
+  data.holdings.forEach((holding, index) => {
+
+    const row = document.createElement("tr");
+
+    const storyCell = document.createElement("td");
+    const weightCell = document.createElement("td");
+
+    const stories =
+      holding.stories?.[lang] ||
+      holding.stories?.en ||
+      [];
+
+    // One recognition clue per holding
+    storyCell.textContent =
+      stories[0] || holding.instrumentName || "";
+
+    weightCell.textContent =
+      `${percentOf(holding.weight)}%`;
+
+    weightCell.className = "strategy-weight";
+
+    row.append(
+      storyCell,
+      weightCell
+    );
+
+    tbody.appendChild(row);
+
+  });
+
+  const count =
+    play.querySelector("[data-strategy-count]");
+
+  if(count){
+    count.textContent =
+      `${data.holdings.length} ${
+        lang === "da"
+          ? "INVESTERINGER"
+          : "INVESTMENTS"
+      }`;
+  }
+
+}
+
+
+
     function renderStaticText() {
         root.lang = lang;
         start.querySelector(".display").innerHTML = t("display");
@@ -873,7 +934,12 @@ function renderAllocationMonitor() {
 
 }
     function renderHud() {
-        const data = level();
+
+
+    const data = level();
+
+    renderStrategyTable();
+
         play.querySelector("[data-level-kicker]").textContent = `${t("level")} ${currentLevel}`;
         play.querySelector("[data-level-title]").textContent = (lang === "da" ? data.metaFlat.titleDa : data.metaFlat.title) || data.metaFlat.title;
         const mandate = play.querySelector("[data-mandate-rules]");
