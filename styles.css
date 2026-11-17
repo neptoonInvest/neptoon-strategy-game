@@ -1884,3 +1884,51 @@ button:focus-visible,
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/* =========================================
+   DYNAMIC INSTRUMENT LABELS
+========================================= */
+
+.slot .piece .sub {
+  font-size: var(--card-name-size, 14px);
+  line-height: 1.25;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.slot .piece .ticker {
+  font-size: clamp(
+    12px,
+    calc(var(--card-name-size, 14px) * 1.15),
+    30px
+  );
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.slot .piece {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  padding: 12px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
