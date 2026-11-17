@@ -40,9 +40,18 @@ async function initializeGameData() {
 
   const payload = await response.json();
 
-  const grossInstruments = Array.isArray(payload)
-    ? payload
-    : payload.instruments;
+const grossInstruments = (payload.groups || [])
+  .flatMap(group =>
+    (group.instruments || []).map(inst => ({
+      ...inst,
+
+      classNo: inst.classNo ?? group.classNo,
+      classMajor: inst.classMajor ?? group.classMajor,
+
+      instrumentName: inst.instrumentName || inst.name
+    }))
+  );
+
 
   if(!Array.isArray(grossInstruments)){
     throw new Error("Invalid gross instrument universe");
