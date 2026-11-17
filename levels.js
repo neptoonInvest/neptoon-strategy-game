@@ -1161,119 +1161,6 @@ const LEVEL_BUILDERS = [
 export function initializeGameLevels(
   grossInstruments,
   gameUniverse
-){
-
-  setInstrumentUniverse(grossInstruments);
-
-  if(!Array.isArray(gameUniverse)){
-    throw new Error("Invalid curated game universe");
-  }
-
-  const populated = LEVEL_BUILDERS.map(build => {
-
-    const skeleton = build();
-
-    const totalWeight = skeleton.slots.reduce(
-      (sum, slot) => sum + slot.weight,
-      0
-    );
-
-    if(totalWeight !== 100){
-      throw new Error(
-        `Level ${skeleton.level}: Weights sum to ${totalWeight}%`
-      );
-    }
-
-    const result = populateLevel(
-      skeleton,
-      gameUniverse
-    );
-
-    const pieces = [
-      ...result.holdings,
-      ...result.decoys
-    ];
-
-    const ids = pieces.map(p => p.instrumentId);
-
-    if(
-      ids.some(id => id == null) ||
-      new Set(ids).size !== ids.length
-    ){
-      throw new Error(
-        `Level ${skeleton.level}: Invalid or duplicate instrumentId`
-      );
-    }
-
-    console.log(
-      `LEVEL ${result.level} READY`,
-      {
-        holdings: result.holdings.length,
-        decoys: result.decoys.length,
-        weights: result.holdings.map(
-          h => Math.round(h.weight * 100)
-        ),
-        tickers: result.holdings.map(
-          h => h.tickerExchange
-        )
-      }
-    );
-
-    return result;
-
-  });
-
-  GAME_LEVELS = populated;
-
-  console.log(
-    "NEPTOON — ALL LEVELS READY",
-    GAME_LEVELS.length
-  );
-
-  return GAME_LEVELS;
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export function initializeGameLevels(
-  grossInstruments,
-  gameUniverse
 ) {
 
   setInstrumentUniverse(grossInstruments);
@@ -1312,3 +1199,24 @@ export function initializeGameLevels(
   return GAME_LEVELS;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
