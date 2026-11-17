@@ -28,6 +28,7 @@ const INSTRUMENTS_URL =
    NEPTOON — INITIALIZE GAME DATA
 ========================================= */
 
+
 export async function initializeGameData() {
 
   const response = await fetch(INSTRUMENTS_URL);
@@ -40,29 +41,55 @@ export async function initializeGameData() {
 
   const payload = await response.json();
 
-const grossInstruments = (payload.groups || [])
-  .flatMap(group =>
-    (group.instruments || []).map(inst => ({
-      ...inst,
+  /* =========================================
+     FLATTEN GROSS INSTRUMENT UNIVERSE
+  ========================================= */
 
-      classNo: inst.classNo ?? group.classNo,
-      classMajor: inst.classMajor ?? group.classMajor,
+  const grossInstruments = (payload.groups || [])
+    .flatMap(group =>
+      (group.instruments || []).map(inst => ({
 
-      instrumentName: inst.instrumentName || inst.name
-    }))
-  );
+        ...inst,
 
+        classNo:
+          inst.classNo ?? group.classNo,
 
-  if(!Array.isArray(grossInstruments)){
-    throw new Error("Invalid gross instrument universe");
+        classMajor:
+          inst.classMajor ?? group.classMajor,
+
+        instrumentName:
+          inst.instrumentName || inst.name,
+
+        // Required by the existing game engine
+        instrumentId:
+          inst.instrumentId ||
+          String(inst.tickerExchange || "")
+            .trim()
+            .toUpperCase()
+
+      }))
+    );
+
+  if(!grossInstruments.length){
+    throw new Error(
+      "Invalid or empty gross instrument universe"
+    );
   }
+
+  /* =========================================
+     JOIN RECOGNITION STORIES
+  ========================================= */
 
   const gameUniverse = buildGameUniverse(
     grossInstruments,
     gameStories
   );
 
-  initializeGameLevels(
+  /* =========================================
+     POPULATE ALL 10 GAME LEVELS
+  ========================================= */
+
+  const levels = initializeGameLevels(
     grossInstruments,
     gameUniverse
   );
@@ -72,11 +99,14 @@ const grossInstruments = (payload.groups || [])
     {
       gross: grossInstruments.length,
       curated: gameUniverse.length,
-      levels: 10
+      levels: levels.length
     }
   );
 
+  return levels;
+
 }
+
 
 
 function getColor(classNo) {
@@ -866,6 +896,8 @@ function renderAllocationMonitor() {
         coachEl.hidden = !(currentLevel === 1 && !solved && arrangement.every((id) => id == null));
     }
 
+
+
 function paintSignal(flash) {
 
     const matchPercent =
@@ -873,31 +905,48 @@ function paintSignal(flash) {
 
     const perfect = isPerfectScore(score);
 
-    // Numeric portfolio match
-    signalEl.dataset.state = perfect ? "perfect" : "matching";
+    /* =========================================
+       NUMERIC PORTFOLIO MATCH
+    ========================================= */
+
+    signalEl.dataset.state =
+        perfect ? "perfect" : "matching";
 
     wordEl.textContent = `${matchPercent}%`;
 
-    // Existing circular gauge: 0–100%
-    ringEl.style.strokeDashoffset =
-        String(100 - matchPercent);
+    /* =========================================
+       OPTIONAL CIRCULAR GAUGE
+       Guard against missing DOM element
+    ========================================= */
 
-    // Green ring at exact match
-    ringEl.style.stroke =
-        perfect ? "#22C55E" : "#4E79BD";
+    if(ringEl){
+
+        ringEl.style.strokeDashoffset =
+            String(100 - matchPercent);
+
+        ringEl.style.stroke =
+            perfect ? "#22C55E" : "#4E79BD";
+
+    }
+
+    /* =========================================
+       MATCH FEEDBACK
+    ========================================= */
 
     signalEl.classList.remove("up", "down");
 
-    if (flash === "up" || flash === "down") {
+    if(flash === "up" || flash === "down"){
 
         void signalEl.offsetWidth;
 
         signalEl.classList.add(flash);
 
         signalLive.textContent =
-            `${lang === "da" ? "Porteføljematch" : "Portfolio match"}: ${matchPercent}%`;
+            `${lang === "da"
+                ? "Porteføljematch"
+                : "Portfolio match"}: ${matchPercent}%`;
 
-    } else if (flash === "none") {
+    } else if(flash === "none"){
 
         signalLive.textContent = "";
 
@@ -906,6 +955,7 @@ function paintSignal(flash) {
     syncChrome();
 
 }
+
 
 
     function labelMode(width, height) {
