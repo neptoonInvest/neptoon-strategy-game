@@ -463,7 +463,13 @@ export function mountGame(root, options = {}) {
     lang === "da" ? "PORTEFØLJEMATCH" : "PORTFOLIO MATCH";
 
         play.querySelector(".mandate-title").textContent = t("strategy");
-        play.querySelector(".allocation-header span:first-child").textContent = t("allocation");
+
+const allocationHeader =
+  play.querySelector(".allocation-header span:first-child");
+
+if(allocationHeader){
+  allocationHeader.textContent = t("allocation");
+}
      
 
 
