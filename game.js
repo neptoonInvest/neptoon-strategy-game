@@ -1275,20 +1275,32 @@ const selectedInstrument =
 const instrumentNameEl =
     root.querySelector("#trayInstrumentName");
 
-if (instrumentNameEl) {
+if(instrumentNameEl){
 
     instrumentNameEl.textContent =
         selectedInstrument
             ? [
                 lang === "da"
-                    ? selectedInstrument.classMajorTopDa
-                    : selectedInstrument.classMajorTop,
+                    ? selectedInstrument.classMajorTop
+                    : selectedInstrument.class_major_top_eng,
 
                 lang === "da"
-                    ? selectedInstrument.typeLabelDa
-                    : selectedInstrument.typeLabel,
+                    ? selectedInstrument.type_label
+                    : selectedInstrument.type_label_eng,
+
+                selectedInstrument.ccy,
+
+                // Sector only for individual stocks
+                Number(selectedInstrument.classNo) === 100
+                    ? (
+                        lang === "da"
+                            ? selectedInstrument.sector
+                            : selectedInstrument.sector_eng
+                      )
+                    : null,
 
                 selectedInstrument.instrumentName
+
               ]
                 .filter(Boolean)
                 .join(" - ")
