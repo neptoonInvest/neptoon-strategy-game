@@ -1,10 +1,74 @@
+
 import { playSfx, resumeAudio, setSoundEnabled, unlockAudio } from "./audio.js";
 import { layoutWeighted } from "./layout.js";
-import { levelByNumber, piecesOf, strategyLine } from "./levels.js";
+
+import {
+  levelByNumber,
+  piecesOf,
+  strategyLine,
+  initializeGameLevels
+} from "./levels.js";
+
 import { viewPortfolio } from "./portfolio.js";
-import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, evaluateStrategy, targetWeights, } from "./score.js";
+import { isPerfectScore, percentOf, SIGNAL_LABEL, signalName, evaluateStrategy, targetWeights } from "./score.js";
 import { clearSave, loadSave, writeSave } from "./storage.js";
 import { getGameText } from "./i18n.js";
+import { gameStories } from "./gameLevelStories.js";
+
+/* =========================================
+   NEPTOON — INSTRUMENT DATA SOURCE
+========================================= */
+
+const INSTRUMENTS_URL =
+  "https://neptooninvest.github.io/neptoon-data/instruments_v1.json";
+
+
+
+/* =========================================
+   NEPTOON — INITIALIZE GAME DATA
+========================================= */
+
+async function initializeGameData() {
+
+  const response = await fetch(INSTRUMENTS_URL);
+
+  if(!response.ok){
+    throw new Error(
+      `Instrument fetch failed: ${response.status}`
+    );
+  }
+
+  const payload = await response.json();
+
+  const grossInstruments = Array.isArray(payload)
+    ? payload
+    : payload.instruments;
+
+  if(!Array.isArray(grossInstruments)){
+    throw new Error("Invalid gross instrument universe");
+  }
+
+  const gameUniverse = buildGameUniverse(
+    grossInstruments,
+    gameStories
+  );
+
+  initializeGameLevels(
+    grossInstruments,
+    gameUniverse
+  );
+
+  console.log(
+    "NEPTOON GAME DATA READY",
+    {
+      gross: grossInstruments.length,
+      curated: gameUniverse.length,
+      levels: 10
+    }
+  );
+
+}
+
 
 function getColor(classNo) {
 
@@ -34,6 +98,68 @@ function getColor(classNo) {
     return "#6EC6ED";
 
 }
+
+
+/* =========================================
+   BUILD CURATED GAME UNIVERSE
+   Join gross instruments with game stories
+   using tickerExchange
+========================================= */
+
+function buildGameUniverse(
+  grossInstruments,
+  gameStories
+){
+
+  const grossByTicker = new Map(
+    grossInstruments.map(inst => [
+      String(inst.tickerExchange || "")
+        .trim()
+        .toUpperCase(),
+      inst
+    ])
+  );
+
+  const gameUniverse = [];
+  const missing = [];
+
+  for(const item of gameStories.instruments){
+
+    const ticker = String(item.tickerExchange || "")
+      .trim()
+      .toUpperCase();
+
+    const instrument = grossByTicker.get(ticker);
+
+    if(!instrument){
+      missing.push(ticker);
+      continue;
+    }
+
+    gameUniverse.push({
+      ...instrument,
+
+      tickerExchange: ticker,
+
+      stories: item.stories
+    });
+
+  }
+
+  console.log(
+    "NEPTOON GAME UNIVERSE",
+    {
+      grossCount: grossInstruments.length,
+      curatedCount: gameStories.instruments.length,
+      matchedCount: gameUniverse.length,
+      missing
+    }
+  );
+
+  return gameUniverse;
+
+}
+
 
 
 function shuffle(list, seed) {
@@ -155,102 +281,126 @@ export function mountGame(root, options = {}) {
     play.className = "play";
     play.hidden = true;
     play.innerHTML = `
-    <header class="topbar">
-      <div class="topbar-id">
-        <button type="button" class="home-btn" data-home aria-label="Back to levels">
-          <span class="mini-mark">${iconMark()}</span>
-          <div>
-            <p class="brand brand-sm">NEPTOON</p>
-            <h1 class="level-line"><span data-level-kicker>LEVEL 1</span> <span data-level-title>First Move</span></h1>
-          </div>
-        </button>
-      </div>
-      <div class="top-actions">
-        <button type="button" class="icon-btn round" data-sound aria-label="Sound on" aria-pressed="true">${iconSound(true)}</button>
-        <button type="button" class="icon-btn" data-reset aria-label="Reset progress">${iconReset()}</button>
-      </div>
-    </header>
-    <div class="ticks" data-ticks aria-hidden="true"></div>
-    <div class="signal" data-state="searching" aria-live="polite">
-      <div class="orb" aria-hidden="true">
-        <svg viewBox="0 0 36 36">
-          <circle class="orb-track" cx="18" cy="18" r="14" pathLength="100"></circle>
-          <circle class="orb-value" data-ring cx="18" cy="18" r="14" pathLength="100"></circle>
-        </svg>
-      </div>
-      <div class="signal-copy">
-<p class="signal-kicker">PORTFOLIO MATCH</p>
-<p class="signal-word" data-word>0%</p>
 
-      </div>
-    </div>
-    <div class="game-mandate" data-mandate>
-      <p class="mandate-title">YOUR STRATEGY</p>
-      <ul class="mandate-rules" data-mandate-rules></ul>
-    </div>
-    <div class="allocation-monitor">
-      <div class="allocation-header">
-        <span>YOUR ALLOCATION</span>
-        <span data-allocation-total>0% allocated</span>
-      </div>
-      <div class="allocation-bar" data-allocation-bar>
-        <div class="allocation-segment stocks" data-allocation-stocks></div>
-        <div class="allocation-segment equity" data-allocation-equity></div>
-        <div class="allocation-segment bonds" data-allocation-bonds></div>
-        <div class="allocation-segment gold" data-allocation-gold></div>
-        <div class="allocation-segment bitcoin" data-allocation-bitcoin></div>
-      </div>
+<header class="topbar">
 
-<div class="allocation-legend">
+  <button type="button"
+          class="home-btn topbar-id"
+          data-home
+          aria-label="Back to levels">
 
-  <div class="allocation-item stocks">
-    <span class="allocation-icon">▥</span>
-    <strong data-weight-stocks>0%</strong>
-    <small>Stocks</small>
+    <span class="mini-mark">${iconMark()}</span>
+
+    <span class="topbar-copy">
+      <span class="brand brand-sm">
+        NEPTOON · <span data-level-kicker>LEVEL 1</span>
+      </span>
+
+      <span class="level-line" data-level-title>
+        First Move
+      </span>
+    </span>
+
+  </button>
+
+  <div class="top-actions">
+
+    <button type="button"
+            class="icon-btn icon-btn-plain"
+            data-sound
+            aria-label="Sound on"
+            aria-pressed="true">
+      ${iconSound(true)}
+    </button>
+
+    <button type="button"
+            class="icon-btn icon-btn-plain"
+            data-reshuffle
+            aria-label="Reshuffle instruments"
+            title="Reshuffle instruments">
+      ${iconReset()}
+    </button>
+
   </div>
 
-  <div class="allocation-item equity">
-    <span class="allocation-icon">▤</span>
-    <strong data-weight-equity>0%</strong>
-    <small>Equity Funds</small>
+</header>
+
+<div class="ticks"
+     data-ticks
+     aria-hidden="true"></div>
+
+
+<!-- STRATEGY TABLE -->
+
+<div class="game-mandate" data-mandate>
+
+  <div class="mandate-heading">
+    <p class="mandate-title">YOUR STRATEGY</p>
+    <span data-strategy-count>5 INVESTMENTS</span>
   </div>
 
-  <div class="allocation-item bonds">
-    <span class="allocation-icon">▰</span>
-    <strong data-weight-bonds>0%</strong>
-    <small>Gov Bonds</small>
-  </div>
+  <table class="strategy-table">
+    <thead>
+      <tr>
+        <th>INSTRUMENT STORY</th>
+        <th>WEIGHT</th>
+      </tr>
+    </thead>
 
-  <div class="allocation-item gold">
-    <span class="allocation-icon">▰</span>
-    <strong data-weight-gold>0%</strong>
-    <small>Credit Bonds</small>
-  </div>
-
-  <div class="allocation-item bitcoin">
-    <span class="allocation-icon">◆</span>
-    <strong data-weight-bitcoin>0%</strong>
-    <small>Alternatives</small>
-  </div>
-
-</div>    
-
-
+    <tbody data-strategy-rows></tbody>
+  </table>
 
 </div>
-    <p class="sr-only" data-signal-live></p>
-    <div class="stage">
-      <div class="board" data-board>
-        <p class="coach" data-coach hidden>Drag the card onto the board.</p>
-        <p class="banner" data-banner hidden>THE MASTERPIECE</p>
-      </div>
-    </div>
+
+
+<!-- KEEP EXISTING ALLOCATION MONITOR HERE -->
+
+
+<p class="sr-only" data-signal-live></p>
+
+<div class="stage">
+  <div class="board" data-board>
+    <p class="coach" data-coach hidden>
+      Drag the card onto the board.
+    </p>
+    <p class="banner" data-banner hidden>
+      THE MASTERPIECE
+    </p>
+  </div>
+</div>
+
+
+<!-- INVESTMENTS + COMPACT MATCH SCORE -->
 
 <div class="tray" data-tray>
-  <p class="tray-label" data-tray-label>Investments</p>
-  <p class="tray-instrument-name" id="trayInstrumentName"></p>
+
+  <div class="tray-heading">
+
+    <p class="tray-label" data-tray-label>
+      INVESTMENTS
+    </p>
+
+    <div class="signal"
+         data-state="searching"
+         aria-live="polite">
+
+      <span class="signal-kicker">MATCH</span>
+      <strong class="signal-word" data-word>0%</strong>
+
+    </div>
+
+  </div>
+
+  <p class="tray-instrument-name"
+     id="trayInstrumentName"></p>
+
   <div class="tray-grid" data-tray-grid></div>
+
 </div>
+
+
+<!-- KEEP EXISTING VICTORY SECTION HERE -->
+
 
     <div class="victory" data-victory hidden>
       <div class="crown" data-crown hidden>${iconCrown()}</div>
@@ -750,41 +900,75 @@ function paintSignal(flash) {
             return "medium";
         return "short";
     }
-    function applyLabel(el, instrument, mode) {
-        el.classList.remove("mode-full", "mode-medium", "mode-short", "mode-tray", "mode-float");
-        el.classList.add(`mode-${mode}`);
-        el.setAttribute("aria-label", `${instrument.instrumentName}, ${instrument.gameLabel}`);
-        el.replaceChildren();
-        const ticker = document.createElement("span");
-        ticker.className = "ticker";
-        const sub = document.createElement("span");
-        sub.className = "sub";
-        if (mode === "short") {
-            ticker.textContent = instrument.gameLabel;
-            el.append(ticker);
-            return;
-        }
-        if (mode === "medium") {
-            ticker.textContent = instrument.mediumLabel;
-            el.append(ticker);
-            return;
-        }
-        if (mode === "tray") {
-            ticker.textContent = instrument.gameLabel;
-            sub.textContent = instrument.mediumLabel;
-            el.append(ticker, sub);
-            return;
-        }
-        if (mode === "float") {
-            ticker.textContent = instrument.gameLabel;
-            sub.textContent = instrument.instrumentName;
-            el.append(ticker, sub);
-            return;
-        }
-        ticker.textContent = instrument.instrumentName;
-        sub.textContent = instrument.gameLabel;
-        el.append(ticker, sub);
-    }
+
+
+function applyLabel(el, instrument, mode) {
+
+    el.classList.remove(
+        "mode-full",
+        "mode-medium",
+        "mode-short",
+        "mode-tray",
+        "mode-float"
+    );
+
+    el.classList.add(`mode-${mode}`);
+
+    /*
+       PRIMARY LABEL
+       Asset class · DA / EN
+    */
+
+    const classLabel =
+        (
+            lang === "da"
+                ? instrument.classMajorTopDa
+                : instrument.classMajorTop
+        ) ||
+        instrument.classMajorTop ||
+        "";
+
+    /*
+       SECONDARY LABEL
+       Full instrument name
+    */
+
+    const instrumentName =
+        instrument.instrumentName ||
+        instrument.name ||
+        "";
+
+    el.setAttribute(
+        "aria-label",
+        [classLabel, instrumentName]
+            .filter(Boolean)
+            .join(", ")
+    );
+
+    el.replaceChildren();
+
+    const primary = document.createElement("span");
+    primary.className = "ticker";
+    primary.textContent = classLabel;
+
+    const secondary = document.createElement("span");
+    secondary.className = "sub";
+    secondary.textContent = instrumentName;
+    secondary.title = instrumentName;
+
+    /*
+       ALL MODES
+       Same two-label hierarchy.
+
+       CSS controls visibility and truncation
+       for different card dimensions.
+    */
+
+    el.append(primary, secondary);
+
+}
+
+
     function ensurePiece(id) {
         const existing = pieceEls.get(id);
         if (existing)
@@ -1698,5 +1882,51 @@ function clampCompleted(value) {
     return Math.min(10, Math.max(0, Math.round(value)));
 }
 
-const standaloneRoot = document.getElementById("game");
-if (standaloneRoot) mountGame(standaloneRoot);
+
+/* =========================================
+   NEPTOON — GAME STARTUP
+========================================= */
+
+const standaloneRoot =
+  document.getElementById("game");
+
+if(standaloneRoot){
+
+  try {
+
+    await initializeGameData();
+
+    mountGame(standaloneRoot);
+
+  } catch(error) {
+
+    console.error(
+      "NEPTOON GAME INITIALIZATION FAILED",
+      error
+    );
+
+    standaloneRoot.textContent =
+      "Unable to load the game. Please refresh the page.";
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
