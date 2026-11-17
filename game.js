@@ -28,7 +28,7 @@ const INSTRUMENTS_URL =
    NEPTOON — INITIALIZE GAME DATA
 ========================================= */
 
-async function initializeGameData() {
+export async function initializeGameData() {
 
   const response = await fetch(INSTRUMENTS_URL);
 
