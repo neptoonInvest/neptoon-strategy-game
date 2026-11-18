@@ -623,12 +623,11 @@ function renderPageLevelsEnd(){
             ${da ? "NIVEAU" : "LEVEL"} ${levelNo}
           </span>
 
-          <input
-            type="checkbox"
-            data-level-check
-            value="${levelNo}"
-            checked
-          >
+<input
+  type="checkbox"
+  data-level-check
+  value="${levelNo}"
+>
 
         </div>
 
@@ -656,25 +655,41 @@ function renderPageLevelsEnd(){
 
   page.innerHTML = `
 
-    <div class="levels-end-header">
 
-      <div class="levels-end-trophy">♛</div>
+<div class="levels-end-header">
 
-      <div class="levels-end-kicker">
-        NEPTOON · STRATEGY MASTER
-      </div>
+  <div class="levels-end-kicker">
+    NEPTOON · STRATEGY MASTER
+  </div>
 
+  <div class="levels-end-heading">
+    <div>
       <h2>
         ${da ? "MISSION GENNEMFØRT" : "MISSION COMPLETE"}
       </h2>
 
       <p>
         ${da
-          ? "10 niveauer gennemført. Dine strategier er klar."
-          : "10 levels completed. Your strategies are ready."}
+          ? "10 niveauer gennemført. Vælg dine strategier."
+          : "10 levels completed. Select your strategies."}
       </p>
-
     </div>
+
+    <span class="levels-end-crown">♛</span>
+  </div>
+
+  <button
+    type="button"
+    class="levels-end-send"
+    data-levels-send
+    disabled>
+    ${da
+      ? "TILFØJ PORTEFØLJER"
+      : "ADD PORTFOLIOS"}
+  </button>
+
+</div>
+
 
     <div class="levels-end-content">
 
@@ -712,14 +727,7 @@ function renderPageLevelsEnd(){
 
       </div>
 
-      <button
-        type="button"
-        class="levels-end-send"
-        data-levels-send>
-        ${da
-          ? "SEND 10 TIL PORTEFØLJER"
-          : "SEND 10 TO PORTFOLIOS"}
-      </button>
+
 
       <p class="levels-end-note">
         ${da
@@ -753,21 +761,21 @@ function renderPageLevelsEnd(){
   const sendButton =
     page.querySelector("[data-levels-send]");
 
-  function updateSelection(){
+function updateSelection(){
 
-    const count =
-      checks.filter(c => c.checked).length;
+  const count =
+    checks.filter(c => c.checked).length;
 
-    countEl.textContent = `${count} / 10`;
+  countEl.textContent = `${count} / 10`;
 
-    sendButton.disabled = count === 0;
+  sendButton.disabled = count === 0;
 
-    sendButton.textContent =
-      da
-        ? `SEND ${count} TIL PORTEFØLJER`
-        : `SEND ${count} TO PORTFOLIOS`;
+  sendButton.textContent =
+    da
+      ? `TILFØJ ${count} PORTEFØLJER`
+      : `ADD ${count} PORTFOLIOS`;
 
-  }
+}
 
   checks.forEach(check => {
     check.addEventListener(
