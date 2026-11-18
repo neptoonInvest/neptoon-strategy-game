@@ -1002,7 +1002,7 @@ function renderStrategyTable() {
         play.querySelector("[data-home]").setAttribute("aria-label", t("backToLevels"));
 
        play.querySelector(".signal-kicker").textContent =
-    lang === "da" ? "PORTEFØLJEMATCH" : "PORTFOLIO MATCH";
+    lang === "da" ? "SUCCES TRACKER" : "SUCCES TRACKER";
 
         play.querySelector(".mandate-title").textContent = t("strategy");
 
