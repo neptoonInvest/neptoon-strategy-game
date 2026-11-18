@@ -1442,8 +1442,8 @@ function paintSignal(flash) {
 
         signalLive.textContent =
             `${lang === "da"
-                ? "Porteføljematch"
-                : "Portfolio match"}: ${matchPercent}%`;
+                ? "Succes Tracker"
+                : "Succes Tracker"}: ${matchPercent}%`;
 
     } else if(flash === "none"){
 
