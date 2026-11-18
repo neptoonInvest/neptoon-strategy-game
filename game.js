@@ -912,6 +912,8 @@ function updateSelection(){
 }
 
 
+
+
 /* =====================================================
    SAFE HTML TEXT
 ===================================================== */
@@ -1098,6 +1100,21 @@ for (const [key, label] of Object.entries(allocationLabels[lang])) {
             map.set(piece.instrumentId, piece);
         return map;
     }
+
+/* =========================================
+   DEV ONLY · OPEN GAME FINALE
+========================================= */
+
+window.testGameFinale = () => {
+
+  highestCompleted = 10;
+
+  renderPageLevelsEnd();
+
+};
+
+
+
     function slotPercents() {
         return level().holdings.map((holding) => percentOf(holding.weight));
     }
