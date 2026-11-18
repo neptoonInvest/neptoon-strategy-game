@@ -2273,7 +2273,35 @@ button:focus-visible,
 
 
 
+/* =========================================
+   NEPTOON STRATEGY GAME · FOOTER
+========================================= */
 
+.game-root .game-footer {
+  margin-top: 28px;
+  padding: 18px 12px 32px;
+  border-top: 1px solid #263D5D;
+  background: #091831;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+  text-align: center;
+}
+
+.game-root .game-footer span {
+  color: #83BCE8;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.game-root .game-footer small {
+  color: #8293AF;
+  font-size: 10px;
+}
 
 
 
