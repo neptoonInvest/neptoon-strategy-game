@@ -280,10 +280,13 @@ export function mountGame(root, options = {}) {
     let currentLevel = 1;
     let highestCompleted = 0;
     let soundEnabled = true;
-    let arrangement = [];
-    let tray = [];
-    let selectedId = null;
-    let solved = false;
+
+let arrangement = [];
+let tray = [];
+let selectedId = null;
+let lastInstrumentId = null;
+let solved = false;
+
     let score = 0;
     let busy = false;
 
