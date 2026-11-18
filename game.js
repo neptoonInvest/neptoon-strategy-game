@@ -399,67 +399,52 @@ let solved = false;
 
 <!-- ASSET ALLOCATION MONITOR -->
 
-<div class="allocation-monitor">
+    <div class="allocation-monitor">
+      <div class="allocation-header">
+        <span>YOUR ALLOCATION</span>
+        <span data-allocation-total>0% allocated</span>
+      </div>
+      <div class="allocation-bar" data-allocation-bar>
+        <div class="allocation-segment stocks" data-allocation-stocks></div>
+        <div class="allocation-segment equity" data-allocation-equity></div>
+        <div class="allocation-segment bonds" data-allocation-bonds></div>
+        <div class="allocation-segment gold" data-allocation-gold></div>
+        <div class="allocation-segment bitcoin" data-allocation-bitcoin></div>
+      </div>
 
-  <div class="allocation-header">
-    <span>ASSET ALLOCATION</span>
-    <span data-allocation-total>0% ALLOCATED</span>
+<div class="allocation-legend">
+
+  <div class="allocation-item stocks">
+    <span class="allocation-icon">▥</span>
+    <strong data-weight-stocks>0%</strong>
+    <small>Stocks</small>
   </div>
 
-  <div class="allocation-bar">
-
-    <div class="allocation-segment stocks"
-         data-allocation-stocks></div>
-
-    <div class="allocation-segment equity"
-         data-allocation-equity></div>
-
-    <div class="allocation-segment bonds"
-         data-allocation-bonds></div>
-
-    <div class="allocation-segment gold"
-         data-allocation-gold></div>
-
-    <div class="allocation-segment bitcoin"
-         data-allocation-bitcoin></div>
-
+  <div class="allocation-item equity">
+    <span class="allocation-icon">▤</span>
+    <strong data-weight-equity>0%</strong>
+    <small>Equity Funds</small>
   </div>
 
-  <div class="allocation-legend">
-
-    <div class="allocation-item stocks">
-      <span class="allocation-dot"></span>
-      <small>Stocks</small>
-      <strong data-weight-stocks>0%</strong>
-    </div>
-
-    <div class="allocation-item equity">
-      <span class="allocation-dot"></span>
-      <small>Equity Funds</small>
-      <strong data-weight-equity>0%</strong>
-    </div>
-
-    <div class="allocation-item bonds">
-      <span class="allocation-dot"></span>
-      <small>Gov Bonds</small>
-      <strong data-weight-bonds>0%</strong>
-    </div>
-
-    <div class="allocation-item gold">
-      <span class="allocation-dot"></span>
-      <small>Credit Bonds</small>
-      <strong data-weight-gold>0%</strong>
-    </div>
-
-    <div class="allocation-item bitcoin">
-      <span class="allocation-dot"></span>
-      <small>Alternatives</small>
-      <strong data-weight-bitcoin>0%</strong>
-    </div>
-
+  <div class="allocation-item bonds">
+    <span class="allocation-icon">▰</span>
+    <strong data-weight-bonds>0%</strong>
+    <small>Gov Bonds</small>
   </div>
 
-</div>
+  <div class="allocation-item gold">
+    <span class="allocation-icon">▰</span>
+    <strong data-weight-gold>0%</strong>
+    <small>Credit Bonds</small>
+  </div>
+
+  <div class="allocation-item bitcoin">
+    <span class="allocation-icon">◆</span>
+    <strong data-weight-bitcoin>0%</strong>
+    <small>Alternatives</small>
+  </div>
+
+</div>    
 
 <p class="sr-only" data-signal-live></p>
 
