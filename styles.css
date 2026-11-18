@@ -2511,4 +2511,12 @@ button:focus-visible,
   background:#091831;
   border-top:1px solid #263D5D;
 }
-
+.levels-end-send{
+  display:block;
+  width:fit-content;
+  min-width:180px;
+  max-width:90%;
+  margin:20px auto 24px;
+  padding:12px 24px;
+  border-radius:0;
+}
