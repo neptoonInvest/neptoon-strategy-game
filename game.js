@@ -733,13 +733,6 @@ page.innerHTML = `
 
     <div class="levels-end-selection">
 
-      <button type="button" data-levels-select-all>
-        ${da ? "Vælg alle" : "Select all"}
-      </button>
-
-      <button type="button" data-levels-clear>
-        ${da ? "Fravælg alle" : "Clear all"}
-      </button>
 
     </div>
 
