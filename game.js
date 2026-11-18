@@ -600,6 +600,21 @@ function renderPageLevelsEnd(){
     (_,i) => levelByNumber(i + 1)
   );
 
+
+const levelIcons = [
+  "sprout",
+  "git-branch",
+  "layers-3",
+  "chart-no-axes-combined",
+  "scale",
+  "wallet",
+  "pie-chart",
+  "trending-up",
+  "compass",
+  "gem"
+];
+
+
   const cards = levels.map((data,i) => {
 
     const levelNo = i + 1;
@@ -628,9 +643,15 @@ function renderPageLevelsEnd(){
 
         </div>
 
-        <div class="levels-end-card-title">
-          ${escapeLevelsEndHTML(title)}
-        </div>
+<div class="levels-end-card-title">
+
+  <i data-lucide="${levelIcons[i]}"></i>
+
+  <span>
+    ${escapeLevelsEndHTML(title)}
+  </span>
+
+</div>
 
         <div class="levels-end-card-bottom">
           <span>
@@ -678,14 +699,6 @@ page.innerHTML = `
     </div>
 
     <button
-      type="button"
-      class="levels-end-send"
-      data-levels-send
-      disabled>
-      ${da
-        ? "TILFØJ PORTEFØLJER"
-        : "ADD PORTFOLIOS"}
-    </button>
 
   </div>
 
@@ -730,12 +743,25 @@ page.innerHTML = `
 
     </div>
 
+<button
+  type="button"
+  class="levels-end-send"
+  data-levels-send
+  disabled>
+  ${da
+    ? "TILFØJ PORTEFØLJER"
+    : "ADD PORTFOLIOS"}
+</button>
+
 
     <p class="levels-end-note">
       ${da
         ? "Porteføljerne bliver tilgængelige under Egne porteføljer."
         : "Your portfolios will be available under Custom."}
     </p>
+
+
+
 
 
     <button
