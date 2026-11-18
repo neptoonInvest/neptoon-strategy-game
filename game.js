@@ -1267,11 +1267,13 @@ slot.addEventListener("click", event => {
             solved && tray.length > 0 ? t("leftOut") : tray.length === 0 ? t("allPlacedLabel") : t("investments");
 
 
-const selectedInstrument =
-    selectedId
-        ? instruments.get(selectedId)
-        : null;
+const metadataId =
+    selectedId || lastInstrumentId;
 
+const selectedInstrument =
+    metadataId
+        ? instruments.get(metadataId)
+        : null;
 const instrumentNameEl =
     root.querySelector("#trayInstrumentName");
 
@@ -1727,44 +1729,90 @@ el.appendChild(badge);
         clearTargets();
         renderPieces(true);
     }
-    function handleTap(id) {
-        if (!canStart())
-            return;
-        unlockAudio();
-        if (selectedId && selectedId !== id) {
-            const a = locOf(selectedId);
-            const b = locOf(id);
-            if (a.type === "tray" && b.type === "tray") {
-                selectedId = id;
-                renderPieces(false);
-                playSfx("pick");
-                return;
-            }
-            const kind = a.type === "slot" && b.type === "slot" ? "swap" : "drop";
-            swapIds(selectedId, id);
-            selectedId = null;
-            commit(kind);
-            return;
-        }
-        selectedId = selectedId === id ? null : id;
-        playSfx(selectedId ? "pick" : "drop");
-        renderPieces(false);
-    }
-    function handleTapSlot(index) {
-        if (!canStart() || !selectedId)
-            return;
-        const occupant = arrangement[index];
-        if (occupant === selectedId) {
-            selectedId = null;
+
+
+function handleTap(id) {
+
+    if (!canStart())
+        return;
+
+    unlockAudio();
+
+    // Remember the instrument for metadata display
+    lastInstrumentId = id;
+
+    if (selectedId && selectedId !== id) {
+
+        const a = locOf(selectedId);
+        const b = locOf(id);
+
+        if (a.type === "tray" && b.type === "tray") {
+
+            selectedId = id;
+
             renderPieces(false);
+            playSfx("pick");
+
             return;
         }
-        const from = locOf(selectedId);
-        const swapping = occupant != null && from.type === "slot";
-        moveToSlot(selectedId, index);
+
+        const kind =
+            a.type === "slot" && b.type === "slot"
+                ? "swap"
+                : "drop";
+
+        swapIds(selectedId, id);
+
         selectedId = null;
-        commit(swapping ? "swap" : "drop");
+
+        commit(kind);
+
+        return;
     }
+
+    selectedId =
+        selectedId === id
+            ? null
+            : id;
+
+    playSfx(selectedId ? "pick" : "drop");
+
+    renderPieces(false);
+}
+
+
+function handleTapSlot(index) {
+
+    if (!canStart() || !selectedId)
+        return;
+
+    const occupant = arrangement[index];
+
+    if (occupant === selectedId) {
+
+        lastInstrumentId = selectedId;
+        selectedId = null;
+
+        renderPieces(false);
+
+        return;
+    }
+
+    const from = locOf(selectedId);
+
+    const swapping =
+        occupant != null &&
+        from.type === "slot";
+
+    // Preserve metadata before clearing selection
+    lastInstrumentId = selectedId;
+
+    moveToSlot(selectedId, index);
+
+    selectedId = null;
+
+    commit(swapping ? "swap" : "drop");
+}
 
     function onPieceKey(event) {
         if (event.key !== "Enter" && event.key !== " ")
