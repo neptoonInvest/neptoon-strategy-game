@@ -454,6 +454,15 @@ export function mountGame(root, options = {}) {
       <h2 class="victory-title" data-victory-title></h2>
       <p class="mix" data-mix></p>
       <button type="button" class="play-btn" data-next>NEXT LEVEL</button>
+
+<button
+  type="button"
+  class="play-btn"
+  data-levels-end
+  hidden>
+  VIEW MY STRATEGIES
+</button>
+
       <button type="button" class="play-btn" data-replay hidden>REPLAY FROM LEVEL 1</button>
       <button type="button" class="ghost-btn" data-portfolio hidden>ADD TO MYWEALTH</button>
       <button type="button" class="text-btn" data-title hidden>Back to title</button>
@@ -477,6 +486,356 @@ export function mountGame(root, options = {}) {
     toast.hidden = true;
     toast.setAttribute("role", "status");
     shell.append(start, play, scrim, toast);
+
+
+/* =====================================================
+   NEPTOON STRATEGY GAME
+   PAGE LEVELS END · FINAL PORTFOLIO GALLERY
+===================================================== */
+
+function renderPageLevelsEnd(){
+
+  if(!isMaster()){
+    return;
+  }
+
+  /*
+    ==========================================
+    A · PREPARE FINAL PAGE
+    ==========================================
+  */
+
+  start.hidden = true;
+  play.hidden = true;
+
+  let page =
+    shell.querySelector("#pageLevelsEnd");
+
+  if(!page){
+
+    page = document.createElement("section");
+
+    page.id = "pageLevelsEnd";
+    page.className = "page-levels-end";
+
+    shell.appendChild(page);
+
+  }
+
+  page.hidden = false;
+
+  const da = lang === "da";
+
+  /*
+    ==========================================
+    B · BUILD PORTFOLIO GALLERY
+    ==========================================
+  */
+
+  const levels = Array.from(
+    {length:10},
+    (_,i) => levelByNumber(i + 1)
+  );
+
+  const cards = levels.map((data,i) => {
+
+    const levelNo = i + 1;
+
+    const title =
+      (da
+        ? data.metaFlat?.titleDa
+        : data.metaFlat?.title) ||
+      data.metaFlat?.title ||
+      `Strategy ${levelNo}`;
+
+    return `
+      <label class="levels-end-card">
+
+        <div class="levels-end-card-top">
+
+          <span class="levels-end-number">
+            ${da ? "NIVEAU" : "LEVEL"} ${levelNo}
+          </span>
+
+          <input
+            type="checkbox"
+            data-level-check
+            value="${levelNo}"
+            checked
+          >
+
+        </div>
+
+        <div class="levels-end-card-title">
+          ${escapeLevelsEndHTML(title)}
+        </div>
+
+        <div class="levels-end-card-bottom">
+          <span>
+            ${data.holdings.length}
+            ${da ? "investeringer" : "investments"}
+          </span>
+        </div>
+
+      </label>
+    `;
+
+  }).join("");
+
+  /*
+    ==========================================
+    C · PAGE HTML
+    ==========================================
+  */
+
+  page.innerHTML = `
+
+    <div class="levels-end-header">
+
+      <div class="levels-end-trophy">♛</div>
+
+      <div class="levels-end-kicker">
+        NEPTOON · STRATEGY MASTER
+      </div>
+
+      <h2>
+        ${da ? "MISSION GENNEMFØRT" : "MISSION COMPLETE"}
+      </h2>
+
+      <p>
+        ${da
+          ? "10 niveauer gennemført. Dine strategier er klar."
+          : "10 levels completed. Your strategies are ready."}
+      </p>
+
+    </div>
+
+    <div class="levels-end-content">
+
+      <div class="levels-end-section-head">
+
+        <div>
+          <h3>
+            ${da ? "Mine strategier" : "My Strategies"}
+          </h3>
+
+          <p>
+            ${da
+              ? "Vælg de porteføljer, du vil sende til Neptoon."
+              : "Select the portfolios to send to Neptoon."}
+          </p>
+        </div>
+
+        <span data-levels-count>10 / 10</span>
+
+      </div>
+
+      <div class="levels-end-gallery">
+        ${cards}
+      </div>
+
+      <div class="levels-end-selection">
+
+        <button type="button" data-levels-select-all>
+          ${da ? "Vælg alle" : "Select all"}
+        </button>
+
+        <button type="button" data-levels-clear>
+          ${da ? "Fravælg alle" : "Clear all"}
+        </button>
+
+      </div>
+
+      <button
+        type="button"
+        class="levels-end-send"
+        data-levels-send>
+        ${da
+          ? "SEND 10 TIL PORTEFØLJER"
+          : "SEND 10 TO PORTFOLIOS"}
+      </button>
+
+      <p class="levels-end-note">
+        ${da
+          ? "Porteføljerne bliver tilgængelige under Egne porteføljer."
+          : "Your portfolios will be available under Custom."}
+      </p>
+
+      <button
+        type="button"
+        class="levels-end-back"
+        data-levels-back>
+        ${da ? "Tilbage til spillet" : "Back to Game"}
+      </button>
+
+    </div>
+  `;
+
+  /*
+    ==========================================
+    D · SELECTION STATE
+    ==========================================
+  */
+
+  const checks = [
+    ...page.querySelectorAll("[data-level-check]")
+  ];
+
+  const countEl =
+    page.querySelector("[data-levels-count]");
+
+  const sendButton =
+    page.querySelector("[data-levels-send]");
+
+  function updateSelection(){
+
+    const count =
+      checks.filter(c => c.checked).length;
+
+    countEl.textContent = `${count} / 10`;
+
+    sendButton.disabled = count === 0;
+
+    sendButton.textContent =
+      da
+        ? `SEND ${count} TIL PORTEFØLJER`
+        : `SEND ${count} TO PORTFOLIOS`;
+
+  }
+
+  checks.forEach(check => {
+    check.addEventListener(
+      "change",
+      updateSelection
+    );
+  });
+
+  page.querySelector(
+    "[data-levels-select-all]"
+  ).addEventListener("click", () => {
+
+    checks.forEach(c => c.checked = true);
+    updateSelection();
+
+  });
+
+  page.querySelector(
+    "[data-levels-clear]"
+  ).addEventListener("click", () => {
+
+    checks.forEach(c => c.checked = false);
+    updateSelection();
+
+  });
+
+  /*
+    ==========================================
+    E · TRANSFER TO APP
+    ==========================================
+  */
+
+  sendButton.addEventListener("click", () => {
+
+    const selectedLevels = checks
+      .filter(c => c.checked)
+      .map(c => Number(c.value));
+
+    if(!selectedLevels.length){
+      return;
+    }
+
+    const selectedLevelPortfolios =
+      selectedLevels.map(levelNo => {
+
+        const data =
+          levelByNumber(levelNo);
+
+        return {
+
+          level: levelNo,
+
+          strategyName:
+            (da
+              ? data.metaFlat?.titleDa
+              : data.metaFlat?.title) ||
+            data.metaFlat?.title ||
+            `Game Level ${levelNo}`,
+
+          holdings:
+            data.holdings.map(h => ({
+              tickerExchange:
+                h.tickerExchange,
+
+              classNo:
+                Number(h.classNo),
+
+              weight:
+                Number(h.weight)
+            }))
+
+        };
+
+      });
+
+    /*
+      APP bridge.
+
+      The APP receives the payload and calls
+      receiveCustomLevelPortfolios().
+
+      Do not change APP.planSlots here.
+    */
+
+    window.dispatchEvent(
+      new CustomEvent(
+        "neptoon:game-portfolios-transfer",
+        {
+          detail: {
+            selectedLevels,
+            selectedLevelPortfolios
+          }
+        }
+      )
+    );
+
+  });
+
+  /*
+    ==========================================
+    F · RETURN TO GAME
+    ==========================================
+  */
+
+  page.querySelector(
+    "[data-levels-back]"
+  ).addEventListener("click", () => {
+
+    page.hidden = true;
+
+    openPlay(false);
+
+  });
+
+  updateSelection();
+
+}
+
+
+/* =====================================================
+   SAFE HTML TEXT
+===================================================== */
+
+function escapeLevelsEndHTML(value){
+
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+}
+
 
 
 /* =========================================
@@ -1536,9 +1895,21 @@ el.appendChild(badge);
         next.hidden = finale;
         replay.hidden = !finale;
         back.hidden = !finale;
+
+
+const levelsEndButton =
+  play.querySelector("[data-levels-end]");
+
+levelsEndButton.hidden = !finale;
+
+levelsEndButton.textContent =
+  lang === "da"
+    ? "SE MINE STRATEGIER"
+    : "VIEW MY STRATEGIES";
+
         const showPortfolio = data.metaFlat.isWealthPlan && data.metaFlat.modelNo != null;
         portfolio.hidden = !showPortfolio;
-        (finale ? replay : next).focus();
+   (finale ? levelsEndButton : next).focus();
         syncChrome();
     }
     function hideVictory() {
@@ -1952,85 +2323,123 @@ function handleTapSlot(index) {
         }, 2200);
     }
     shell.addEventListener("pointerdown", () => unlockAudio());
-    shell.addEventListener("click", (event) => {
-        const target = event.target;
-        if (target.closest("[data-play]")) {
-            enterFromTitle();
-            return;
-        }
-        const jump = target.closest("[data-jump]");
-        if (jump) {
-            jumpTo(Number(jump.dataset.jump));
-            return;
-        }
-        if (target.closest("[data-home]")) {
-            showTitle();
-            return;
-        }
-        if (target.closest("[data-sound]")) {
-            unlockAudio();
-            soundEnabled = !soundEnabled;
-            setSoundEnabled(soundEnabled);
-            if (soundEnabled)
-                playSfx("pick");
-            persist();
-            syncChrome();
-            return;
-        }
-        if (target.closest("[data-reset]")) {
-            scrim.hidden = false;
-            scrim.querySelector("[data-cancel]")?.focus();
-            return;
-        }
-        if (target.closest("[data-cancel]")) {
-            scrim.hidden = true;
-            return;
-        }
-        if (target.closest("[data-confirm]")) {
-            resetAll();
-            return;
-        }
-        if (target.closest("[data-next]")) {
-            goNext();
-            return;
-        }
-        if (target.closest("[data-replay]")) {
-            replay();
-            return;
-        }
-        if (target.closest("[data-title]")) {
-            showTitle();
-            return;
-        }
 
-if (target.closest("[data-portfolio]")) {
 
-  const current = level();
-  const modelNo = Number(current.metaFlat.modelNo);
+  
 
-  if(
-    !current.metaFlat.sendToMyWealth ||
-    !Number.isInteger(modelNo) ||
-    modelNo <= 0
-  ){
+shell.addEventListener("click", (event) => {
+
+  const target = event.target;
+
+  if (target.closest("[data-play]")) {
+    enterFromTitle();
     return;
   }
 
-  window.dispatchEvent(
-    new CustomEvent("neptoon:strategy-to-mywealth", {
-      detail: {
-        level: current.level,
-        modelNo
-      }
-    })
-  );
+  const jump = target.closest("[data-jump]");
 
-  return;
-}
+  if (jump) {
+    jumpTo(Number(jump.dataset.jump));
+    return;
+  }
+
+  if (target.closest("[data-home]")) {
+    showTitle();
+    return;
+  }
+
+  if (target.closest("[data-sound]")) {
+    unlockAudio();
+    soundEnabled = !soundEnabled;
+    setSoundEnabled(soundEnabled);
+
+    if (soundEnabled) {
+      playSfx("pick");
+    }
+
+    persist();
+    syncChrome();
+    return;
+  }
+
+  if (target.closest("[data-reset]")) {
+    scrim.hidden = false;
+    scrim.querySelector("[data-cancel]")?.focus();
+    return;
+  }
+
+  if (target.closest("[data-cancel]")) {
+    scrim.hidden = true;
+    return;
+  }
+
+  if (target.closest("[data-confirm]")) {
+    resetAll();
+    return;
+  }
+
+  if (target.closest("[data-next]")) {
+    goNext();
+    return;
+  }
+
+  if (target.closest("[data-replay]")) {
+    replay();
+    return;
+  }
+
+  /* =========================================
+     LEVEL 10 → FINAL PORTFOLIO GALLERY
+  ========================================= */
+
+  if (target.closest("[data-levels-end]")) {
+
+    if (!isMaster()) return;
+
+    renderPageLevelsEnd();
+
+    return;
+  }
+
+  if (target.closest("[data-title]")) {
+    showTitle();
+    return;
+  }
+
+  /* =========================================
+     EXISTING GAME → MYWEALTH BRIDGE
+  ========================================= */
+
+  if (target.closest("[data-portfolio]")) {
+
+    const current = level();
+    const modelNo = Number(current.metaFlat.modelNo);
+
+    if (
+      !current.metaFlat.sendToMyWealth ||
+      !Number.isInteger(modelNo) ||
+      modelNo <= 0
+    ) {
+      return;
+    }
+
+    window.dispatchEvent(
+      new CustomEvent("neptoon:strategy-to-mywealth", {
+        detail: {
+          level: current.level,
+          modelNo
+        }
+      })
+    );
+
+    return;
+  }
+
+});
 
 
 
-    });
+
     const onKey = (event) => {
         if (event.key === "Escape" && !scrim.hidden)
             scrim.hidden = true;
