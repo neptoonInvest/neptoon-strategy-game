@@ -518,7 +518,20 @@ let solved = false;
       <button type="button" class="ghost-btn" data-portfolio hidden>ADD TO MYWEALTH</button>
       <button type="button" class="text-btn" data-title hidden>Back to title</button>
     </div>
+
+
+<footer class="game-footer">
+  <span>NEPTOON STRATEGY GAME</span>
+  <small>© 2026 NEPTOON WEALTH</small>
+</footer>
+
+
+
+
   `;
+
+
+
     const scrim = document.createElement("div");
     scrim.className = "scrim";
     scrim.hidden = true;
@@ -638,97 +651,117 @@ function renderPageLevelsEnd(){
     ==========================================
   */
 
-  page.innerHTML = `
+  
+page.innerHTML = `
 
+  <div class="levels-end-header">
 
-<div class="levels-end-header">
-
-  <div class="levels-end-kicker">
-    NEPTOON · STRATEGY MASTER
-  </div>
-
-  <div class="levels-end-heading">
-    <div>
-      <h2>
-        ${da ? "MISSION GENNEMFØRT" : "MISSION COMPLETE"}
-      </h2>
-
-      <p>
-        ${da
-          ? "10 niveauer gennemført. Vælg dine strategier."
-          : "10 levels completed. Select your strategies."}
-      </p>
+    <div class="levels-end-kicker">
+      NEPTOON · STRATEGY MASTER
     </div>
 
-    <span class="levels-end-crown">♛</span>
+    <div class="levels-end-heading">
+
+      <div>
+        <h2>
+          ${da ? "MISSION GENNEMFØRT" : "MISSION COMPLETE"}
+        </h2>
+
+        <p>
+          ${da
+            ? "10 niveauer gennemført. Vælg dine strategier."
+            : "10 levels completed. Select your strategies."}
+        </p>
+      </div>
+
+      <span class="levels-end-crown">♛</span>
+
+    </div>
+
+    <button
+      type="button"
+      class="levels-end-send"
+      data-levels-send
+      disabled>
+      ${da
+        ? "TILFØJ PORTEFØLJER"
+        : "ADD PORTFOLIOS"}
+    </button>
+
   </div>
 
-  <button
-    type="button"
-    class="levels-end-send"
-    data-levels-send
-    disabled>
-    ${da
-      ? "TILFØJ PORTEFØLJER"
-      : "ADD PORTFOLIOS"}
-  </button>
 
-</div>
+  <div class="levels-end-content">
 
+    <div class="levels-end-section-head">
 
-    <div class="levels-end-content">
+      <div>
 
-      <div class="levels-end-section-head">
+        <h3>
+          ${da ? "Mine strategier" : "My Strategies"}
+        </h3>
 
-        <div>
-          <h3>
-            ${da ? "Mine strategier" : "My Strategies"}
-          </h3>
-
-          <p>
-            ${da
-              ? "Vælg de porteføljer, du vil sende til Neptoon."
-              : "Select the portfolios to send to Neptoon."}
-          </p>
-        </div>
-
-        <span data-levels-count>10 / 10</span>
+        <p>
+          ${da
+            ? "Vælg de porteføljer, du vil sende til Neptoon."
+            : "Select the portfolios to send to Neptoon."}
+        </p>
 
       </div>
 
-      <div class="levels-end-gallery">
-        ${cards}
-      </div>
+      <span data-levels-count>0 / 10</span>
 
-      <div class="levels-end-selection">
-
-        <button type="button" data-levels-select-all>
-          ${da ? "Vælg alle" : "Select all"}
-        </button>
-
-        <button type="button" data-levels-clear>
-          ${da ? "Fravælg alle" : "Clear all"}
-        </button>
-
-      </div>
+    </div>
 
 
+    <div class="levels-end-gallery">
+      ${cards}
+    </div>
 
-      <p class="levels-end-note">
-        ${da
-          ? "Porteføljerne bliver tilgængelige under Egne porteføljer."
-          : "Your portfolios will be available under Custom."}
-      </p>
 
-      <button
-        type="button"
-        class="levels-end-back"
-        data-levels-back>
-        ${da ? "Tilbage til spillet" : "Back to Game"}
+    <div class="levels-end-selection">
+
+      <button type="button" data-levels-select-all>
+        ${da ? "Vælg alle" : "Select all"}
+      </button>
+
+      <button type="button" data-levels-clear>
+        ${da ? "Fravælg alle" : "Clear all"}
       </button>
 
     </div>
-  `;
+
+
+    <p class="levels-end-note">
+      ${da
+        ? "Porteføljerne bliver tilgængelige under Egne porteføljer."
+        : "Your portfolios will be available under Custom."}
+    </p>
+
+
+    <button
+      type="button"
+      class="levels-end-back"
+      data-levels-back>
+      ${da ? "Tilbage til spillet" : "Back to Game"}
+    </button>
+
+  </div>
+
+
+  <!-- ======================================
+       NEPTOON STRATEGY GAME · FOOTER
+  ======================================= -->
+
+  <footer class="game-footer">
+
+    <span>NEPTOON STRATEGY GAME</span>
+
+    <small>© ${new Date().getFullYear()} NEPTOON WEALTH</small>
+
+  </footer>
+
+`;
 
   /*
     ==========================================
