@@ -1917,7 +1917,23 @@ button:focus-visible,
 }
 
 
+.victory-stars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 
+    width: 100%;
+    margin: 0 0 12px;
+
+    color: #d4af37;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.victory-stars span {
+    display: inline-block;
+}
 
 
 
