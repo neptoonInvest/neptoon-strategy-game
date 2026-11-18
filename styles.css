@@ -2377,3 +2377,138 @@ button:focus-visible,
   box-sizing: border-box;
 }
 
+/* ==========================================
+   NEPTOON · STRATEGY MASTER FINALE
+========================================== */
+
+.game-root #pageLevelsEnd{
+  background:#091831;
+  color:#FFFFFF;
+  min-height:100%;
+  border-radius:0;
+}
+
+.game-root #pageLevelsEnd,
+.game-root #pageLevelsEnd *{
+  box-sizing:border-box;
+  border-radius:0;
+}
+
+/* Header and gallery background */
+
+.game-root #pageLevelsEnd .levels-end-header{
+  background:#0B1933;
+  color:#FFFFFF;
+}
+
+.game-root #pageLevelsEnd .levels-end-content{
+  background:#091831;
+  color:#FFFFFF;
+  padding-bottom:32px;
+}
+
+.game-root #pageLevelsEnd .levels-end-section-head h3{
+  color:#FFFFFF;
+}
+
+.game-root #pageLevelsEnd .levels-end-section-head p,
+.game-root #pageLevelsEnd .levels-end-note{
+  color:#AFC3DC;
+}
+
+.game-root #pageLevelsEnd [data-levels-count]{
+  color:#82C5F5;
+}
+
+/* Burgundy gradient cards */
+
+.game-root #pageLevelsEnd .levels-end-card{
+  background:linear-gradient(
+    135deg,
+    #162F53 0%,
+    #1B2C4C 48%,
+    #502B42 100%
+  );
+
+  border:1px solid #40516D;
+  color:#FFFFFF;
+  cursor:pointer;
+  transition:background .18s,border-color .18s;
+}
+
+.game-root #pageLevelsEnd .levels-end-card:has(input:checked){
+  background:linear-gradient(
+    135deg,
+    #214D80 0%,
+    #35416D 50%,
+    #783B50 100%
+  );
+
+  border-color:#82C5F5;
+}
+
+.game-root #pageLevelsEnd .levels-end-number{
+  color:#86BDF0;
+  font-size:10px;
+  letter-spacing:.6px;
+}
+
+.game-root #pageLevelsEnd .levels-end-card-title{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#FFFFFF;
+  font-weight:700;
+}
+
+.game-root #pageLevelsEnd .levels-end-card-title svg{
+  width:18px;
+  height:18px;
+  flex-shrink:0;
+  color:#82C5F5;
+  stroke-width:1.8;
+}
+
+.game-root #pageLevelsEnd .levels-end-card-bottom{
+  color:#AFC3DC;
+  font-size:10px;
+}
+
+.game-root #pageLevelsEnd input[type="checkbox"]{
+  accent-color:#4E79BD;
+}
+
+/* Selection controls */
+
+.game-root #pageLevelsEnd .levels-end-selection button{
+  color:#AFCFF0;
+}
+
+/* Main action */
+
+.game-root #pageLevelsEnd .levels-end-send{
+  display:block;
+  width:100%;
+  margin:18px 0;
+  background:#4E79BD;
+  color:#FFFFFF;
+  border:1px solid #4E79BD;
+  font-weight:700;
+  padding:13px;
+  cursor:pointer;
+}
+
+.game-root #pageLevelsEnd .levels-end-send:disabled{
+  background:#29466C;
+  border-color:#29466C;
+  color:#8197B4;
+  cursor:default;
+}
+
+/* Footer and bottom clearance */
+
+.game-root #pageLevelsEnd .game-footer{
+  background:#091831;
+  border-top:1px solid #263D5D;
+}
+
