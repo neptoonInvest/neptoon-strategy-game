@@ -2355,5 +2355,25 @@ button:focus-visible,
 }
 
 
+/* =========================================
+   GAME · INSTRUMENT CARD LABELS
+========================================= */
 
+.game-root .tray-grid .piece .sub {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  box-sizing: border-box;
+}
+
+.game-root .tray-grid .piece {
+  min-width: 0;
+  box-sizing: border-box;
+}
 
