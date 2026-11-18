@@ -2303,6 +2303,37 @@ button:focus-visible,
   font-size: 10px;
 }
 
+/* =========================================
+   NEPTOON STRATEGY GAME
+   MODAL SCROLL CONTAINER
+========================================= */
+
+.nt-strategy-modal-panel {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+/* Preserve full Game content height */
+
+#nt-strategy-game-root {
+  height: auto !important;
+  min-height: 100%;
+  overflow: visible !important;
+  box-sizing: border-box;
+}
+
+/* Keep footer clear of bottom edge */
+
+#nt-strategy-game-root .game-footer {
+  margin-bottom: 24px;
+}
+
 
 
 
