@@ -1,11 +1,14 @@
 
 import { playSfx, resumeAudio, setSoundEnabled, unlockAudio } from "./audio.js";
 import { layoutWeighted } from "./layout.js";
+
+
 import {
   levelByNumber,
   piecesOf,
   strategyLine,
-  initializeGameLevels
+  initializeGameLevels,
+  reshuffleLevelInstruments
 } from "./levels.js";
 
 import { viewPortfolio } from "./portfolio.js";
@@ -961,9 +964,14 @@ function renderStrategyTable() {
       holding.stories?.en ||
       [];
 
-    // One recognition clue per holding
-    storyCell.textContent =
-      stories[0] || holding.instrumentName || "";
+const storyIndex =
+  storySelection.get(holding.instrumentId) ?? 0;
+
+storyCell.textContent =
+  stories[storyIndex] ||
+  stories[0] ||
+  holding.instrumentName ||
+  "";
 
     weightCell.textContent =
       `${percentOf(holding.weight)}%`;
@@ -1129,6 +1137,114 @@ window.testGameFinale = () => {
         arrangement = data.holdings.map(() => null);
         tray = shuffle(piecesOf(data).map((piece) => piece.instrumentId), levelNumber * 97 + 13);
     }
+
+
+
+
+function reshuffleTwoInstruments(){
+
+  if(!canStart()) return;
+
+  const placedIds = arrangement.filter(Boolean);
+
+  const replaced = reshuffleLevelInstruments(
+    currentLevel,
+    placedIds,
+    2
+  );
+
+  if(!replaced){
+    showToast(
+      lang === "da"
+        ? "Ingen nye investeringer tilgængelige"
+        : "No new investments available"
+    );
+    return;
+  }
+
+  // Rebuild tray from the updated level,
+  // excluding instruments already placed.
+  const placed = new Set(placedIds);
+
+  tray = piecesOf(level())
+    .map(item => item.instrumentId)
+    .filter(id => !placed.has(id));
+
+  // Randomize visual tray order.
+  for(let i = tray.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [tray[i], tray[j]] = [tray[j], tray[i]];
+  }
+
+  selectedId = null;
+  lastInstrumentId = null;
+
+  clearPieces();
+
+  score = computeScore();
+  solved = isPerfectScore(score);
+
+  renderHud();
+  renderPieces(false);
+  paintSignal("none");
+
+  persist();
+
+  playSfx("pick");
+
+}
+
+
+
+
+
+/* =========================================
+   RANDOMIZER 3 · RECOGNITION STORIES
+========================================= */
+
+let storySelection = new Map();
+
+function randomizeStories(){
+
+  storySelection.clear();
+
+  for(const holding of level().holdings){
+
+    const stories =
+      holding.stories?.[lang] ||
+      holding.stories?.en ||
+      [];
+
+    if(!stories.length) continue;
+
+    const index =
+      Math.floor(Math.random() * stories.length);
+
+    storySelection.set(
+      holding.instrumentId,
+      index
+    );
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     function placementFits(levelNumber, data) {
         const spec = levelByNumber(levelNumber);
         const ids = new Set(piecesOf(spec).map((piece) => piece.instrumentId));
@@ -2582,6 +2698,11 @@ shell.addEventListener("click", (event) => {
     syncChrome();
     return;
   }
+
+if(target.closest("[data-reshuffle]")){
+  reshuffleTwoInstruments();
+  return;
+}
 
   if (target.closest("[data-reset]")) {
     scrim.hidden = false;
