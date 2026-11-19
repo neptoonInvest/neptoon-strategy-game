@@ -2568,3 +2568,33 @@ button:focus-visible,
   white-space:normal !important;
 }
 
+/* ==========================================
+   NEPTOON STRATEGY GAME
+   HEADER · FINAL ALIGNMENT
+========================================== */
+
+/* Restore top spacing */
+
+.game-root .play{
+  padding-top:25px !important;
+}
+
+/* Reserve space for close button */
+
+.game-root .play .topbar{
+  padding-right:42px !important;
+}
+
+/* Close button · far right */
+
+#nt-strategy-close{
+  position:absolute !important;
+
+  top:34px !important;
+  right:10px !important;
+  left:auto !important;
+
+  transform:none !important;
+  z-index:20;
+}
+
