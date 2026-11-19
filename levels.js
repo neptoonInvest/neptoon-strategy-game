@@ -69,7 +69,7 @@ function buildLevel1() {
 
     metaFlat: {
       title: "The First Investment",
-      titleDa: "Den første investering",
+      titleDa: "Èt aktiv",
 
       description: "One stock. One allocation.",
       descriptionDa: "Én aktie. Én fordeling.",
@@ -124,7 +124,7 @@ function buildLevel2() {
 
     metaFlat: {
       title: "Two Investments",
-      titleDa: "To investeringer",
+      titleDa: "To aktiver",
 
       description: "Two stocks. Two allocations.",
       descriptionDa: "To aktier. To fordelinger.",
@@ -209,7 +209,7 @@ function buildLevel3() {
 
     metaFlat: {
       title: "Three Investments",
-      titleDa: "Tre investeringer",
+      titleDa: "Tre aktiver",
 
       description: "Three stocks. Three allocations.",
       descriptionDa: "Tre aktier. Tre fordelinger.",
@@ -500,10 +500,10 @@ function buildLevel6() {
 
     metaFlat: {
       title: "The Cash Alternative",
-      titleDa: "Alternativet til kontanter",
+      titleDa: "Alternativer til kontanter",
 
-      description: "Four bond ETFs. No equities.",
-      descriptionDa: "Fire obligations-ETF'er. Ingen aktier.",
+      description: "Four bond funds. No equities.",
+      descriptionDa: "Fire obligationsfonde. Ingen aktier.",
 
       isWealthPlan: false,
       modelNo: null,
