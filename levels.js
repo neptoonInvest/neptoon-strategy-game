@@ -941,6 +941,109 @@ function buildLevel10() {
 
 
 
+/* =========================================
+   RANDOMIZER 2 · RESHUFFLE TWO INSTRUMENTS
+   Keep level allocation unchanged
+========================================= */
+
+let reshuffleUniverse = [];
+
+export function reshuffleLevelInstruments(
+  levelNumber,
+  protectedIds = [],
+  count = 2
+){
+
+  const current = levelByNumber(levelNumber);
+
+  const protectedSet = new Set(protectedIds);
+
+  const entries = [
+    ...current.holdings.map((item, index) => ({
+      type: "holding",
+      index,
+      item
+    })),
+    ...current.decoys.map((item, index) => ({
+      type: "decoy",
+      index,
+      item
+    }))
+  ];
+
+  // Only unplaced instruments can change.
+  const eligibleEntries = entries.filter(entry =>
+    !protectedSet.has(entry.item.instrumentId)
+  );
+
+  // Randomize replacement order.
+  const shuffled = [...eligibleEntries].sort(
+    () => Math.random() - 0.5
+  );
+
+  const used = new Set(
+    piecesOf(current).map(item =>
+      tickerKey(item.tickerExchange)
+    )
+  );
+
+  let replaced = 0;
+
+  for(const entry of shuffled){
+
+    if(replaced >= count) break;
+
+    const old = entry.item;
+    const oldKey = tickerKey(old.tickerExchange);
+
+    const candidates = reshuffleUniverse.filter(inst => {
+
+      const key = tickerKey(inst.tickerExchange);
+
+      return (
+        Number(inst.classNo) === Number(old.classNo) &&
+        key !== oldKey &&
+        !used.has(key)
+      );
+
+    });
+
+    if(!candidates.length) continue;
+
+    const selected = candidates[
+      randomIndex(candidates.length)
+    ];
+
+    const key = tickerKey(selected.tickerExchange);
+
+    const replacement = {
+      ...instrumentByTicker.get(key),
+      stories: selected.stories
+    };
+
+    if(entry.type === "holding"){
+
+      replacement.weight = old.weight;
+
+      current.holdings[entry.index] = replacement;
+
+    } else {
+
+      current.decoys[entry.index] = replacement;
+
+    }
+
+    used.delete(oldKey);
+    used.add(key);
+
+    replaced++;
+
+  }
+
+  return replaced;
+
+}
+
 
 
 
@@ -1164,6 +1267,7 @@ export function initializeGameLevels(
 ) {
 
   setInstrumentUniverse(grossInstruments);
+reshuffleUniverse = gameUniverse;
 
   const builders = [
     buildLevel1,
