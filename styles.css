@@ -2597,4 +2597,15 @@ button:focus-visible,
   transform:none !important;
   z-index:20;
 }
+/* ==========================================
+   STRATEGY GAME · iOS TOUCH SCROLL
+========================================== */
 
+.nt-strategy-modal-panel {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y !important;
+  overscroll-behavior-y: contain;
+}
