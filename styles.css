@@ -2538,3 +2538,17 @@ button:focus-visible,
   }
 
 }
+
+/* ==========================================
+   STRATEGY GAME · ADD PORTFOLIOS BUTTON
+   CENTER ALIGNMENT
+========================================== */
+
+#pageLevelsEnd .levels-end-send{
+  display:block !important;
+  width:calc(100% - 32px) !important;
+  max-width:480px !important;
+  margin:16px auto 24px !important;
+  box-sizing:border-box !important;
+  text-align:center !important;
+}
