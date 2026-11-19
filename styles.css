@@ -2552,3 +2552,19 @@ button:focus-visible,
   box-sizing:border-box !important;
   text-align:center !important;
 }
+
+/* ==========================================
+   STRATEGY GAME · ASSET METADATA
+   PREVENT COLLAPSED HELP TEXT
+========================================== */
+
+#trayInstrumentName{
+  display:block !important;
+  height:auto !important;
+  min-height:20px !important;
+  max-height:none !important;
+  overflow:visible !important;
+  line-height:1.5 !important;
+  white-space:normal !important;
+}
+
