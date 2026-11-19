@@ -820,23 +820,7 @@ function updateSelection(){
     );
   });
 
-  page.querySelector(
-    "[data-levels-select-all]"
-  ).addEventListener("click", () => {
 
-    checks.forEach(c => c.checked = true);
-    updateSelection();
-
-  });
-
-  page.querySelector(
-    "[data-levels-clear]"
-  ).addEventListener("click", () => {
-
-    checks.forEach(c => c.checked = false);
-    updateSelection();
-
-  });
 
   /*
     ==========================================
