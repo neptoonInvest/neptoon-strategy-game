@@ -4,7 +4,7 @@
   font-weight: 400 700;
   font-display: swap;
   src: url("fonts/outfit.woff2") format("woff2");
-}
+} 
 :root {
   --color-navy: #071631;
   --color-blue: #4e79bd;
