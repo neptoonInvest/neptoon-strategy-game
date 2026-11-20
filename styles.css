@@ -2542,3 +2542,19 @@ button:focus-visible,
   transform:none !important;
   z-index:20;
 }
+/* =========================================
+   NW-111 · iPHONE GAME SCROLL TEST
+========================================= */
+
+.game-root .shell {
+  touch-action: pan-y !important;
+}
+
+.game-root .play {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  -webkit-overflow-scrolling: touch;
+
+  touch-action: pan-y !important;
+}
