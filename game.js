@@ -365,6 +365,15 @@ let solved = false;
       ${iconReset()}
     </button>
 
+<button
+  type="button"
+  class="icon-btn icon-btn-plain"
+  data-game-finale
+  aria-label="View my strategies"
+  title="View my strategies">
+  <i data-lucide="flag"></i>
+</button>
+
   </div>
 
 </header>
@@ -561,9 +570,6 @@ let solved = false;
 
 function renderPageLevelsEnd(){
 
-  if(!isMaster()){
-    return;
-  }
 
   /*
     ==========================================
@@ -674,34 +680,48 @@ const levelIcons = [
     ==========================================
   */
 
-  
+
 page.innerHTML = `
 
   <div class="levels-end-header">
 
     <div class="levels-end-kicker">
-      NEPTOON · STRATEGY MASTER
+      NEPTOON · ${isMaster()
+        ? "STRATEGY MASTER"
+        : "STRATEGY GAME"}
     </div>
 
     <div class="levels-end-heading">
 
       <div>
+
         <h2>
-          ${da ? "MISSION GENNEMFØRT" : "MISSION COMPLETE"}
+          ${isMaster()
+            ? (da
+                ? "MISSION GENNEMFØRT"
+                : "MISSION COMPLETE")
+            : (da
+                ? "MINE STRATEGIER"
+                : "MY STRATEGIES")}
         </h2>
 
         <p>
-          ${da
-            ? "10 niveauer gennemført. Vælg dine strategier."
-            : "10 levels completed. Select your strategies."}
+          ${isMaster()
+            ? (da
+                ? "10 niveauer gennemført. Vælg dine strategier."
+                : "10 levels completed. Select your strategies.")
+            : (da
+                ? "Vælg dine strategier, eller vend tilbage til spillet."
+                : "Select your strategies or return to the game.")}
         </p>
+
       </div>
 
-      <span class="levels-end-crown">♛</span>
+      <span class="levels-end-crown">
+        ${isMaster() ? "♛" : "◆"}
+      </span>
 
     </div>
-
-    <button
 
   </div>
 
@@ -735,19 +755,18 @@ page.innerHTML = `
 
 
     <div class="levels-end-selection">
-
-
     </div>
 
-<button
-  type="button"
-  class="levels-end-send"
-  data-levels-send
-  disabled>
-  ${da
-    ? "TILFØJ PORTEFØLJER"
-    : "ADD PORTFOLIOS"}
-</button>
+
+    <button
+      type="button"
+      class="levels-end-send"
+      data-levels-send
+      disabled>
+      ${da
+        ? "TILFØJ PORTEFØLJER"
+        : "ADD PORTFOLIOS"}
+    </button>
 
 
     <p class="levels-end-note">
@@ -757,14 +776,13 @@ page.innerHTML = `
     </p>
 
 
-
-
-
     <button
       type="button"
       class="levels-end-back"
       data-levels-back>
-      ${da ? "Tilbage til spillet" : "Back to Game"}
+      ${da
+        ? "Tilbage til spillet"
+        : "Back to Game"}
     </button>
 
   </div>
@@ -778,7 +796,9 @@ page.innerHTML = `
 
     <span>NEPTOON STRATEGY GAME</span>
 
-    <small>© ${new Date().getFullYear()} NEPTOON WEALTH</small>
+    <small>
+      © ${new Date().getFullYear()} NEPTOON WEALTH
+    </small>
 
   </footer>
 
@@ -1118,11 +1138,18 @@ for (const [key, label] of Object.entries(allocationLabels[lang])) {
 
 window.testGameFinale = () => {
 
-  highestCompleted = 10;
+
 
   renderPageLevelsEnd();
 
 };
+
+play.querySelector("[data-game-finale]")
+  ?.addEventListener("click", () => {
+
+    window.testGameFinale();
+
+  });
 
 
 
@@ -2702,6 +2729,18 @@ shell.addEventListener("click", (event) => {
 if(target.closest("[data-reshuffle]")){
   reshuffleTwoInstruments();
   return;
+}
+
+/* =========================================
+   VIEW STRATEGIES · OPTIONAL GAME EXIT
+========================================= */
+
+if(target.closest("[data-game-finale]")){
+
+  renderPageLevelsEnd();
+
+  return;
+
 }
 
   if (target.closest("[data-reset]")) {
