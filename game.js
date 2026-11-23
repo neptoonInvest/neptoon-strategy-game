@@ -1442,8 +1442,14 @@ function renderTrack(into, interactive) {
     }
 
     /* UNIFORM PROGRESS SEGMENTS */
+/* ==========================================
+   LEVEL LABELS
+   START PAGE: 1–10
+   GAMEPLAY: THIN SEGMENTS
+========================================== */
 
-    item.textContent = "";
+item.textContent =
+  interactive ? String(n) : "";
 
     into.appendChild(item);
 
