@@ -2593,4 +2593,46 @@ button:focus-visible,
   }
 
 }
+/* ==========================================
+   NEPTOON STRATEGY GAME
+   TOPBAR ACTIONS · FINAL POSITION
+========================================== */
 
+#nt-strategy-game-root .top-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+
+  gap:0;
+  margin-left:auto;
+  margin-right:0;
+
+  flex:0 0 auto;
+
+  /* Verified browser position */
+  transform:translateX(50px);
+}
+
+/* Uniform icon dimensions */
+
+#nt-strategy-game-root .top-actions .icon-btn{
+  width:36px;
+  height:36px;
+  min-width:36px;
+  min-height:36px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0;
+  border-radius:0;
+}
+
+/* Sound · Reshuffle · Flag */
+
+#nt-strategy-game-root .top-actions .icon-btn svg{
+  width:17px;
+  height:17px;
+  flex-shrink:0;
+}
