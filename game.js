@@ -324,6 +324,9 @@ let solved = false;
     const play = document.createElement("section");
     play.className = "play";
     play.hidden = true;
+
+
+
     play.innerHTML = `
 
 <header class="topbar">
@@ -371,9 +374,8 @@ let solved = false;
   data-game-finale
   aria-label="View my strategies"
   title="View my strategies">
-  <i data-lucide="flag"></i>
+  ${iconFlag()}
 </button>
-
   </div>
 
 </header>
@@ -542,11 +544,6 @@ let solved = false;
   `;
 
 /* RENDER GAME TOPBAR ICONS */
-
-window.lucide?.createIcons({
-  icons: window.lucide.icons,
-  root: play
-});
 
 
 
@@ -2952,6 +2949,31 @@ if (play.hidden)
         },
     };
 }
+
+
+function iconFlag(){
+
+  return `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true">
+
+      <path d="M4 22V4"/>
+      <path d="M4 4c4-3 8 3 12 0v12c-4 3-8-3-12 0"/>
+
+    </svg>
+  `;
+
+}
+
 function clampLevel(value) {
     if (!Number.isFinite(value))
         return 1;
