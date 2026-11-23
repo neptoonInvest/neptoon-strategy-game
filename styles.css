@@ -2636,3 +2636,19 @@ button:focus-visible,
   height:17px;
   flex-shrink:0;
 }
+/* =========================================
+   NEPTOON STRATEGY GAME
+   END DOOR · SCROLL FIX
+========================================= */
+
+.game-root:has(#pageLevelsEnd:not([hidden])) {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: contain;
+}
+
+.game-root:has(#pageLevelsEnd:not([hidden]))
+#pageLevelsEnd {
+  height: auto;
+  min-height: 100%;
+}
