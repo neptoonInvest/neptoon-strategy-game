@@ -541,6 +541,13 @@ let solved = false;
 
   `;
 
+/* RENDER GAME TOPBAR ICONS */
+
+window.lucide?.createIcons({
+  icons: window.lucide.icons,
+  root: play
+});
+
 
 
     const scrim = document.createElement("div");
