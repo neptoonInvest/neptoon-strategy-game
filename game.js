@@ -1365,42 +1365,89 @@ function syncChrome() {
     function maxOpenLevel() {
         return isMaster() ? 10 : Math.min(10, highestCompleted + 1);
     }
-    function renderTrack(into, interactive) {
-        into.replaceChildren();
-        if (interactive)
-            into.removeAttribute("aria-hidden");
-        else
-            into.setAttribute("aria-hidden", "true");
-        const openUntil = maxOpenLevel();
-        for (let n = 1; n <= 10; n++) {
-            const done = n <= highestCompleted;
-            const open = interactive && n <= openUntil;
-            const item = document.createElement(open ? "button" : "span");
-            item.className = "tick";
-            if (n === 10)
-                item.classList.add("finale");
-            if (done)
-                item.classList.add("done");
-            if (n === currentLevel)
-                item.classList.add("now");
-            else if (!done)
-                item.classList.add("locked");
-            if (open) {
-                const button = item;
-                button.type = "button";
-                button.dataset.jump = String(n);
-                const state = done ? `, ${t("complete")}` : n === currentLevel ? `, ${t("inProgress")}` : "";
-                button.setAttribute("aria-label", `${t("level")} ${n}${state}`);
-                if (n === currentLevel)
-                    button.setAttribute("aria-current", "step");
-            }
-            if (n === 10)
-                item.innerHTML = iconCrown();
-            else
-                item.textContent = String(n);
-            into.appendChild(item);
-        }
+
+
+function renderTrack(into, interactive) {
+
+  into.replaceChildren();
+
+  if(interactive){
+    into.removeAttribute("aria-hidden");
+  } else {
+    into.setAttribute("aria-hidden", "true");
+  }
+
+  const openUntil = maxOpenLevel();
+
+  for(let n = 1; n <= 10; n++){
+
+    const done =
+      n <= highestCompleted;
+
+    const open =
+      interactive && n <= openUntil;
+
+    const item =
+      document.createElement(
+        open ? "button" : "span"
+      );
+
+    item.className = "tick";
+
+    /* LEVEL STATES */
+
+    if(done){
+      item.classList.add("done");
     }
+
+    if(n === currentLevel){
+      item.classList.add("now");
+    } else if(!done){
+      item.classList.add("locked");
+    }
+
+    /* INTERACTIVE LEVEL NAVIGATION */
+
+    if(open){
+
+      item.type = "button";
+
+      item.dataset.jump = String(n);
+
+      const state =
+        done
+          ? `, ${t("complete")}`
+          : n === currentLevel
+            ? `, ${t("inProgress")}`
+            : "";
+
+      item.setAttribute(
+        "aria-label",
+        `${t("level")} ${n}${state}`
+      );
+
+      if(n === currentLevel){
+
+        item.setAttribute(
+          "aria-current",
+          "step"
+        );
+
+      }
+
+    }
+
+    /* UNIFORM PROGRESS SEGMENTS */
+
+    item.textContent = "";
+
+    into.appendChild(item);
+
+  }
+
+}
+
+
     function renderStart() {
         const button = start.querySelector("[data-play]");
         const masterLine = start.querySelector(".master-line");
