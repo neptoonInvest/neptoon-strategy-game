@@ -2652,3 +2652,46 @@ button:focus-visible,
   height: auto;
   min-height: 100%;
 }
+
+
+/* ================================================
+   NEPTOON STRATEGY GAME
+   PERMANENT DESKTOP WIDE MODAL FIX
+   Mobile layout remains unchanged
+================================================ */
+
+@media screen and (min-width: 900px) {
+
+  /* Actual modal parent containing .game-root */
+  div:has(> .game-root) {
+    position: fixed !important;
+    inset: 0 !important;
+
+    width: 100vw !important;
+    max-width: none !important;
+
+    transform: none !important;
+  }
+
+  /* Full-width game background */
+  .game-root {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Center the 900px game */
+  .game-root > .shell {
+    width: 900px !important;
+    max-width: none !important;
+
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+
+    transform: none !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+}
