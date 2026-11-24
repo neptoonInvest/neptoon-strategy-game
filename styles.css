@@ -2768,3 +2768,21 @@ button:focus-visible,
   font-weight:400;
   line-height:1.5;
 }  
+
+/* ==========================================
+   GAME INTRO · VERTICAL SCROLL
+========================================== */
+
+.game-root .start{
+  min-height:0;
+  max-height:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+}
+
+.game-root .start-body{
+  flex-shrink:0;
+  padding-bottom:24px;
+}
