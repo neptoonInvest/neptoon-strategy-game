@@ -303,27 +303,164 @@ let solved = false;
     root.appendChild(shell);
     const start = document.createElement("section");
     start.className = "start";
-    start.innerHTML = `
+
+
+  start.innerHTML = `
     <div class="start-top">
-      <button type="button" class="icon-btn round" data-sound aria-label="Sound on" aria-pressed="true">${iconSound(true)}</button>
+      <button type="button"
+              class="icon-btn round"
+              data-sound
+              aria-label="Sound on"
+              aria-pressed="true">
+        ${iconSound(true)}
+      </button>
     </div>
+
     <div class="start-body">
+
       <div class="mark">${iconMark()}</div>
+
       <p class="brand">NEPTOON</p>
+
       <h1 class="display">KNOW YOUR<br>STRATEGIES</h1>
+
       <p class="tag">10 LEVELS. ONE MASTERPIECE.</p>
-      <p class="subtitle">Drag the investments. Crack the strategy.</p>
-      <p class="master-line" hidden>You beat all 10 levels.</p>
-      <button type="button" class="play-btn pulse" data-play>PLAY LEVEL 1</button>
+
+      <p class="subtitle">
+        Drag the investments. Crack the strategy.
+      </p>
+
+      <!-- GAME GUIDE -->
+
+      <div class="start-guide">
+
+        <div class="start-guide-heading">
+          ${lang === "da"
+            ? "SÅDAN SPILLER DU"
+            : "HOW TO PLAY"}
+        </div>
+
+        <div class="start-guide-row">
+
+          <div class="start-guide-icon">
+            ${iconReset()}
+          </div>
+
+          <div class="start-guide-copy">
+
+            <div class="start-guide-title">
+              ${lang === "da"
+                ? "Få nye investeringer"
+                : "Get new investments"}
+            </div>
+
+            <div class="start-guide-text">
+              ${lang === "da"
+                ? "Brug shuffle-knappen til at få et nyt udvalg af investeringer."
+                : "Use the reshuffle button to get a new selection of investments."}
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="start-guide-row">
+
+          <div class="start-guide-icon">
+            ${iconFlag()}
+          </div>
+
+          <div class="start-guide-copy">
+
+            <div class="start-guide-title">
+              ${lang === "da"
+                ? "Afslut når du vil"
+                : "Finish whenever you like"}
+            </div>
+
+            <div class="start-guide-text">
+              ${lang === "da"
+                ? "Brug flaget til at gå direkte til spillets finale."
+                : "Use the flag to go directly to the game finale."}
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="start-guide-row">
+
+          <div class="start-guide-icon">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M3 3v18h18"/>
+              <path d="m6 15 5-5 4 4 6-8"/>
+              <path d="M17 6h4v4"/>
+            </svg>
+          </div>
+
+          <div class="start-guide-copy">
+
+            <div class="start-guide-title">
+              ${lang === "da"
+                ? "Analysér dine strategier"
+                : "Analyse your strategies"}
+            </div>
+
+            <div class="start-guide-text">
+              ${lang === "da"
+                ? "Efter spillet kan du analysere alle dine strategier i Neptoon Wealth."
+                : "After the game, you can analyse all your strategies in Neptoon Wealth."}
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- GAME PROGRESS -->
+
+      <p class="master-line" hidden>
+        You beat all 10 levels.
+      </p>
+
+      <button type="button"
+              class="play-btn pulse"
+              data-play>
+        PLAY LEVEL 1
+      </button>
+
       <div class="track" data-track></div>
-      <p class="track-caption" data-track-caption hidden>Tap a level to replay it.</p>
+
+      <p class="track-caption" data-track-caption hidden>
+        Tap a level to replay it.
+      </p>
+
       <p class="sr-only" data-track-text></p>
-      <button type="button" class="text-btn" data-reset hidden>Reset progress</button>
+
+      <button type="button"
+              class="text-btn"
+              data-reset
+              hidden>
+        Reset progress
+      </button>
+
     </div>
-  `;
-    const play = document.createElement("section");
-    play.className = "play";
-    play.hidden = true;
+`;
+
+const play = document.createElement("section");
+play.className = "play";
+play.hidden = true;
 
 
 
